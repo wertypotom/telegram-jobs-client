@@ -1,11 +1,34 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/shared/hooks';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/shared/ui';
 import { TelegramAuthForm } from './components/telegram-auth-form';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { data: user, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      router.push('/jobs');
+    }
+  }, [user, router]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (user) {
+    return null; // Will redirect
+  }
   return (
     <Card>
       <CardHeader className="text-center">

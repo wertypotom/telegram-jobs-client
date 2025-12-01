@@ -22,6 +22,7 @@ import {
 import { X, Plus } from 'lucide-react';
 
 const JOB_FUNCTIONS = [
+  // English
   'Frontend Software Engineer',
   'React Developer',
   'UI/UX Developer',
@@ -32,6 +33,17 @@ const JOB_FUNCTIONS = [
   'Data Engineer',
   'QA Engineer',
   'Product Manager',
+  // Russian
+  'Фронтенд разработчик',
+  'React разработчик',
+  'UI/UX дизайнер',
+  'Fullstack разработчик',
+  'Бэкенд разработчик',
+  'DevOps инженер',
+  'Мобильный разработчик',
+  'Инженер данных',
+  'QA инженер',
+  'Продакт менеджер',
 ];
 
 interface FiltersPanelProps {
@@ -87,7 +99,7 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent className="w-[400px] sm:w-[540px] overflow-y-auto">
+      <SheetContent className="w-[400px] sm:w-[540px] overflow-y-auto px-8">
         <SheetHeader>
           <SheetTitle>Edit Filters</SheetTitle>
           <SheetDescription>
