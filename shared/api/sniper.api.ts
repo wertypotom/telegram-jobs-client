@@ -9,9 +9,10 @@ export const sniperApi = {
   generateTailoredResume: async (
     data: GenerateTailoredResumeRequest
   ): Promise<GenerateTailoredResumeResponse> => {
-    const response = await apiClient.post<
-      ApiResponse<GenerateTailoredResumeResponse>
-    >('/api/sniper/generate', data);
+    const response = await apiClient.post<ApiResponse<GenerateTailoredResumeResponse>>(
+      '/api/sniper/generate',
+      data
+    );
     return response.data.data;
   },
 };

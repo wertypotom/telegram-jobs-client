@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { authApi } from '../api';
 import { apiClient } from '../lib/api-client';
-import type { 
-  SendTelegramCodeRequest, 
-  VerifyTelegramCodeRequest, 
+import type {
+  SendTelegramCodeRequest,
+  VerifyTelegramCodeRequest,
   AuthResponse,
   ApiResponse,
 } from '../types/api';
@@ -34,7 +34,7 @@ export function useVerifyTelegramPassword() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { phoneNumber: string; password: string }) => 
+    mutationFn: (data: { phoneNumber: string; password: string }) =>
       authApi.verifyTelegramPassword(data),
     onSuccess: (data: AuthResponse) => {
       // Store token
@@ -61,7 +61,7 @@ export function useLogout() {
 
 export function useAuth() {
   const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
-  
+
   return useQuery({
     queryKey: ['user'],
     queryFn: async () => {
@@ -73,5 +73,4 @@ export function useAuth() {
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: false,
   });
-
 }

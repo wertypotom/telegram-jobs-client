@@ -17,9 +17,7 @@ export default function ProfilePage() {
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Profile</h1>
-          <p className="text-muted-foreground">
-            Manage your account settings
-          </p>
+          <p className="text-muted-foreground">Manage your account settings</p>
         </div>
 
         <Card>
@@ -36,11 +34,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="pt-4 border-t">
-              <Button
-                variant="destructive"
-                onClick={handleLogout}
-                className="w-full"
-              >
+              <Button variant="destructive" onClick={handleLogout} className="w-full">
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout
               </Button>

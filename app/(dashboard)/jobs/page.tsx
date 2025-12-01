@@ -47,7 +47,7 @@ export default function JobsPage() {
         filters={filters}
         onFiltersChange={setFilters}
       />
-      
+
       <div className="container mx-auto px-6 py-8">
         <div className="mb-8 flex items-start justify-between">
           <div>
@@ -57,19 +57,11 @@ export default function JobsPage() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setShowFiltersPanel(true)}
-              className="gap-2"
-            >
+            <Button variant="outline" onClick={() => setShowFiltersPanel(true)} className="gap-2">
               <SlidersHorizontal className="h-4 w-4" />
               Edit Filters
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => setShowChannelManager(true)}
-              className="gap-2"
-            >
+            <Button variant="outline" onClick={() => setShowChannelManager(true)} className="gap-2">
               <Settings className="h-4 w-4" />
               Manage Channels
             </Button>

@@ -2,8 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSendTelegramCode, useVerifyTelegramCode, useVerifyTelegramPassword } from '@/shared/hooks';
-import { Button, Input, Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/shared/ui';
+import {
+  useSendTelegramCode,
+  useVerifyTelegramCode,
+  useVerifyTelegramPassword,
+} from '@/shared/hooks';
+import { Button, Input } from '@/shared/ui';
 import { Phone, ArrowRight, Lock, Eye, EyeOff } from 'lucide-react';
 
 export function TelegramAuthForm() {
@@ -74,7 +78,7 @@ export function TelegramAuthForm() {
           router.push('/jobs');
         },
         onError: (error: any) => {
-          console.log("ERROR ,💥", error)
+          console.log('ERROR ,💥', error);
 
           setError(error.response?.data?.message || 'Invalid 2FA password');
         },
@@ -107,9 +111,7 @@ export function TelegramAuthForm() {
         </div>
 
         {error && (
-          <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
-            {error}
-          </div>
+          <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">{error}</div>
         )}
 
         <Button type="submit" className="w-full" disabled={isSendingCode}>
@@ -144,11 +146,7 @@ export function TelegramAuthForm() {
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
-              {showPassword ? (
-                <EyeOff className="h-4 w-4" />
-              ) : (
-                <Eye className="h-4 w-4" />
-              )}
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
           <p className="text-xs text-muted-foreground">
@@ -157,9 +155,7 @@ export function TelegramAuthForm() {
         </div>
 
         {error && (
-          <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
-            {error}
-          </div>
+          <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">{error}</div>
         )}
 
         <div className="space-y-2">
@@ -199,15 +195,11 @@ export function TelegramAuthForm() {
           maxLength={6}
           required
         />
-        <p className="text-xs text-muted-foreground">
-          Enter the code sent to {phoneNumber}
-        </p>
+        <p className="text-xs text-muted-foreground">Enter the code sent to {phoneNumber}</p>
       </div>
 
       {error && (
-        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
-          {error}
-        </div>
+        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">{error}</div>
       )}
 
       <div className="space-y-2">

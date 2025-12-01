@@ -1,9 +1,5 @@
 import { apiClient } from '../lib/api-client';
-import type {
-  JobsRequest,
-  JobsResponse,
-  ApiResponse,
-} from '../types/api';
+import type { JobsRequest, JobsResponse, ApiResponse } from '../types/api';
 import type { Job } from '../types/models';
 
 export const jobsApi = {

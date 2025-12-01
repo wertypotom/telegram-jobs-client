@@ -19,24 +19,48 @@ export function Footer() {
           <div>
             <h3 className="font-semibold mb-4">Product</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="#features" className="hover:text-foreground">Features</Link></li>
-              <li><Link href="#how-it-works" className="hover:text-foreground">How It Works</Link></li>
+              <li>
+                <Link href="#features" className="hover:text-foreground">
+                  Features
+                </Link>
+              </li>
+              <li>
+                <Link href="#how-it-works" className="hover:text-foreground">
+                  How It Works
+                </Link>
+              </li>
             </ul>
           </div>
 
           <div>
             <h3 className="font-semibold mb-4">Resources</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/jobs" className="hover:text-foreground">Browse Jobs</Link></li>
-              <li><Link href="/resume" className="hover:text-foreground">Upload Resume</Link></li>
+              <li>
+                <Link href="/jobs" className="hover:text-foreground">
+                  Browse Jobs
+                </Link>
+              </li>
+              <li>
+                <Link href="/resume" className="hover:text-foreground">
+                  Upload Resume
+                </Link>
+              </li>
             </ul>
           </div>
 
           <div>
             <h3 className="font-semibold mb-4">Legal</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="#" className="hover:text-foreground">Privacy</Link></li>
-              <li><Link href="#" className="hover:text-foreground">Terms</Link></li>
+              <li>
+                <Link href="#" className="hover:text-foreground">
+                  Privacy
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-foreground">
+                  Terms
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

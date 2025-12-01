@@ -28,9 +28,7 @@ export interface SubscribeChannelsResponse {
 
 export const channelApi = {
   getUserChannels: async (): Promise<ChannelInfo[]> => {
-    const response = await apiClient.get<ApiResponse<ChannelInfo[]>>(
-      '/api/channels/user-channels'
-    );
+    const response = await apiClient.get<ApiResponse<ChannelInfo[]>>('/api/channels/user-channels');
     return response.data.data;
   },
 
@@ -42,10 +40,9 @@ export const channelApi = {
   },
 
   searchChannels: async (query: string): Promise<ChannelInfo[]> => {
-    const response = await apiClient.post<ApiResponse<ChannelInfo[]>>(
-      '/api/channels/search',
-      { query }
-    );
+    const response = await apiClient.post<ApiResponse<ChannelInfo[]>>('/api/channels/search', {
+      query,
+    });
     return response.data.data;
   },
 
@@ -58,17 +55,16 @@ export const channelApi = {
   },
 
   getSubscribedChannels: async (): Promise<string[]> => {
-    const response = await apiClient.get<ApiResponse<string[]>>(
-      '/api/channels/subscribed'
-    );
+    const response = await apiClient.get<ApiResponse<string[]>>('/api/channels/subscribed');
     return response.data.data;
   },
 
-  addChannels: async (channels: string[]): Promise<SubscribeChannelsResponse & { totalChannels: number }> => {
-    const response = await apiClient.post<ApiResponse<SubscribeChannelsResponse & { totalChannels: number }>>(
-      '/api/channels/add',
-      { channels }
-    );
+  addChannels: async (
+    channels: string[]
+  ): Promise<SubscribeChannelsResponse & { totalChannels: number }> => {
+    const response = await apiClient.post<
+      ApiResponse<SubscribeChannelsResponse & { totalChannels: number }>
+    >('/api/channels/add', { channels });
     return response.data.data;
   },
 };

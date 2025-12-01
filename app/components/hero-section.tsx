@@ -11,9 +11,10 @@ export function HeroSection() {
           <br />
           <span className="text-primary">Tailor Resumes with AI.</span>
         </h1>
-        
+
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-          Browse job postings from Telegram channels and generate perfectly tailored resumes for each position using AI. Land your dream job faster.
+          Browse job postings from Telegram channels and generate perfectly tailored resumes for
+          each position using AI. Land your dream job faster.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

@@ -1,24 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '@/shared/ui/sheet';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/shared/ui/sheet';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Checkbox } from '@/shared/ui/checkbox';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { X, Plus } from 'lucide-react';
 
 const JOB_FUNCTIONS = [
@@ -102,9 +90,7 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
       <SheetContent className="w-[400px] sm:w-[540px] overflow-y-auto px-8">
         <SheetHeader>
           <SheetTitle>Edit Filters</SheetTitle>
-          <SheetDescription>
-            Refine your job search with advanced filters
-          </SheetDescription>
+          <SheetDescription>Refine your job search with advanced filters</SheetDescription>
         </SheetHeader>
 
         <div className="space-y-6 py-6">
@@ -113,9 +99,7 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
             <Label htmlFor="job-function" className="text-base font-semibold">
               Job Function
             </Label>
-            <p className="text-sm text-muted-foreground">
-              Select from drop-down for best results
-            </p>
+            <p className="text-sm text-muted-foreground">Select from drop-down for best results</p>
             <Select value={filters.jobFunction} onValueChange={handleJobFunctionChange}>
               <SelectTrigger id="job-function">
                 <SelectValue placeholder="Select job function..." />
@@ -136,7 +120,7 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
             <p className="text-sm text-muted-foreground">
               Add job titles you want to exclude from results
             </p>
-            
+
             <div className="flex gap-2">
               <Input
                 placeholder="Enter job title to exclude..."
@@ -149,12 +133,7 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
                   }
                 }}
               />
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={handleAddExcludedTitle}
-              >
+              <Button type="button" variant="outline" size="icon" onClick={handleAddExcludedTitle}>
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
@@ -184,18 +163,14 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
           {/* Location */}
           <div className="space-y-3">
             <Label className="text-base font-semibold">Location</Label>
-            <p className="text-sm text-muted-foreground">
-              Select work location preferences
-            </p>
-            
+            <p className="text-sm text-muted-foreground">Select work location preferences</p>
+
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="on-site"
                   checked={filters.locationType?.includes('on-site')}
-                  onCheckedChange={(checked) =>
-                    handleLocationChange('on-site', checked as boolean)
-                  }
+                  onCheckedChange={(checked) => handleLocationChange('on-site', checked as boolean)}
                 />
                 <label
                   htmlFor="on-site"
@@ -209,9 +184,7 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
                 <Checkbox
                   id="remote"
                   checked={filters.locationType?.includes('remote')}
-                  onCheckedChange={(checked) =>
-                    handleLocationChange('remote', checked as boolean)
-                  }
+                  onCheckedChange={(checked) => handleLocationChange('remote', checked as boolean)}
                 />
                 <label
                   htmlFor="remote"
@@ -225,9 +198,7 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
                 <Checkbox
                   id="hybrid"
                   checked={filters.locationType?.includes('hybrid')}
-                  onCheckedChange={(checked) =>
-                    handleLocationChange('hybrid', checked as boolean)
-                  }
+                  onCheckedChange={(checked) => handleLocationChange('hybrid', checked as boolean)}
                 />
                 <label
                   htmlFor="hybrid"

@@ -132,23 +132,27 @@ npm start
 ## 🎨 Features
 
 ### Landing Page
+
 - Hero section with CTA
 - Features showcase
 - How it works section
 - Responsive design
 
 ### Authentication
+
 - Telegram Login Widget integration
 - JWT token management
 - Protected routes
 
 ### Job Feed
+
 - Browse jobs from Telegram channels
 - Filter by tech stack, level, remote status
 - Pagination
 - Real-time data with React Query
 
 ### Job Detail & Tailoring
+
 - View full job description
 - Generate tailored resume with AI
 - Download PDF and DOCX
@@ -156,12 +160,14 @@ npm start
 - View cover letter
 
 ### Resume Management
+
 - Drag-and-drop file upload
 - PDF and DOCX support
 - File validation (type, size)
 - Resume preview
 
 ### Profile
+
 - Account information
 - Logout functionality
 
@@ -180,6 +186,7 @@ NEXT_PUBLIC_TELEGRAM_BOT_NAME=your_bot_name
 ### API Client
 
 The centralized API client (`shared/lib/api-client.ts`) handles:
+
 - Base URL configuration
 - Token injection from localStorage
 - 401 error handling (auto-redirect to login)
@@ -188,29 +195,34 @@ The centralized API client (`shared/lib/api-client.ts`) handles:
 ### React Query
 
 Default configuration in `shared/providers/query-provider.tsx`:
+
 - Stale time: 1 minute
 - Refetch on window focus: disabled
 
 ## 📝 Code Style
 
 ### TypeScript
+
 - Strict mode enabled
 - Explicit types for all functions
 - Type imports with `import type`
 
 ### Components
+
 - Server components by default
 - Client components marked with `'use client'`
 - Named exports for components
 - Arrow functions for event handlers
 
 ### Styling
+
 - Tailwind CSS utilities
 - OKLCH color space for design tokens
 - Dark mode support via CSS variables
 - `cn()` utility for conditional classes
 
 ### API Integration
+
 - All API calls through centralized client
 - React Query hooks for data fetching
 - Separate API functions from components
@@ -284,6 +296,7 @@ vercel
 ### Environment Variables
 
 Set in Vercel dashboard:
+
 - `NEXT_PUBLIC_API_URL`
 - `NEXT_PUBLIC_TELEGRAM_BOT_NAME`
 
@@ -299,15 +312,18 @@ npm run lint     # Run ESLint
 ## 🎨 Design System
 
 ### Colors (OKLCH)
+
 - Primary: `oklch(45% 0.2 264)` / `oklch(70% 0.2 264)` (dark)
 - Background: `oklch(100% 0 0)` / `oklch(10% 0 0)` (dark)
 - Muted: `oklch(96% 0 0)` / `oklch(20% 0 0)` (dark)
 
 ### Typography
+
 - Font: Inter (Google Fonts)
 - Responsive sizing with Tailwind utilities
 
 ### Components
+
 - Button variants: default, destructive, outline, secondary, ghost, link
 - Card with header, content, footer
 - Input with focus states

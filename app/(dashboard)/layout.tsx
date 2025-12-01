@@ -7,14 +7,9 @@ import Link from 'next/link';
 import { Sparkles, Briefcase, FileText, User, LogOut } from 'lucide-react';
 import { Button } from '@/shared/ui';
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { data, isPending, error } = useAuth();
-
+  const { data, isPending } = useAuth();
 
   useEffect(() => {
     if (!isPending && !data?.id) {
@@ -76,9 +71,7 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-auto">
-        {children}
-      </main>
+      <main className="flex-1 overflow-auto">{children}</main>
     </div>
   );
 }

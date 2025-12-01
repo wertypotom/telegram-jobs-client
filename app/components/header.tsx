@@ -10,7 +10,7 @@ export function Header() {
           <Sparkles className="h-6 w-6 text-primary" />
           <span>JobSniper</span>
         </Link>
-        
+
         <nav className="hidden md:flex items-center gap-6">
           <Link href="#features" className="text-sm hover:text-primary transition-colors">
             Features

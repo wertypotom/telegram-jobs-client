@@ -16,7 +16,9 @@ export const authApi = {
     return response.data.data;
   },
 
-  verifyTelegramCode: async (data: VerifyTelegramCodeRequest): Promise<AuthResponse | { requires2FA: true }> => {
+  verifyTelegramCode: async (
+    data: VerifyTelegramCodeRequest
+  ): Promise<AuthResponse | { requires2FA: true }> => {
     const response = await apiClient.post<ApiResponse<AuthResponse | { requires2FA: true }>>(
       '/api/auth/telegram/verify-code',
       data
@@ -24,7 +26,10 @@ export const authApi = {
     return response.data.data;
   },
 
-  verifyTelegramPassword: async (data: { phoneNumber: string; password: string }): Promise<AuthResponse> => {
+  verifyTelegramPassword: async (data: {
+    phoneNumber: string;
+    password: string;
+  }): Promise<AuthResponse> => {
     const response = await apiClient.post<ApiResponse<AuthResponse>>(
       '/api/auth/telegram/verify-password',
       data

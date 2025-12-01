@@ -20,8 +20,7 @@ export function useJob(id: string) {
 export function useInfiniteJobs(params: Omit<JobsRequest, 'offset'> = {}) {
   return useInfiniteQuery({
     queryKey: ['jobs', 'infinite', params],
-    queryFn: ({ pageParam = 0 }) =>
-      jobsApi.getJobs({ ...params, offset: pageParam }),
+    queryFn: ({ pageParam = 0 }) => jobsApi.getJobs({ ...params, offset: pageParam }),
     getNextPageParam: (lastPage, pages) => {
       const nextOffset = pages.length * (params.limit || 20);
       return nextOffset < lastPage.total ? nextOffset : undefined;

@@ -42,7 +42,7 @@ export default function LoginPage() {
       </CardHeader>
       <CardContent className="space-y-6">
         <TelegramAuthForm />
-        
+
         <div className="text-center text-sm text-muted-foreground">
           <p>
             By logging in, you agree to our{' '}

@@ -4,7 +4,6 @@ import type { GenerateTailoredResumeRequest } from '../types/api';
 
 export function useGenerateTailoredResume() {
   return useMutation({
-    mutationFn: (data: GenerateTailoredResumeRequest) =>
-      sniperApi.generateTailoredResume(data),
+    mutationFn: (data: GenerateTailoredResumeRequest) => sniperApi.generateTailoredResume(data),
   });
 }

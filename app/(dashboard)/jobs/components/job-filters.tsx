@@ -24,9 +24,7 @@ export function JobFilters({ filters, onFiltersChange }: JobFiltersProps) {
             <Input
               placeholder="e.g., React, Node.js"
               value={filters.stack || ''}
-              onChange={(e) =>
-                onFiltersChange({ ...filters, stack: e.target.value, offset: 0 })
-              }
+              onChange={(e) => onFiltersChange({ ...filters, stack: e.target.value, offset: 0 })}
               className="pl-9"
             />
           </div>
@@ -37,9 +35,7 @@ export function JobFilters({ filters, onFiltersChange }: JobFiltersProps) {
           <select
             className="w-full h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm"
             value={filters.level || ''}
-            onChange={(e) =>
-              onFiltersChange({ ...filters, level: e.target.value, offset: 0 })
-            }
+            onChange={(e) => onFiltersChange({ ...filters, level: e.target.value, offset: 0 })}
           >
             <option value="">All Levels</option>
             <option value="junior">Junior</option>
@@ -70,9 +66,7 @@ export function JobFilters({ filters, onFiltersChange }: JobFiltersProps) {
         <Button
           variant="outline"
           className="w-full"
-          onClick={() =>
-            onFiltersChange({ stack: '', level: '', isRemote: undefined, offset: 0 })
-          }
+          onClick={() => onFiltersChange({ stack: '', level: '', isRemote: undefined, offset: 0 })}
         >
           Clear Filters
         </Button>

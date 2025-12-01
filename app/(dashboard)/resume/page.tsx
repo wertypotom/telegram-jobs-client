@@ -37,8 +37,11 @@ export default function ResumePage() {
   }, []);
 
   const handleFile = (file: File) => {
-    const validTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-    
+    const validTypes = [
+      'application/pdf',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
+
     if (!validTypes.includes(file.type)) {
       alert('Please upload a PDF or DOCX file');
       return;
@@ -65,9 +68,7 @@ export default function ResumePage() {
         <Card>
           <CardHeader>
             <CardTitle>Master Resume</CardTitle>
-            <CardDescription>
-              Upload a PDF or DOCX file (max 10MB)
-            </CardDescription>
+            <CardDescription>Upload a PDF or DOCX file (max 10MB)</CardDescription>
           </CardHeader>
           <CardContent>
             {!isSuccess ? (
@@ -84,9 +85,7 @@ export default function ResumePage() {
                 <p className="text-lg font-medium mb-2">
                   {isPending ? 'Uploading...' : 'Drop your resume here'}
                 </p>
-                <p className="text-sm text-muted-foreground mb-4">
-                  or click to browse
-                </p>
+                <p className="text-sm text-muted-foreground mb-4">or click to browse</p>
                 <input
                   type="file"
                   id="file-upload"
@@ -110,10 +109,7 @@ export default function ResumePage() {
                     Your resume has been processed and is ready to use for tailoring.
                   </p>
                 </div>
-                <Button
-                  variant="outline"
-                  onClick={() => window.location.reload()}
-                >
+                <Button variant="outline" onClick={() => window.location.reload()}>
                   Upload Another Resume
                 </Button>
               </div>
@@ -130,9 +126,7 @@ export default function ResumePage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                {data.resumeText}
-              </p>
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap">{data.resumeText}</p>
             </CardContent>
           </Card>
         )}

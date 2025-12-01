@@ -49,7 +49,7 @@ export function ChannelOnboardingModal({ open }: ChannelOnboardingModalProps) {
   const handleProceed = () => {
     const channels = Array.from(selectedChannels);
     subscribe(channels, {
-      onSuccess: (data) => {
+      onSuccess: () => {
         router.push('/jobs');
       },
     });
@@ -57,13 +57,16 @@ export function ChannelOnboardingModal({ open }: ChannelOnboardingModalProps) {
 
   const groupedRecommended = useMemo(() => {
     if (!recommendedChannels) return {};
-    return recommendedChannels.reduce((acc, channel) => {
-      if (!acc[channel.category]) {
-        acc[channel.category] = [];
-      }
-      acc[channel.category].push(channel);
-      return acc;
-    }, {} as Record<string, typeof recommendedChannels>);
+    return recommendedChannels.reduce(
+      (acc, channel) => {
+        if (!acc[channel.category]) {
+          acc[channel.category] = [];
+        }
+        acc[channel.category].push(channel);
+        return acc;
+      },
+      {} as Record<string, typeof recommendedChannels>
+    );
   }, [recommendedChannels]);
 
   return (
@@ -72,7 +75,8 @@ export function ChannelOnboardingModal({ open }: ChannelOnboardingModalProps) {
         <DialogHeader>
           <DialogTitle className="text-2xl">Select Job Channels</DialogTitle>
           <DialogDescription>
-            Choose Telegram channels to monitor for job postings. We'll fetch jobs from the last 24 hours.
+            Choose Telegram channels to monitor for job postings. We'll fetch jobs from the last 24
+            hours.
           </DialogDescription>
         </DialogHeader>
 
@@ -83,7 +87,7 @@ export function ChannelOnboardingModal({ open }: ChannelOnboardingModalProps) {
               <h3 className="text-lg font-semibold">Your Telegram Channels</h3>
               {loadingUserChannels && <Loader2 className="h-4 w-4 animate-spin" />}
             </div>
-            
+
             {userChannels && userChannels.length > 0 ? (
               <div className="grid gap-2 max-h-60 overflow-y-auto border rounded-lg p-3">
                 {userChannels.map((channel) => (
@@ -104,16 +108,15 @@ export function ChannelOnboardingModal({ open }: ChannelOnboardingModalProps) {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground truncate">
-                        {channel.username}
-                      </p>
+                      <p className="text-sm text-muted-foreground truncate">{channel.username}</p>
                     </div>
                   </label>
                 ))}
               </div>
             ) : (
               <p className="text-sm text-muted-foreground p-4 border rounded-lg">
-                No channels found. Join some Telegram channels first or browse recommended channels below.
+                No channels found. Join some Telegram channels first or browse recommended channels
+                below.
               </p>
             )}
           </div>
@@ -126,7 +129,11 @@ export function ChannelOnboardingModal({ open }: ChannelOnboardingModalProps) {
               onClick={() => setShowRecommended(!showRecommended)}
             >
               <span className="font-semibold">Recommended Job Channels</span>
-              {showRecommended ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              {showRecommended ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
             </Button>
 
             {showRecommended && recommendedChannels && (
@@ -202,9 +209,7 @@ export function ChannelOnboardingModal({ open }: ChannelOnboardingModalProps) {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground truncate">
-                        {channel.username}
-                      </p>
+                      <p className="text-sm text-muted-foreground truncate">{channel.username}</p>
                     </div>
                   </label>
                 ))}

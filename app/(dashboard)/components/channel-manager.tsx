@@ -51,7 +51,9 @@ export function ChannelManager({ open, onClose }: ChannelManagerProps) {
     const channels = Array.from(selectedChannels);
     addChannels(channels, {
       onSuccess: (data) => {
-        alert(`Successfully added ${channels.length} channel(s)! Fetched ${data.jobsCount} new jobs.`);
+        alert(
+          `Successfully added ${channels.length} channel(s)! Fetched ${data.jobsCount} new jobs.`
+        );
         setSelectedChannels(new Set());
         onClose();
       },
@@ -63,18 +65,21 @@ export function ChannelManager({ open, onClose }: ChannelManagerProps) {
 
   const groupedRecommended = useMemo(() => {
     if (!recommendedChannels) return {};
-    return recommendedChannels.reduce((acc, channel) => {
-      if (!acc[channel.category]) {
-        acc[channel.category] = [];
-      }
-      acc[channel.category].push(channel);
-      return acc;
-    }, {} as Record<string, typeof recommendedChannels>);
+    return recommendedChannels.reduce(
+      (acc, channel) => {
+        if (!acc[channel.category]) {
+          acc[channel.category] = [];
+        }
+        acc[channel.category].push(channel);
+        return acc;
+      },
+      {} as Record<string, typeof recommendedChannels>
+    );
   }, [recommendedChannels]);
 
   // Filter out already subscribed channels from selections
   const availableUserChannels = userChannels?.filter(
-    channel => !subscribedChannels?.includes(channel.username)
+    (channel) => !subscribedChannels?.includes(channel.username)
   );
 
   return (
@@ -114,7 +119,7 @@ export function ChannelManager({ open, onClose }: ChannelManagerProps) {
               <h3 className="text-lg font-semibold">Your Telegram Channels</h3>
               {loadingUserChannels && <Loader2 className="h-4 w-4 animate-spin" />}
             </div>
-            
+
             {availableUserChannels && availableUserChannels.length > 0 ? (
               <div className="grid gap-2 max-h-60 overflow-y-auto border rounded-lg p-3">
                 {availableUserChannels.map((channel) => (
@@ -135,9 +140,7 @@ export function ChannelManager({ open, onClose }: ChannelManagerProps) {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground truncate">
-                        {channel.username}
-                      </p>
+                      <p className="text-sm text-muted-foreground truncate">{channel.username}</p>
                     </div>
                   </label>
                 ))}
@@ -159,7 +162,11 @@ export function ChannelManager({ open, onClose }: ChannelManagerProps) {
               onClick={() => setShowRecommended(!showRecommended)}
             >
               <span className="font-semibold">Recommended Job Channels</span>
-              {showRecommended ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              {showRecommended ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
             </Button>
 
             {showRecommended && recommendedChannels && (
@@ -247,9 +254,7 @@ export function ChannelManager({ open, onClose }: ChannelManagerProps) {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground truncate">
-                        {channel.username}
-                      </p>
+                      <p className="text-sm text-muted-foreground truncate">{channel.username}</p>
                     </div>
                   </label>
                 ))}

@@ -37,11 +37,11 @@ export function JobList({ jobs, total }: JobListProps) {
                   </CardDescription>
                 </div>
                 <div className="flex gap-2">
-                  {job.parsedData?.isRemote && (
-                    <Badge variant="secondary">Remote</Badge>
-                  )}
+                  {job.parsedData?.isRemote && <Badge variant="secondary">Remote</Badge>}
                   {job.isVisited ? (
-                    <Badge variant="outline" className="text-muted-foreground">Visited</Badge>
+                    <Badge variant="outline" className="text-muted-foreground">
+                      Visited
+                    </Badge>
                   ) : (
                     <Badge variant="default">New</Badge>
                   )}

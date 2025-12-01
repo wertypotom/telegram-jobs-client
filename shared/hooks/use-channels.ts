@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { channelApi, ChannelInfo, RecommendedChannel, SubscribeChannelsResponse } from '../api/channel.api';
+import { channelApi } from '../api/channel.api';
 
 export function useUserChannels() {
   return useQuery({
