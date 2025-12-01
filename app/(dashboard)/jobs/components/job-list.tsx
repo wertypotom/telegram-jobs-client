@@ -19,7 +19,7 @@ export function JobList({ jobs, total }: JobListProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       <p className="text-sm text-muted-foreground mb-4">
         Showing {jobs.length} of {total} jobs
       </p>

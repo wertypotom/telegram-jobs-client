@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useJobs, useAuth } from '@/shared/hooks';
 import { JobList } from './components/job-list';
-import { JobFilters } from './components/job-filters';
 import { FiltersPanel } from './components/filters-panel';
 import { ChannelOnboardingModal } from '../components/channel-onboarding-modal';
 import { ChannelManager } from '../components/channel-manager';
@@ -77,28 +76,22 @@ export default function JobsPage() {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-4 gap-6">
-          <aside className="lg:col-span-1">
-            <JobFilters filters={filters} onFiltersChange={setFilters} />
-          </aside>
+        <div>
+          {isLoading && (
+            <div className="space-y-8">
+              {[...Array(5)].map((_, i) => (
+                <Skeleton key={i} className="h-48 w-full" />
+              ))}
+            </div>
+          )}
 
-          <div className="lg:col-span-3">
-            {isLoading && (
-              <div className="space-y-4">
-                {[...Array(5)].map((_, i) => (
-                  <Skeleton key={i} className="h-48 w-full" />
-                ))}
-              </div>
-            )}
+          {error && (
+            <div className="text-center py-12">
+              <p className="text-destructive">Failed to load jobs. Please try again.</p>
+            </div>
+          )}
 
-            {error && (
-              <div className="text-center py-12">
-                <p className="text-destructive">Failed to load jobs. Please try again.</p>
-              </div>
-            )}
-
-            {data && <JobList jobs={data.jobs} total={data.total} />}
-          </div>
+          {data && <JobList jobs={data.jobs} total={data.total} />}
         </div>
       </div>
     </>
