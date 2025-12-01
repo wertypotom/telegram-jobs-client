@@ -4,20 +4,25 @@ import { useState } from 'react';
 import { useJobs, useAuth } from '@/shared/hooks';
 import { JobList } from './components/job-list';
 import { JobFilters } from './components/job-filters';
+import { FiltersPanel } from './components/filters-panel';
 import { ChannelOnboardingModal } from '../components/channel-onboarding-modal';
 import { ChannelManager } from '../components/channel-manager';
 import { Skeleton, Button } from '@/shared/ui';
-import { Loader2, Settings } from 'lucide-react';
+import { Loader2, Settings, SlidersHorizontal } from 'lucide-react';
 
 export default function JobsPage() {
   const [filters, setFilters] = useState({
     stack: '',
     level: '',
     isRemote: undefined as boolean | undefined,
+    jobFunction: '',
+    excludedTitles: [] as string[],
+    locationType: [] as string[],
     limit: 20,
     offset: 0,
   });
   const [showChannelManager, setShowChannelManager] = useState(false);
+  const [showFiltersPanel, setShowFiltersPanel] = useState(false);
 
   const { data: user, isLoading: loadingUser } = useAuth();
   const { data, isLoading, error } = useJobs(filters);
@@ -37,6 +42,12 @@ export default function JobsPage() {
     <>
       <ChannelOnboardingModal open={showOnboarding || false} />
       <ChannelManager open={showChannelManager} onClose={() => setShowChannelManager(false)} />
+      <FiltersPanel
+        open={showFiltersPanel}
+        onClose={() => setShowFiltersPanel(false)}
+        filters={filters}
+        onFiltersChange={setFilters}
+      />
       
       <div className="container mx-auto px-6 py-8">
         <div className="mb-8 flex items-start justify-between">
@@ -46,14 +57,24 @@ export default function JobsPage() {
               Find your next opportunity from Telegram job channels
             </p>
           </div>
-          <Button
-            variant="outline"
-            onClick={() => setShowChannelManager(true)}
-            className="gap-2"
-          >
-            <Settings className="h-4 w-4" />
-            Manage Channels
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowFiltersPanel(true)}
+              className="gap-2"
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+              Edit Filters
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowChannelManager(true)}
+              className="gap-2"
+            >
+              <Settings className="h-4 w-4" />
+              Manage Channels
+            </Button>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-4 gap-6">
