@@ -1,4 +1,4 @@
-import { useQuery, useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { jobsApi } from '../api';
 import type { JobsRequest } from '../types/api';
 
@@ -31,7 +31,13 @@ export function useInfiniteJobs(params: Omit<JobsRequest, 'offset'> = {}) {
 }
 
 export function useMarkJobAsViewed() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (jobId: string) => jobsApi.markJobAsViewed(jobId),
+    onSuccess: () => {
+      // Invalidate jobs list to refresh isVisited status
+      queryClient.invalidateQueries({ queryKey: ['jobs'] });
+    },
   });
 }
