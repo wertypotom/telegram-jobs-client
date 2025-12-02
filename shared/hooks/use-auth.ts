@@ -1,76 +1,45 @@
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { authApi } from '../api';
-import { apiClient } from '../lib/api-client';
-import type {
-  SendTelegramCodeRequest,
-  VerifyTelegramCodeRequest,
-  AuthResponse,
-  ApiResponse,
-} from '../types/api';
-import type { User } from '../types/models';
+'use client';
 
-export function useSendTelegramCode() {
-  return useMutation({
-    mutationFn: (data: SendTelegramCodeRequest) => authApi.sendTelegramCode(data),
-  });
-}
+import { useSession, signOut as nextAuthSignOut } from 'next-auth/react';
 
-export function useVerifyTelegramCode() {
-  const queryClient = useQueryClient();
+export function useAuth() {
+  const { data: session, status } = useSession();
 
-  return useMutation({
-    mutationFn: (data: VerifyTelegramCodeRequest) => authApi.verifyTelegramCode(data),
-    onSuccess: (data) => {
-      // Only store token if authentication is complete (not 2FA required)
-      if (!('requires2FA' in data) && data.token) {
-        localStorage.setItem('auth_token', data.token);
-        queryClient.invalidateQueries({ queryKey: ['user'] });
-      }
-    },
-  });
-}
-
-export function useVerifyTelegramPassword() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (data: { phoneNumber: string; password: string }) =>
-      authApi.verifyTelegramPassword(data),
-    onSuccess: (data: AuthResponse) => {
-      // Store token
-      localStorage.setItem('auth_token', data.token);
-      // Invalidate user query
-      queryClient.invalidateQueries({ queryKey: ['user'] });
-    },
-  });
+  return {
+    data: session?.user
+      ? {
+          id: session.user.id,
+          email: session.user.email,
+          name: session.user.name,
+          image: session.user.image,
+          isAuthenticated: true,
+        }
+      : null,
+    isLoading: status === 'loading',
+    error: null,
+  };
 }
 
 export function useLogout() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async () => {
-      localStorage.removeItem('auth_token');
+  return {
+    mutate: async () => {
+      await nextAuthSignOut({ callbackUrl: '/login' });
     },
-    onSuccess: () => {
-      queryClient.clear();
-      window.location.href = '/login';
+    mutateAsync: async () => {
+      await nextAuthSignOut({ callbackUrl: '/login' });
     },
-  });
+  };
 }
 
-export function useAuth() {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+// Legacy exports for backward compatibility (will be removed)
+export function useSendTelegramCode() {
+  throw new Error('Telegram auth is deprecated. Use NextAuth instead.');
+}
 
-  return useQuery({
-    queryKey: ['user'],
-    queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<User>>('/api/auth/me');
-      const userData = response.data.data;
-      return userData;
-    },
-    enabled: !!token,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: false,
-  });
+export function useVerifyTelegramCode() {
+  throw new Error('Telegram auth is deprecated. Use NextAuth instead.');
+}
+
+export function useVerifyTelegramPassword() {
+  throw new Error('Telegram auth is deprecated. Use NextAuth instead.');
 }
