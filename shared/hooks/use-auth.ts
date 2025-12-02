@@ -3,7 +3,7 @@
 import { useSession, signOut as nextAuthSignOut } from 'next-auth/react';
 
 export function useAuth() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
 
   return {
     data: session?.user
@@ -12,11 +12,13 @@ export function useAuth() {
           email: session.user.email,
           name: session.user.name,
           image: session.user.image,
+          hasCompletedOnboarding: session.user.hasCompletedOnboarding,
           isAuthenticated: true,
         }
       : null,
     isLoading: status === 'loading',
     error: null,
+    update,
   };
 }
 
@@ -29,17 +31,4 @@ export function useLogout() {
       await nextAuthSignOut({ callbackUrl: '/login' });
     },
   };
-}
-
-// Legacy exports for backward compatibility (will be removed)
-export function useSendTelegramCode() {
-  throw new Error('Telegram auth is deprecated. Use NextAuth instead.');
-}
-
-export function useVerifyTelegramCode() {
-  throw new Error('Telegram auth is deprecated. Use NextAuth instead.');
-}
-
-export function useVerifyTelegramPassword() {
-  throw new Error('Telegram auth is deprecated. Use NextAuth instead.');
 }

@@ -1,13 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import {
-  useUserChannels,
-  useRecommendedChannels,
-  useSearchChannels,
-  useSubscribedChannels,
-  useAddChannels,
-} from '@/shared/hooks';
+import { useState } from 'react';
+import { useUserChannels, useAvailableChannels, useAddChannels } from '@/shared/hooks';
 import {
   Dialog,
   DialogContent,
@@ -16,10 +10,9 @@ import {
   DialogTitle,
 } from '@/shared/ui/dialog';
 import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { Badge } from '@/shared/ui/badge';
-import { Search, ChevronDown, ChevronUp, Loader2, CheckCircle2 } from 'lucide-react';
+import { Loader2, CheckCircle2, Plus } from 'lucide-react';
 
 interface ChannelManagerProps {
   open: boolean;
@@ -28,13 +21,13 @@ interface ChannelManagerProps {
 
 export function ChannelManager({ open, onClose }: ChannelManagerProps) {
   const [selectedChannels, setSelectedChannels] = useState<Set<string>>(new Set());
-  const [showRecommended, setShowRecommended] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
-  const { data: subscribedChannels, isLoading: loadingSubscribed } = useSubscribedChannels();
+  // Channels the user is already subscribed to
   const { data: userChannels, isLoading: loadingUserChannels } = useUserChannels();
-  const { data: recommendedChannels } = useRecommendedChannels();
-  const { data: searchResults, isLoading: searching } = useSearchChannels(searchQuery);
+
+  // All channels available on the server
+  const { data: availableChannels, isLoading: loadingAvailable } = useAvailableChannels();
+
   const { mutate: addChannels, isPending: adding } = useAddChannels();
 
   const toggleChannel = (username: string) => {
@@ -50,36 +43,20 @@ export function ChannelManager({ open, onClose }: ChannelManagerProps) {
   const handleAddChannels = () => {
     const channels = Array.from(selectedChannels);
     addChannels(channels, {
-      onSuccess: (data) => {
-        alert(
-          `Successfully added ${channels.length} channel(s)! Fetched ${data.jobsCount} new jobs.`
-        );
+      onSuccess: () => {
+        // Reset selection
         setSelectedChannels(new Set());
         onClose();
       },
-      onError: (error: any) => {
-        alert(error?.response?.data?.message || 'Failed to add channels');
+      onError: (error: Error | any) => {
+        console.error('Failed to add channels:', error);
       },
     });
   };
 
-  const groupedRecommended = useMemo(() => {
-    if (!recommendedChannels) return {};
-    return recommendedChannels.reduce(
-      (acc, channel) => {
-        if (!acc[channel.category]) {
-          acc[channel.category] = [];
-        }
-        acc[channel.category].push(channel);
-        return acc;
-      },
-      {} as Record<string, typeof recommendedChannels>
-    );
-  }, [recommendedChannels]);
-
-  // Filter out already subscribed channels from selections
-  const availableUserChannels = userChannels?.filter(
-    (channel) => !subscribedChannels?.includes(channel.username)
+  // Filter available channels to show only ones the user is NOT subscribed to
+  const channelsToAdd = availableChannels?.filter(
+    (channel) => !userChannels?.some((userChannel) => userChannel.username === channel.username)
   );
 
   return (
@@ -88,182 +65,93 @@ export function ChannelManager({ open, onClose }: ChannelManagerProps) {
         <DialogHeader>
           <DialogTitle className="text-2xl">Manage Job Channels</DialogTitle>
           <DialogDescription>
-            Add new Telegram channels to monitor for job postings
+            View your subscriptions and add new channels to your feed.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
           {/* Currently Subscribed Section */}
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold">Currently Subscribed</h3>
-            {loadingSubscribed ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : subscribedChannels && subscribedChannels.length > 0 ? (
-              <div className="flex flex-wrap gap-2 p-3 border rounded-lg">
-                {subscribedChannels.map((channel) => (
-                  <Badge key={channel} variant="secondary">
-                    {channel}
-                  </Badge>
-                ))}
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-green-500" />
+              Your Subscriptions
+            </h3>
+
+            {loadingUserChannels ? (
+              <div className="flex items-center justify-center p-4">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
               </div>
-            ) : (
-              <p className="text-sm text-muted-foreground p-4 border rounded-lg">
-                No channels subscribed yet
-              </p>
-            )}
-          </div>
-
-          {/* Your Available Channels Section */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Your Telegram Channels</h3>
-              {loadingUserChannels && <Loader2 className="h-4 w-4 animate-spin" />}
-            </div>
-
-            {availableUserChannels && availableUserChannels.length > 0 ? (
-              <div className="grid gap-2 max-h-60 overflow-y-auto border rounded-lg p-3">
-                {availableUserChannels.map((channel) => (
-                  <label
+            ) : userChannels && userChannels.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {userChannels.map((channel) => (
+                  <div
                     key={channel.username}
-                    className="flex items-start space-x-3 p-2 rounded-md hover:bg-accent cursor-pointer"
+                    className="flex items-center justify-between p-3 border rounded-lg bg-secondary/10"
                   >
-                    <Checkbox
-                      checked={selectedChannels.has(channel.username)}
-                      onCheckedChange={() => toggleChannel(channel.username)}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium truncate">{channel.title}</span>
-                        {channel.memberCount && (
-                          <Badge variant="secondary" className="text-xs">
-                            {channel.memberCount.toLocaleString()} members
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground truncate">{channel.username}</p>
+                    <div className="min-w-0">
+                      <div className="font-medium truncate">{channel.title}</div>
+                      <div className="text-xs text-muted-foreground">{channel.username}</div>
                     </div>
-                  </label>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground p-4 border rounded-lg">
-                {subscribedChannels && subscribedChannels.length > 0
-                  ? 'All your channels are already subscribed'
-                  : 'No channels found. Join some Telegram channels first or browse recommended channels below.'}
-              </p>
-            )}
-          </div>
-
-          {/* Recommended Channels Section */}
-          <div className="space-y-3">
-            <Button
-              variant="outline"
-              className="w-full justify-between"
-              onClick={() => setShowRecommended(!showRecommended)}
-            >
-              <span className="font-semibold">Recommended Job Channels</span>
-              {showRecommended ? (
-                <ChevronUp className="h-4 w-4" />
-              ) : (
-                <ChevronDown className="h-4 w-4" />
-              )}
-            </Button>
-
-            {showRecommended && recommendedChannels && (
-              <div className="space-y-4 border rounded-lg p-4 max-h-96 overflow-y-auto">
-                {Object.entries(groupedRecommended).map(([category, channels]) => (
-                  <div key={category} className="space-y-2">
-                    <h4 className="text-sm font-semibold text-muted-foreground">{category}</h4>
-                    <div className="grid gap-2">
-                      {channels.map((channel) => (
-                        <label
-                          key={channel.username}
-                          className="flex items-start space-x-3 p-2 rounded-md hover:bg-accent cursor-pointer"
-                        >
-                          <Checkbox
-                            checked={selectedChannels.has(channel.username)}
-                            onCheckedChange={() => toggleChannel(channel.username)}
-                            disabled={subscribedChannels?.includes(channel.username)}
-                          />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium">{channel.title}</span>
-                              <Badge variant="secondary" className="text-xs">
-                                {channel.memberCount}
-                              </Badge>
-                              {subscribedChannels?.includes(channel.username) && (
-                                <Badge variant="outline" className="text-xs">
-                                  Subscribed
-                                </Badge>
-                              )}
-                            </div>
-                            <p className="text-xs text-muted-foreground">{channel.description}</p>
-                            <p className="text-xs text-muted-foreground mt-1">{channel.username}</p>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
+                    <Badge variant="secondary" className="ml-2 shrink-0">
+                      Subscribed
+                    </Badge>
                   </div>
                 ))}
               </div>
+            ) : (
+              <p className="text-sm text-muted-foreground p-4 border rounded-lg bg-muted/50 text-center">
+                You haven't subscribed to any channels yet.
+              </p>
             )}
           </div>
 
-          {/* Search Section */}
-          <div className="space-y-3">
-            <h3 className="text-lg font-semibold">Search Channels</h3>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search for Telegram channels..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
+          {/* Available Channels Section */}
+          <div className="space-y-3 pt-4 border-t">
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Plus className="h-5 w-5 text-primary" />
+              Available to Add
+            </h3>
 
-            {searching && (
-              <div className="flex items-center justify-center p-4">
-                <Loader2 className="h-6 w-6 animate-spin" />
+            {loadingAvailable ? (
+              <div className="flex items-center justify-center p-8">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
-            )}
-
-            {searchResults && searchResults.length > 0 && (
+            ) : channelsToAdd && channelsToAdd.length > 0 ? (
               <div className="grid gap-2 max-h-60 overflow-y-auto border rounded-lg p-3">
-                {searchResults.map((channel) => (
+                {channelsToAdd.map((channel) => (
                   <label
                     key={channel.username}
-                    className="flex items-start space-x-3 p-2 rounded-md hover:bg-accent cursor-pointer"
+                    className="flex items-start space-x-3 p-3 rounded-md hover:bg-accent cursor-pointer transition-colors"
                   >
                     <Checkbox
                       checked={selectedChannels.has(channel.username)}
                       onCheckedChange={() => toggleChannel(channel.username)}
-                      disabled={subscribedChannels?.includes(channel.username)}
+                      className="mt-1"
                     />
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium truncate">{channel.title}</span>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-medium">{channel.title}</span>
                         {channel.memberCount && (
-                          <Badge variant="secondary" className="text-xs">
+                          <Badge variant="outline" className="text-xs">
                             {channel.memberCount.toLocaleString()} members
                           </Badge>
                         )}
-                        {subscribedChannels?.includes(channel.username) && (
-                          <Badge variant="outline" className="text-xs">
-                            Subscribed
-                          </Badge>
-                        )}
                       </div>
-                      <p className="text-sm text-muted-foreground truncate">{channel.username}</p>
+                      <p className="text-sm text-muted-foreground line-clamp-2">
+                        {channel.description || 'No description available'}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1 font-mono">
+                        {channel.username}
+                      </p>
                     </div>
                   </label>
                 ))}
               </div>
-            )}
-
-            {searchQuery && !searching && searchResults && searchResults.length === 0 && (
-              <p className="text-sm text-muted-foreground p-4 border rounded-lg">
-                No channels found for "{searchQuery}"
+            ) : (
+              <p className="text-sm text-muted-foreground p-4 border rounded-lg bg-muted/50 text-center">
+                {userChannels && userChannels.length > 0
+                  ? "You've subscribed to all available channels! 🎉"
+                  : 'No channels available at the moment.'}
               </p>
             )}
           </div>
@@ -272,27 +160,22 @@ export function ChannelManager({ open, onClose }: ChannelManagerProps) {
         {/* Footer */}
         <div className="flex items-center justify-between pt-4 border-t">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-primary" />
-            <span className="text-sm font-medium">
+            <span className="text-sm text-muted-foreground">
               {selectedChannels.size} channel{selectedChannels.size !== 1 ? 's' : ''} selected
             </span>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={onClose}>
-              Cancel
+              Close
             </Button>
-            <Button
-              onClick={handleAddChannels}
-              disabled={selectedChannels.size === 0 || adding}
-              size="lg"
-            >
+            <Button onClick={handleAddChannels} disabled={selectedChannels.size === 0 || adding}>
               {adding ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Adding...
                 </>
               ) : (
-                'Add Channels'
+                'Add Selected'
               )}
             </Button>
           </div>

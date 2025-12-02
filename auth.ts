@@ -55,16 +55,18 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      // Persist user id to token on signin
+      // Persist user id and onboarding status to token on signin
       if (user) {
         token.id = user.id;
+        token.hasCompletedOnboarding = user.hasCompletedOnboarding;
       }
       return token;
     },
     async session({ session, token }) {
-      // Add userId to session from token
+      // Add userId and onboarding status to session from token
       if (session.user && token) {
         session.user.id = token.id as string;
+        session.user.hasCompletedOnboarding = token.hasCompletedOnboarding as boolean;
       }
       return session;
     },

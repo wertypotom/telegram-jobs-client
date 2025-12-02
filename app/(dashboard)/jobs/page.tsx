@@ -27,6 +27,7 @@ export default function JobsPage() {
   const { data, isLoading, error } = useJobs(filters);
 
   // Show onboarding modal if user hasn't completed it
+
   const showOnboarding = user && !user.hasCompletedOnboarding;
 
   if (loadingUser) {

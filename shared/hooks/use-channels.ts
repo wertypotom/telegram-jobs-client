@@ -9,23 +9,6 @@ export function useUserChannels() {
   });
 }
 
-export function useRecommendedChannels() {
-  return useQuery({
-    queryKey: ['recommended-channels'],
-    queryFn: () => channelApi.getRecommendedChannels(),
-    staleTime: 30 * 60 * 1000, // 30 minutes
-  });
-}
-
-export function useSearchChannels(query: string) {
-  return useQuery({
-    queryKey: ['search-channels', query],
-    queryFn: () => channelApi.searchChannels(query),
-    enabled: query.length > 0,
-    staleTime: 2 * 60 * 1000, // 2 minutes
-  });
-}
-
 export function useSubscribeChannels() {
   const queryClient = useQueryClient();
 
@@ -40,11 +23,11 @@ export function useSubscribeChannels() {
   });
 }
 
-export function useSubscribedChannels() {
+export function useAvailableChannels() {
   return useQuery({
-    queryKey: ['subscribed-channels'],
-    queryFn: () => channelApi.getSubscribedChannels(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    queryKey: ['available-channels'],
+    queryFn: () => channelApi.getAvailableChannels(),
+    staleTime: 30 * 60 * 1000, // 30 minutes
   });
 }
 
