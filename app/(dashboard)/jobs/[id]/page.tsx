@@ -281,14 +281,6 @@ export default function JobDetailPage() {
               </div>
             </div>
           )}
-
-          {/* Raw Text (Collapsible) */}
-          <details className="border-t pt-6">
-            <summary className="font-semibold cursor-pointer hover:text-primary">
-              View Original Message
-            </summary>
-            <p className="whitespace-pre-wrap text-muted-foreground mt-4 text-sm">{job.rawText}</p>
-          </details>
         </CardContent>
       </Card>
 
