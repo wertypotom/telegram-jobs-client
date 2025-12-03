@@ -1,73 +1,28 @@
 import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
+import { Send } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer className="border-t">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-4 gap-8">
-          <div className="space-y-4">
-            <Link href="/" className="flex items-center gap-2 font-bold text-xl">
-              <Sparkles className="h-6 w-6 text-primary" />
-              <span>JobSniper</span>
-            </Link>
-            <p className="text-sm text-muted-foreground">
-              AI-powered job search and resume tailoring for Telegram.
-            </p>
+    <footer className="py-12 border-t">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+        <Link href="/" className="flex items-center gap-2 font-bold text-xl">
+          <div className="p-1.5 rounded-lg bg-primary">
+            <Send size={16} className="text-primary-foreground" />
           </div>
-
-          <div>
-            <h3 className="font-semibold mb-4">Product</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <Link href="#features" className="hover:text-foreground">
-                  Features
-                </Link>
-              </li>
-              <li>
-                <Link href="#how-it-works" className="hover:text-foreground">
-                  How It Works
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold mb-4">Resources</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <Link href="/jobs" className="hover:text-foreground">
-                  Browse Jobs
-                </Link>
-              </li>
-              <li>
-                <Link href="/resume" className="hover:text-foreground">
-                  Upload Resume
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold mb-4">Legal</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <Link href="#" className="hover:text-foreground">
-                  Privacy
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-foreground">
-                  Terms
-                </Link>
-              </li>
-            </ul>
-          </div>
+          TeleJob AI
+        </Link>
+        <div className="flex gap-6 text-sm font-medium text-muted-foreground">
+          <a href="#" className="hover:underline">
+            Privacy Policy
+          </a>
+          <a href="#" className="hover:underline">
+            Terms of Service
+          </a>
+          <a href="#" className="hover:underline">
+            Contact
+          </a>
         </div>
-
-        <div className="mt-12 pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>&copy; 2025 JobSniper. All rights reserved.</p>
-        </div>
+        <p className="text-sm text-muted-foreground">© 2024 TeleJob AI. All rights reserved.</p>
       </div>
     </footer>
   );

@@ -1,71 +1,50 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Colors using OKLCH color space */
-  --color-background: oklch(100% 0 0);
-  --color-foreground: oklch(10% 0 0);
+  /* Aqua Flow Theme - Soft & Approachable */
+  /* Strictly following provided color scheme */
 
-  --color-card: oklch(100% 0 0);
-  --color-card-foreground: oklch(10% 0 0);
+  /* Primary: #06B6D4 (Cyan) */
+  --color-primary: #06b6d4;
+  --color-primary-foreground: #ffffff;
 
-  --color-popover: oklch(100% 0 0);
-  --color-popover-foreground: oklch(10% 0 0);
+  /* Accent: #0891B2 (Darker Cyan) */
+  --color-accent: #0891b2;
+  --color-accent-foreground: #ffffff;
 
-  --color-primary: oklch(45% 0.2 264);
-  --color-primary-foreground: oklch(98% 0 0);
+  /* Secondary: #CCFBF1 (Light Cyan) */
+  --color-secondary: #ccfbf1;
+  --color-secondary-foreground: #111827;
 
-  --color-secondary: oklch(96% 0 0);
-  --color-secondary-foreground: oklch(10% 0 0);
+  /* Background: #FAFAFA (Light Gray) */
+  --color-background: #fafafa;
+  --color-foreground: #111827;
 
-  --color-muted: oklch(96% 0 0);
-  --color-muted-foreground: oklch(45% 0 0);
+  /* Card: #FFFFFF (White) */
+  --color-card: #ffffff;
+  --color-card-foreground: #111827;
 
-  --color-accent: oklch(96% 0 0);
-  --color-accent-foreground: oklch(10% 0 0);
+  --color-popover: #ffffff;
+  --color-popover-foreground: #111827;
 
-  --color-destructive: oklch(58% 0.23 25);
-  --color-destructive-foreground: oklch(98% 0 0);
+  /* Text Muted: #6B7280 (Medium Gray) */
+  --color-muted: #f3f4f6;
+  --color-muted-foreground: #6b7280;
 
-  --color-border: oklch(90% 0 0);
-  --color-input: oklch(90% 0 0);
-  --color-ring: oklch(45% 0.2 264);
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+
+  --color-border: #e5e7eb;
+  --color-input: #e5e7eb;
+  --color-ring: #06b6d4;
 
   --radius: 0.5rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  @theme {
-    --color-background: oklch(10% 0 0);
-    --color-foreground: oklch(98% 0 0);
-
-    --color-card: oklch(10% 0 0);
-    --color-card-foreground: oklch(98% 0 0);
-
-    --color-popover: oklch(10% 0 0);
-    --color-popover-foreground: oklch(98% 0 0);
-
-    --color-primary: oklch(70% 0.2 264);
-    --color-primary-foreground: oklch(10% 0 0);
-
-    --color-secondary: oklch(20% 0 0);
-    --color-secondary-foreground: oklch(98% 0 0);
-
-    --color-muted: oklch(20% 0 0);
-    --color-muted-foreground: oklch(65% 0 0);
-
-    --color-accent: oklch(20% 0 0);
-    --color-accent-foreground: oklch(98% 0 0);
-
-    --color-destructive: oklch(58% 0.23 25);
-    --color-destructive-foreground: oklch(98% 0 0);
-
-    --color-border: oklch(20% 0 0);
-    --color-input: oklch(20% 0 0);
-    --color-ring: oklch(70% 0.2 264);
-  }
-}
-
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   * {
     @apply border-border;
   }

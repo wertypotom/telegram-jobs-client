@@ -33,7 +33,7 @@ export default function HomePage() {
     return null; // Will redirect
   }
   return (
-    <div className="bg-red-500 min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
         <HeroSection />

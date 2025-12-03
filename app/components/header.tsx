@@ -1,34 +1,65 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/shared/ui';
-import { Sparkles } from 'lucide-react';
+import { Send, Menu, X } from 'lucide-react';
 
 export function Header() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
-    <header className="border-b">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl">
-          <Sparkles className="h-6 w-6 text-primary" />
-          <span>JobSniper</span>
-        </Link>
-
-        <nav className="hidden md:flex items-center gap-6">
-          <Link href="#features" className="text-sm hover:text-primary transition-colors">
-            Features
+    <header className="sticky top-0 z-40 border-b backdrop-blur-md bg-background/90">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16 items-center">
+          <Link href="/" className="flex items-center gap-2 font-bold text-xl">
+            <div className="p-1.5 rounded-lg bg-primary">
+              <Send size={20} className="text-primary-foreground" />
+            </div>
+            TeleJob AI
           </Link>
-          <Link href="#how-it-works" className="text-sm hover:text-primary transition-colors">
-            How It Works
-          </Link>
-        </nav>
 
-        <div className="flex items-center gap-4">
-          <Button asChild variant="outline">
-            <Link href="/login">Login</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/login">Get Started</Link>
-          </Button>
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-8">
+            <a href="#features" className="text-sm font-medium hover:opacity-80 transition-opacity">
+              Features
+            </a>
+            <a
+              href="#how-it-works"
+              className="text-sm font-medium hover:opacity-80 transition-opacity"
+            >
+              How It Works
+            </a>
+            <Button asChild className="rounded-full shadow-lg shadow-primary/20">
+              <Link href="/login">Get Started</Link>
+            </Button>
+          </div>
+
+          {/* Mobile Nav Toggle */}
+          <div className="md:hidden">
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2">
+              {mobileMenuOpen ? <X /> : <Menu />}
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden absolute w-full border-b shadow-lg bg-card">
+          <div className="px-4 py-4 space-y-3">
+            <a href="#features" onClick={() => setMobileMenuOpen(false)} className="block py-2">
+              Features
+            </a>
+            <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="block py-2">
+              How It Works
+            </a>
+            <Button asChild className="w-full">
+              <Link href="/login">Get Started</Link>
+            </Button>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
