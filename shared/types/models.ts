@@ -19,14 +19,29 @@ export interface Job {
   isVisited?: boolean;
 }
 
+export interface ContactInfo {
+  telegram?: string;
+  email?: string;
+  applicationUrl?: string;
+  other?: string;
+}
+
 export interface ParsedJobData {
   jobTitle?: string;
   company?: string;
   techStack?: string[];
   salary?: string;
-  contactMethod?: string;
+  contactInfo?: ContactInfo;
   isRemote?: boolean;
   level?: string;
+  employmentType?: string;
+  location?: string;
+  candidateLocation?: string;
+  responsibilities?: string[];
+  requiredQualifications?: string[];
+  preferredQualifications?: string[];
+  benefits?: string[];
+  description?: string;
 }
 
 export interface Resume {

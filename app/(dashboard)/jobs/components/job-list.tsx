@@ -19,24 +19,28 @@ export function JobList({ jobs, total }: JobListProps) {
   }
 
   return (
-    <div className="space-y-8">
-      <p className="text-sm text-muted-foreground mb-4">
+    <div className="flex flex-col gap-6">
+      <p className="text-sm text-muted-foreground">
         Showing {jobs.length} of {total} jobs
       </p>
 
       {jobs.map((job) => (
         <Link key={job.id} href={`/jobs/${job.id}`}>
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className="space-y-1">
-                  <CardTitle>{job.parsedData?.jobTitle || 'Job Position'}</CardTitle>
+            <CardHeader className="pb-3">
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-1 flex-1 min-w-0">
+                  <CardTitle className="text-xl">
+                    {job.parsedData?.jobTitle || 'Untitled Position'}
+                  </CardTitle>
                   <CardDescription className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4" />
-                    {job.parsedData?.company || 'Company'}
+                    <Building2 className="h-4 w-4 flex-shrink-0" />
+                    <span className="truncate">
+                      {job.parsedData?.company || 'Company not specified'}
+                    </span>
                   </CardDescription>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-shrink-0">
                   {job.parsedData?.isRemote && <Badge variant="secondary">Remote</Badge>}
                   {job.isVisited ? (
                     <Badge variant="outline" className="text-muted-foreground">
@@ -48,7 +52,7 @@ export function JobList({ jobs, total }: JobListProps) {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               <div className="flex flex-wrap gap-2 mb-4">
                 {job.parsedData?.techStack?.map((tech) => (
                   <Badge key={tech} variant="outline">
@@ -57,7 +61,7 @@ export function JobList({ jobs, total }: JobListProps) {
                 ))}
               </div>
 
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
                 {job.parsedData?.salary && (
                   <div className="flex items-center gap-1">
                     <DollarSign className="h-4 w-4" />
@@ -68,6 +72,12 @@ export function JobList({ jobs, total }: JobListProps) {
                   <div className="flex items-center gap-1">
                     <MapPin className="h-4 w-4" />
                     {job.parsedData.level}
+                  </div>
+                )}
+                {job.parsedData?.candidateLocation && (
+                  <div className="flex items-center gap-1">
+                    <MapPin className="h-4 w-4" />
+                    {job.parsedData.candidateLocation}
                   </div>
                 )}
                 <div className="flex items-center gap-1">
