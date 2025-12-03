@@ -1,4 +1,4 @@
-import type { Job, TailoredResume, User } from './models';
+import type { Job, User } from './models';
 
 // API Response wrapper
 export interface ApiResponse<T> {

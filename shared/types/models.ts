@@ -48,10 +48,3 @@ export interface Resume {
   text: string;
   fileUrl: string;
 }
-
-export interface TailoredResume {
-  pdfUrl: string;
-  docxUrl: string;
-  telegramMessage: string;
-  coverLetter: string;
-}
