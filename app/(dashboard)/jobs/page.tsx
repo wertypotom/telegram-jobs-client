@@ -6,8 +6,8 @@ import { JobList } from './components/job-list';
 import { FiltersPanel } from './components/filters-panel';
 import { ChannelOnboardingModal } from '../components/channel-onboarding-modal';
 import { ChannelManager } from '../components/channel-manager';
-import { Skeleton, Button } from '@/shared/ui';
-import { Loader2, Settings, SlidersHorizontal } from 'lucide-react';
+import { Skeleton, Card, CardContent, Badge } from '@/shared/ui';
+import { Loader2 } from 'lucide-react';
 
 export default function JobsPage() {
   const [filters, setFilters] = useState({
@@ -49,42 +49,66 @@ export default function JobsPage() {
         onFiltersChange={setFilters}
       />
 
-      <div className="container mx-auto px-6 py-8">
-        <div className="mb-8 flex items-start justify-between">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Browse Jobs</h1>
-            <p className="text-muted-foreground">
-              Find your next opportunity from Telegram job channels
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setShowFiltersPanel(true)} className="gap-2">
-              <SlidersHorizontal className="h-4 w-4" />
-              Edit Filters
-            </Button>
-            <Button variant="outline" onClick={() => setShowChannelManager(true)} className="gap-2">
-              <Settings className="h-4 w-4" />
-              Manage Channels
-            </Button>
+      {/* Top Header - white background like reference */}
+      <header className="bg-white border-b sticky top-0 z-10 px-4 md:px-6 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <h1 className="text-xl font-bold tracking-tight text-gray-900">JOBS</h1>
+          <span className="text-gray-300 hidden sm:inline">/</span>
+          <Badge className="bg-black text-white hover:bg-black px-3 py-1 rounded-full text-xs font-bold">
+            Recommended
+          </Badge>
+          <div className="hidden md:flex items-center gap-4 text-xs font-semibold">
+            <span className="text-gray-500">
+              Liked <span className="bg-gray-100 px-1.5 rounded ml-1 text-gray-900">1</span>
+            </span>
+            <span className="text-gray-500">
+              Applied <span className="bg-gray-100 px-1.5 rounded ml-1 text-gray-900">64</span>
+            </span>
+            <span className="text-gray-500">
+              External <span className="bg-gray-100 px-1.5 rounded ml-1 text-gray-900">53</span>
+            </span>
           </div>
         </div>
+      </header>
 
-        <div>
-          {isLoading && (
-            <div className="space-y-8">
-              {[...Array(5)].map((_, i) => (
-                <Skeleton key={i} className="h-48 w-full" />
-              ))}
-            </div>
-          )}
+      {/* Filter placeholder space - reserved for future implementation */}
+      <div className="bg-white px-4 md:px-6 py-4 border-b">
+        <div className="min-h-[60px]">{/* Filters will be added here later */}</div>
+      </div>
 
-          {error && (
-            <div className="text-center py-12">
-              <p className="text-destructive">Failed to load jobs. Please try again.</p>
-            </div>
-          )}
+      {/* Main content area */}
+      <div className="bg-gray-50 min-h-screen">
+        <div className="container mx-auto px-4 md:px-6 pt-8 pb-6 max-w-7xl">
+          {/* Welcome Card */}
+          <div className="mb-6">
+            <Card className="bg-white border border-gray-100 shadow-sm">
+              <CardContent className="p-4">
+                <h2 className="text-sm font-semibold text-gray-900">Welcome back, Developer!</h2>
+                <p className="text-xs text-gray-500 mt-1">
+                  It's great to see you again. Let's resume your journey towards your dream job.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
 
-          {data && <JobList jobs={data.jobs} total={data.total} />}
+          {/* Jobs List */}
+          <div>
+            {isLoading && (
+              <div className="space-y-6">
+                {[...Array(5)].map((_, i) => (
+                  <Skeleton key={i} className="h-48 w-full" />
+                ))}
+              </div>
+            )}
+
+            {error && (
+              <div className="text-center py-12">
+                <p className="text-destructive">Failed to load jobs. Please try again.</p>
+              </div>
+            )}
+
+            {data && <JobList jobs={data.jobs} total={data.total} />}
+          </div>
         </div>
       </div>
     </>
