@@ -6,16 +6,18 @@ import { JobList } from './components/job-list';
 import { FiltersPanel } from './components/filters-panel';
 import { ChannelOnboardingModal } from '../components/channel-onboarding-modal';
 import { ChannelManager } from '../components/channel-manager';
+import { DebugChannelWidget } from './components/debug-channel-widget';
 import { Skeleton, Card, CardContent, Badge } from '@/shared/ui';
 import { Loader2 } from 'lucide-react';
 
 export default function JobsPage() {
   const [filters, setFilters] = useState({
-    stack: '',
+    stack: [] as string[],
     level: '',
     isRemote: undefined as boolean | undefined,
     jobFunction: '',
     excludedTitles: [] as string[],
+    muteKeywords: [] as string[],
     locationType: [] as string[],
     limit: 20,
     offset: 0,
@@ -24,7 +26,16 @@ export default function JobsPage() {
   const [showFiltersPanel, setShowFiltersPanel] = useState(false);
 
   const { data: user, isLoading: loadingUser } = useAuth();
-  const { data, isLoading, error } = useJobs(filters);
+  const { data, isLoading, error } = useJobs({
+    stack: filters.stack,
+    level: filters.level,
+    jobFunction: filters.jobFunction,
+    excludedTitles: filters.excludedTitles,
+    muteKeywords: filters.muteKeywords,
+    locationType: filters.locationType,
+    limit: filters.limit,
+    offset: filters.offset,
+  });
 
   // Show onboarding modal if user hasn't completed it
 
@@ -71,9 +82,166 @@ export default function JobsPage() {
         </div>
       </header>
 
-      {/* Filter placeholder space - reserved for future implementation */}
+      {/* Active Filters Bar */}
       <div className="bg-white px-4 md:px-6 py-4 border-b">
-        <div className="min-h-[60px]">{/* Filters will be added here later */}</div>
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Job Function Filter */}
+          {filters.jobFunction && (
+            <div className="bg-gray-200/80 text-gray-700 px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap hover:bg-gray-300 transition-colors flex items-center gap-2">
+              <span>Role: {filters.jobFunction}</span>
+              <button
+                onClick={() => setFilters({ ...filters, jobFunction: '' })}
+                className="hover:text-red-600"
+              >
+                ×
+              </button>
+            </div>
+          )}
+
+          {/* Level Filter */}
+          {filters.level && (
+            <div className="bg-gray-200/80 text-gray-700 px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap hover:bg-gray-300 transition-colors flex items-center gap-2">
+              <span>{filters.level}</span>
+              <button
+                onClick={() => setFilters({ ...filters, level: '' })}
+                className="hover:text-red-600"
+              >
+                ×
+              </button>
+            </div>
+          )}
+
+          {/* Tech Stack Filters */}
+          {filters.stack.map((tech, idx) => (
+            <div
+              key={idx}
+              className="bg-gray-200/80 text-gray-700 px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap hover:bg-gray-300 transition-colors flex items-center gap-2"
+            >
+              <span>{tech}</span>
+              <button
+                onClick={() =>
+                  setFilters({
+                    ...filters,
+                    stack: filters.stack.filter((_, i) => i !== idx),
+                  })
+                }
+                className="hover:text-red-600"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+
+          {/* Location Type Filters */}
+          {filters.locationType.map((type) => (
+            <div
+              key={type}
+              className="bg-gray-200/80 text-gray-700 px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap hover:bg-gray-300 transition-colors flex items-center gap-2"
+            >
+              <span>{type.charAt(0).toUpperCase() + type.slice(1)}</span>
+              <button
+                onClick={() =>
+                  setFilters({
+                    ...filters,
+                    locationType: filters.locationType.filter((t) => t !== type),
+                  })
+                }
+                className="hover:text-red-600"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+
+          {/* Excluded Titles */}
+          {filters.excludedTitles.map((title, idx) => (
+            <div
+              key={idx}
+              className="bg-orange-100 text-orange-700 px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap hover:bg-orange-200 transition-colors flex items-center gap-2"
+            >
+              <span>Exclude: {title}</span>
+              <button
+                onClick={() =>
+                  setFilters({
+                    ...filters,
+                    excludedTitles: filters.excludedTitles.filter((_, i) => i !== idx),
+                  })
+                }
+                className="hover:text-red-600"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+
+          {/* Mute Keywords */}
+          {filters.muteKeywords.map((keyword, idx) => (
+            <div
+              key={idx}
+              className="bg-red-100 text-red-700 px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap hover:bg-red-200 transition-colors flex items-center gap-2"
+            >
+              <span>Mute: {keyword}</span>
+              <button
+                onClick={() =>
+                  setFilters({
+                    ...filters,
+                    muteKeywords: filters.muteKeywords.filter((_, i) => i !== idx),
+                  })
+                }
+                className="hover:text-red-600"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+
+          {/* Edit Filters Button */}
+          <button
+            onClick={() => setShowFiltersPanel(true)}
+            className="bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 transition-transform transform active:scale-95"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+            </svg>
+            Edit Filters
+          </button>
+
+          {/* Clear All (if any filters active) */}
+          {(filters.jobFunction ||
+            filters.level ||
+            filters.stack ||
+            filters.locationType.length > 0 ||
+            filters.excludedTitles.length > 0 ||
+            filters.muteKeywords.length > 0) && (
+            <button
+              onClick={() =>
+                setFilters({
+                  ...filters,
+                  jobFunction: '',
+                  level: '',
+                  stack: [],
+                  locationType: [],
+                  excludedTitles: [],
+                  muteKeywords: [],
+                })
+              }
+              className="text-gray-500 hover:text-red-600 text-sm font-medium underline ml-2"
+            >
+              Clear All
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Main content area */}
@@ -90,6 +258,9 @@ export default function JobsPage() {
               </CardContent>
             </Card>
           </div>
+
+          {/* Debug Widget - POC for testing subscription filtering */}
+          <DebugChannelWidget />
 
           {/* Jobs List */}
           <div>

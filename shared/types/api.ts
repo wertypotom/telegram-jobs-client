@@ -39,9 +39,13 @@ export interface AuthResponse {
 
 // Jobs
 export interface JobsRequest {
-  stack?: string;
+  stack?: string[];
   level?: string;
   isRemote?: boolean;
+  jobFunction?: string;
+  excludedTitles?: string[];
+  muteKeywords?: string[];
+  locationType?: string[];
   limit?: number;
   offset?: number;
 }

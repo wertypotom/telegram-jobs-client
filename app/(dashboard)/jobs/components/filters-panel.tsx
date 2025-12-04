@@ -1,226 +1,173 @@
 'use client';
 
-import { useState } from 'react';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/shared/ui/sheet';
+import { useState, useEffect } from 'react';
 import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
-import { Checkbox } from '@/shared/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
-import { X, Plus } from 'lucide-react';
-
-const JOB_FUNCTIONS = [
-  // English
-  'Frontend Software Engineer',
-  'React Developer',
-  'UI/UX Developer',
-  'Full Stack Engineer',
-  'Backend Developer',
-  'DevOps Engineer',
-  'Mobile Developer',
-  'Data Engineer',
-  'QA Engineer',
-  'Product Manager',
-  // Russian
-  'Фронтенд разработчик',
-  'React разработчик',
-  'UI/UX дизайнер',
-  'Fullstack разработчик',
-  'Бэкенд разработчик',
-  'DevOps инженер',
-  'Мобильный разработчик',
-  'Инженер данных',
-  'QA инженер',
-  'Продакт менеджер',
-];
+import { CategorySidebar } from './category-sidebar';
+import { TagInput } from './tag-input';
+import { JobCriteriaSection } from './job-criteria-section';
+import { LocationSection } from './location-section';
 
 interface FiltersPanelProps {
   open: boolean;
   onClose: () => void;
   filters: {
     jobFunction: string;
+    level: string;
+    stack: string[];
     excludedTitles: string[];
+    muteKeywords: string[];
     locationType: string[];
   };
   onFiltersChange: (filters: any) => void;
 }
 
 export function FiltersPanel({ open, onClose, filters, onFiltersChange }: FiltersPanelProps) {
-  const [excludedTitles, setExcludedTitles] = useState<string[]>(filters.excludedTitles || []);
-  const [newExcludedTitle, setNewExcludedTitle] = useState('');
+  const [localFilters, setLocalFilters] = useState(filters);
+  const [selectedCategory, setSelectedCategory] = useState('Job Criteria');
 
-  const handleJobFunctionChange = (value: string) => {
-    onFiltersChange({ ...filters, jobFunction: value });
-  };
-
-  const handleAddExcludedTitle = () => {
-    if (newExcludedTitle.trim()) {
-      const updated = [...excludedTitles, newExcludedTitle.trim()];
-      setExcludedTitles(updated);
-      onFiltersChange({ ...filters, excludedTitles: updated });
-      setNewExcludedTitle('');
+  // Sync local state when drawer opens
+  useEffect(() => {
+    if (open) {
+      setLocalFilters(filters);
     }
-  };
+  }, [open, filters]);
 
-  const handleRemoveExcludedTitle = (index: number) => {
-    const updated = excludedTitles.filter((_, i) => i !== index);
-    setExcludedTitles(updated);
-    onFiltersChange({ ...filters, excludedTitles: updated });
-  };
-
-  const handleLocationChange = (locationType: string, checked: boolean) => {
-    const currentTypes = filters.locationType || [];
-    const updated = checked
-      ? [...currentTypes, locationType]
-      : currentTypes.filter((t) => t !== locationType);
-    onFiltersChange({ ...filters, locationType: updated });
-  };
+  const categories = [
+    { name: 'Job Criteria', subtext: 'Role, Level, Tech Stack' },
+    { name: 'Location & Work Mode', subtext: 'Remote, On-site, Hybrid' },
+    { name: 'Exclusions', subtext: 'Mute Keywords, Excluded Titles' },
+  ];
 
   const handleClearAll = () => {
-    setExcludedTitles([]);
-    onFiltersChange({
+    setLocalFilters({
       jobFunction: '',
-      excludedTitles: [],
+      level: '',
+      stack: [],
       locationType: [],
+      excludedTitles: [],
+      muteKeywords: [],
     });
   };
 
+  const handleUpdate = () => {
+    onFiltersChange(localFilters);
+    onClose();
+  };
+
+  const activeFilterCount =
+    (localFilters.jobFunction ? 1 : 0) +
+    (localFilters.level ? 1 : 0) +
+    (localFilters.stack?.length || 0) +
+    (localFilters.locationType?.length || 0) +
+    (localFilters.excludedTitles?.length || 0) +
+    (localFilters.muteKeywords?.length || 0);
+
+  if (!open) return null;
+
   return (
-    <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent className="w-[400px] sm:w-[540px] overflow-y-auto px-8">
-        <SheetHeader>
-          <SheetTitle>Edit Filters</SheetTitle>
-          <SheetDescription>Refine your job search with advanced filters</SheetDescription>
-        </SheetHeader>
+    <div className="fixed inset-0 z-50 flex justify-end">
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/40 transition-opacity" onClick={onClose} />
 
-        <div className="space-y-6 py-6">
-          {/* Job Function */}
-          <div className="space-y-3">
-            <Label htmlFor="job-function" className="text-base font-semibold">
-              Job Function
-            </Label>
-            <p className="text-sm text-muted-foreground">Select from drop-down for best results</p>
-            <Select value={filters.jobFunction} onValueChange={handleJobFunctionChange}>
-              <SelectTrigger id="job-function">
-                <SelectValue placeholder="Select job function..." />
-              </SelectTrigger>
-              <SelectContent>
-                {JOB_FUNCTIONS.map((func) => (
-                  <SelectItem key={func} value={func}>
-                    {func}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+      {/* Drawer */}
+      <div className="relative w-full max-w-5xl bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b">
+          <div className="flex items-center gap-3">
+            <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
+              <span className="text-xl font-bold">{'>'}</span>
+            </button>
+            <h2 className="text-xl font-bold">Filters</h2>
+            {activeFilterCount > 0 && (
+              <span className="bg-black text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                {activeFilterCount}
+              </span>
+            )}
           </div>
+          <Button
+            onClick={handleUpdate}
+            className="bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-2 px-6 rounded-md"
+          >
+            UPDATE
+          </Button>
+        </div>
 
-          {/* Excluded Titles */}
-          <div className="space-y-3">
-            <Label className="text-base font-semibold">Excluded Titles</Label>
-            <p className="text-sm text-muted-foreground">
-              Add job titles you want to exclude from results
-            </p>
+        <div className="flex flex-1 overflow-hidden">
+          {/* Left Sidebar */}
+          <CategorySidebar
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            activeFilterCount={activeFilterCount}
+            onClearAll={handleClearAll}
+          />
 
-            <div className="flex gap-2">
-              <Input
-                placeholder="Enter job title to exclude..."
-                value={newExcludedTitle}
-                onChange={(e) => setNewExcludedTitle(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleAddExcludedTitle();
-                  }
-                }}
-              />
-              <Button type="button" variant="outline" size="icon" onClick={handleAddExcludedTitle}>
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
+          {/* Right Content */}
+          <div className="flex-1 overflow-y-auto bg-gray-50/80 p-8">
+            {selectedCategory === 'Job Criteria' && (
+              <JobCriteriaSection filters={localFilters} onChange={setLocalFilters} />
+            )}
 
-            {excludedTitles.length > 0 && (
-              <div className="space-y-2">
-                {excludedTitles.map((title, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-2 border rounded-md"
-                  >
-                    <span className="text-sm">{title}</span>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleRemoveExcludedTitle(index)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
+            {selectedCategory === 'Location & Work Mode' && (
+              <LocationSection filters={localFilters} onChange={setLocalFilters} />
+            )}
+
+            {selectedCategory === 'Exclusions' && (
+              <div className="space-y-4">
+                {/* Mute Keywords Card */}
+                <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                  <TagInput
+                    label="Mute Keywords"
+                    description='Hide jobs containing these words (e.g. "Gambling", "C++", "Unpaid")'
+                    placeholder="Enter keyword to mute..."
+                    tags={localFilters.muteKeywords || []}
+                    onAdd={(keyword) =>
+                      setLocalFilters({
+                        ...localFilters,
+                        muteKeywords: [...(localFilters.muteKeywords || []), keyword],
+                      })
+                    }
+                    onRemove={(index) =>
+                      setLocalFilters({
+                        ...localFilters,
+                        muteKeywords: (localFilters.muteKeywords || []).filter(
+                          (_, i) => i !== index
+                        ),
+                      })
+                    }
+                    variant="danger"
+                  />
+                </div>
+
+                {/* Excluded Titles Card */}
+                <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                  <TagInput
+                    label="Excluded Job Titles"
+                    description="Hide specific job titles you're not interested in"
+                    placeholder="Enter title to exclude..."
+                    tags={localFilters.excludedTitles || []}
+                    onAdd={(title) =>
+                      setLocalFilters({
+                        ...localFilters,
+                        excludedTitles: [...(localFilters.excludedTitles || []), title],
+                      })
+                    }
+                    onRemove={(index) =>
+                      setLocalFilters({
+                        ...localFilters,
+                        excludedTitles: (localFilters.excludedTitles || []).filter(
+                          (_, i) => i !== index
+                        ),
+                      })
+                    }
+                    variant="warning"
+                  />
+                </div>
               </div>
             )}
           </div>
-
-          {/* Location */}
-          <div className="space-y-3">
-            <Label className="text-base font-semibold">Location</Label>
-            <p className="text-sm text-muted-foreground">Select work location preferences</p>
-
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="on-site"
-                  checked={filters.locationType?.includes('on-site')}
-                  onCheckedChange={(checked) => handleLocationChange('on-site', checked as boolean)}
-                />
-                <label
-                  htmlFor="on-site"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  On-site
-                </label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="remote"
-                  checked={filters.locationType?.includes('remote')}
-                  onCheckedChange={(checked) => handleLocationChange('remote', checked as boolean)}
-                />
-                <label
-                  htmlFor="remote"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Remote
-                </label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="hybrid"
-                  checked={filters.locationType?.includes('hybrid')}
-                  onCheckedChange={(checked) => handleLocationChange('hybrid', checked as boolean)}
-                />
-                <label
-                  htmlFor="hybrid"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Hybrid
-                </label>
-              </div>
-            </div>
-          </div>
         </div>
-
-        {/* Footer */}
-        <div className="flex gap-2 pt-4 border-t">
-          <Button variant="outline" onClick={handleClearAll} className="flex-1">
-            Clear All
-          </Button>
-          <Button onClick={onClose} className="flex-1">
-            Apply Filters
-          </Button>
-        </div>
-      </SheetContent>
-    </Sheet>
+      </div>
+    </div>
   );
 }
