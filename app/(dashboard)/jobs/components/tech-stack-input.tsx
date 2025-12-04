@@ -1,19 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { Check, ChevronsUpDown, X } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { X, Plus, Trash2, Loader2 } from 'lucide-react';
 import { Label } from '@/shared/ui/label';
-import { Button } from '@/shared/ui/button';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/shared/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
-import { TECH_SKILLS } from '@/shared/constants/tech-skills';
+import { useSearchSkills } from '@/shared/hooks/use-jobs';
 
 interface TechStackInputProps {
   skills: string[];
@@ -21,13 +11,48 @@ interface TechStackInputProps {
 }
 
 export function TechStackInput({ skills, onChange }: TechStackInputProps) {
-  const [open, setOpen] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
-  const handleSelect = (skill: string) => {
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Use React Query hook for search
+  const { data: searchResults = [], isLoading } = useSearchSkills(debouncedQuery, isSearching);
+
+  // Reset highlighted index when results change
+  useEffect(() => {
+    setHighlightedIndex(0);
+  }, [searchResults]);
+
+  // Focus input when entering search mode
+  useEffect(() => {
+    if (isSearching && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isSearching]);
+
+  const handleAddClick = () => {
+    setIsSearching(true);
+    setSearchQuery('');
+  };
+
+  const handleAddSkill = (skill: string) => {
     if (!skills.includes(skill)) {
       onChange([...skills, skill]);
     }
-    setOpen(false);
+    setIsSearching(false);
+    setSearchQuery('');
   };
 
   const handleRemove = (index: number) => {
@@ -38,7 +63,34 @@ export function TechStackInput({ skills, onChange }: TechStackInputProps) {
     onChange([]);
   };
 
-  const availableSkills = TECH_SKILLS.filter((skill) => !skills.includes(skill));
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      setIsSearching(false);
+      setSearchQuery('');
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev < searchResults.length - 1 ? prev + 1 : prev));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : 0));
+    } else if (e.key === 'Enter' && searchResults.length > 0) {
+      e.preventDefault();
+      handleAddSkill(searchResults[highlightedIndex]);
+    }
+  };
+
+  // Scroll highlighted item into view
+  useEffect(() => {
+    if (resultsRef.current) {
+      const highlightedElement = resultsRef.current.children[highlightedIndex] as HTMLElement;
+      if (highlightedElement) {
+        highlightedElement.scrollIntoView({
+          block: 'nearest',
+          behavior: 'smooth',
+        });
+      }
+    }
+  }, [highlightedIndex]);
 
   return (
     <div className="mb-8">
@@ -49,20 +101,7 @@ export function TechStackInput({ skills, onChange }: TechStackInputProps) {
             onClick={handleClearAll}
             className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1.5 font-medium"
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M3 6h18" />
-              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-            </svg>
+            <Trash2 size={16} />
             Clear All
           </button>
         )}
@@ -89,45 +128,63 @@ export function TechStackInput({ skills, onChange }: TechStackInputProps) {
         ))}
       </div>
 
-      {/* Add Skill Combobox */}
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-full justify-between bg-white hover:bg-gray-50 border-gray-200 h-11"
-          >
-            <span className="text-gray-500 text-sm font-normal">Search and select skills...</span>
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-full p-0" align="start">
-          <Command>
-            <CommandInput placeholder="Search skills..." className="h-9" />
-            <CommandList>
-              <CommandEmpty>No skill found.</CommandEmpty>
-              <CommandGroup>
-                {availableSkills.map((skill) => (
-                  <CommandItem
-                    key={skill}
-                    value={skill}
-                    onSelect={() => handleSelect(skill)}
-                    className="cursor-pointer"
-                  >
-                    {skill}
-                    <Check
-                      className={`ml-auto h-4 w-4 ${
-                        skills.includes(skill) ? 'opacity-100' : 'opacity-0'
-                      }`}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+      {/* Add Button or Search Input */}
+      {!isSearching ? (
+        <button
+          onClick={handleAddClick}
+          className="w-full flex items-center justify-center gap-2 p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
+        >
+          <Plus size={18} />
+          Add
+        </button>
+      ) : (
+        <div className="relative">
+          <input
+            ref={inputRef}
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onBlur={() => {
+              // Delay to allow click on results
+              setTimeout(() => {
+                setIsSearching(false);
+                setSearchQuery('');
+              }, 200);
+            }}
+            placeholder="Search skills..."
+            className="w-full p-3 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400"
+          />
+
+          {/* Search Results */}
+          {searchResults.length > 0 && (
+            <div
+              ref={resultsRef}
+              className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+            >
+              {searchResults.map((skill, index) => (
+                <div
+                  key={skill}
+                  onClick={() => handleAddSkill(skill)}
+                  className={`p-3 cursor-pointer text-sm transition-colors ${
+                    index === highlightedIndex
+                      ? 'bg-cyan-50 text-cyan-900'
+                      : 'hover:bg-gray-50 text-gray-900'
+                  }`}
+                >
+                  {skill}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {isLoading && (
+            <div className="absolute right-3 top-3 text-gray-400">
+              <Loader2 className="h-5 w-5 animate-spin" />
+            </div>
+          )}
+        </div>
+      )}
 
       <p className="text-xs text-gray-500 mt-3">Search and select from popular tech skills</p>
     </div>

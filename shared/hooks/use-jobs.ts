@@ -28,3 +28,12 @@ export function useMarkJobAsViewed() {
     },
   });
 }
+
+export function useSearchSkills(query: string, enabled: boolean = true) {
+  return useQuery({
+    queryKey: ['skills', query],
+    queryFn: () => jobsApi.searchSkills(query),
+    enabled: enabled && query.trim().length > 0,
+    staleTime: 5 * 60 * 1000, // 5 minutes - skills don't change often
+  });
+}

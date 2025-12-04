@@ -30,13 +30,13 @@ export function LocationSection({ filters, onChange }: LocationSectionProps) {
             key={type}
             className={`flex items-center p-3 rounded-lg border cursor-pointer transition-all ${
               filters.locationType?.includes(type)
-                ? 'bg-emerald-50/30 border-emerald-100'
+                ? 'bg-cyan-50/30 border-cyan-100'
                 : 'bg-white border-gray-100 hover:bg-gray-50'
             }`}
           >
             <div
               className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${
-                filters.locationType?.includes(type) ? 'bg-emerald-500' : 'border border-gray-300'
+                filters.locationType?.includes(type) ? 'bg-cyan-500' : 'border border-gray-300'
               }`}
               onClick={() => handleLocationChange(type, !filters.locationType?.includes(type))}
             >

@@ -198,7 +198,7 @@ export default function JobsPage() {
           {/* Edit Filters Button */}
           <button
             onClick={() => setShowFiltersPanel(true)}
-            className="bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 transition-transform transform active:scale-95"
+            className="bg-cyan-500 hover:bg-cyan-400 text-white px-3 py-1.5 rounded-md text-sm font-semibold flex items-center gap-1.5 transition-transform transform active:scale-95"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

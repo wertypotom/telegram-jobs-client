@@ -63,7 +63,7 @@ export function DebugChannelWidget() {
                 <Badge
                   key={channel.username}
                   variant="default"
-                  className="px-3 py-1 flex items-center gap-2 bg-green-600 hover:bg-green-700"
+                  className="px-3 py-1 flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700"
                 >
                   {channel.title || channel.username}
                   <button

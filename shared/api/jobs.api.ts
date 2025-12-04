@@ -18,4 +18,11 @@ export const jobsApi = {
   markJobAsViewed: async (id: string): Promise<void> => {
     await apiClient.post(`/api/jobs/${id}/view`);
   },
+
+  searchSkills: async (query: string = ''): Promise<string[]> => {
+    const response = await apiClient.get<ApiResponse<string[]>>('/api/jobs/skills/search', {
+      params: { q: query },
+    });
+    return response.data.data;
+  },
 };

@@ -29,7 +29,7 @@ export function CategorySidebar({
             onClick={() => onSelectCategory(cat.name)}
             className={`px-6 py-4 cursor-pointer border-l-4 transition-colors ${
               selectedCategory === cat.name
-                ? 'bg-white border-emerald-500'
+                ? 'bg-white border-cyan-500'
                 : 'border-transparent hover:bg-gray-100'
             }`}
           >
@@ -49,7 +49,7 @@ export function CategorySidebar({
           <div className="mx-6 mt-8">
             <button
               onClick={onClearAll}
-              className="w-full px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg border border-red-200 font-medium text-sm transition-colors"
+              className="w-full px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg border border-red-200 font-medium text-sm transition-colors"
             >
               Clear All Filters
             </button>

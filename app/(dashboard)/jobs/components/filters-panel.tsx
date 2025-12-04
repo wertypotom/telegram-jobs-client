@@ -86,7 +86,7 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
           </div>
           <Button
             onClick={handleUpdate}
-            className="bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-2 px-6 rounded-md"
+            className="bg-cyan-500 hover:bg-cyan-400 text-white font-semibold py-1.5 px-4 rounded-md text-sm"
           >
             UPDATE
           </Button>
