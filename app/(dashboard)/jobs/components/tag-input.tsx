@@ -47,14 +47,14 @@ export function TagInput({
       button: 'bg-gray-500 hover:bg-gray-600',
     },
     warning: {
-      label: 'text-orange-600',
-      chip: 'bg-orange-100 text-orange-700',
-      button: 'bg-orange-500 hover:bg-orange-600',
+      label: 'text-gray-800',
+      chip: 'bg-gray-100 text-gray-700',
+      button: 'bg-gray-500 hover:bg-gray-600',
     },
     danger: {
-      label: 'text-red-600',
-      chip: 'bg-red-100 text-red-700',
-      button: 'bg-red-500 hover:bg-red-600',
+      label: 'text-gray-800',
+      chip: 'bg-gray-100 text-gray-700',
+      button: 'bg-gray-500 hover:bg-gray-600',
     },
   };
 
@@ -89,7 +89,11 @@ export function TagInput({
           onKeyDown={handleKeyDown}
           className="bg-gray-100 border-none flex-1"
         />
-        <Button type="button" onClick={handleAdd} className={`${styles.button} text-white`}>
+        <Button
+          type="button"
+          onClick={handleAdd}
+          className={`${styles.button} text-white text-xs py-1.5 px-3`}
+        >
           Add
         </Button>
       </div>

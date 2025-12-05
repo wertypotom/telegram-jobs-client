@@ -28,6 +28,7 @@ export function LocationSection({ filters, onChange }: LocationSectionProps) {
         {LOCATION_TYPES.map((type) => (
           <label
             key={type}
+            onClick={() => handleLocationChange(type, !filters.locationType?.includes(type))}
             className={`flex items-center p-3 rounded-lg border cursor-pointer transition-all ${
               filters.locationType?.includes(type)
                 ? 'bg-cyan-50/30 border-cyan-100'
@@ -38,7 +39,6 @@ export function LocationSection({ filters, onChange }: LocationSectionProps) {
               className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${
                 filters.locationType?.includes(type) ? 'bg-cyan-500' : 'border border-gray-300'
               }`}
-              onClick={() => handleLocationChange(type, !filters.locationType?.includes(type))}
             >
               {filters.locationType?.includes(type) && <Check size={14} className="text-white" />}
             </div>

@@ -40,9 +40,9 @@ export interface AuthResponse {
 // Jobs
 export interface JobsRequest {
   stack?: string[];
-  level?: string;
+  level?: string[];
   isRemote?: boolean;
-  jobFunction?: string;
+  jobFunction?: string[];
   excludedTitles?: string[];
   muteKeywords?: string[];
   locationType?: string[];

@@ -1,41 +1,49 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useJobs, useAuth } from '@/shared/hooks';
+import { useFilters } from '@/shared/hooks/use-preferences';
+import type { JobFilters } from '@/shared/api/jobs.api';
 import { JobList } from './components/job-list';
 import { FiltersPanel } from './components/filters-panel';
 import { ChannelOnboardingModal } from '../components/channel-onboarding-modal';
 import { ChannelManager } from '../components/channel-manager';
 import { DebugChannelWidget } from './components/debug-channel-widget';
 import { Skeleton, Card, CardContent, Badge } from '@/shared/ui';
-import { Loader2 } from 'lucide-react';
+import { Loader2, SlidersHorizontal } from 'lucide-react';
 
 export default function JobsPage() {
-  const [filters, setFilters] = useState({
-    stack: [] as string[],
-    level: '',
-    isRemote: undefined as boolean | undefined,
-    jobFunction: '',
-    excludedTitles: [] as string[],
-    muteKeywords: [] as string[],
-    locationType: [] as string[],
-    limit: 20,
-    offset: 0,
+  const [filters, setFilters] = useState<JobFilters>({
+    stack: [],
+    level: [],
+    jobFunction: [],
+    excludedTitles: [],
+    muteKeywords: [],
+    locationType: [],
   });
+  const pagination = { limit: 20, offset: 0 };
   const [showChannelManager, setShowChannelManager] = useState(false);
   const [showFiltersPanel, setShowFiltersPanel] = useState(false);
+  const [isFiltersLoaded, setIsFiltersLoaded] = useState(false);
+
+  // Load saved filters from backend on mount
+  const { data: savedFilters, isLoading: loadingFilters } = useFilters();
+
+  // Sync with saved filters when loaded
+  useEffect(() => {
+    if (savedFilters) {
+      setFilters(savedFilters);
+      setIsFiltersLoaded(true);
+    } else if (!loadingFilters && !savedFilters) {
+      // No saved filters exist, use empty defaults
+      setIsFiltersLoaded(true);
+    }
+  }, [savedFilters, loadingFilters]);
 
   const { data: user, isLoading: loadingUser } = useAuth();
-  const { data, isLoading, error } = useJobs({
-    stack: filters.stack,
-    level: filters.level,
-    jobFunction: filters.jobFunction,
-    excludedTitles: filters.excludedTitles,
-    muteKeywords: filters.muteKeywords,
-    locationType: filters.locationType,
-    limit: filters.limit,
-    offset: filters.offset,
-  });
+
+  // Only run jobs query after filters are loaded
+  const { data, isLoading, error } = useJobs(filters, pagination, isFiltersLoaded);
 
   // Show onboarding modal if user hasn't completed it
 
@@ -56,7 +64,15 @@ export default function JobsPage() {
       <FiltersPanel
         open={showFiltersPanel}
         onClose={() => setShowFiltersPanel(false)}
-        filters={filters}
+        filters={{
+          jobFunction: filters.jobFunction || [],
+          level: filters.level || [],
+          stack: filters.stack || [],
+          excludedTitles: filters.excludedTitles || [],
+          muteKeywords: filters.muteKeywords || [],
+          locationType: filters.locationType || [],
+          experienceYears: filters.experienceYears || { min: 0, max: 10 },
+        }}
         onFiltersChange={setFilters}
       />
 
@@ -84,169 +100,109 @@ export default function JobsPage() {
 
       {/* Active Filters Bar */}
       <div className="bg-white px-4 md:px-6 py-4 border-b">
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Job Function Filter */}
-          {filters.jobFunction && (
-            <div className="bg-gray-200/80 text-gray-700 px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap hover:bg-gray-300 transition-colors flex items-center gap-2">
-              <span>Role: {filters.jobFunction}</span>
-              <button
-                onClick={() => setFilters({ ...filters, jobFunction: '' })}
-                className="hover:text-red-600"
+        <section className="flex flex-wrap items-center gap-y-3">
+          {/* Job Title Group (Top Row) */}
+          <div className="flex items-center gap-2">
+            {(filters.jobFunction || []).map((func) => (
+              <div
+                key={func}
+                className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
               >
-                ×
-              </button>
-            </div>
-          )}
+                <span>{func}</span>
+              </div>
+            ))}
+          </div>
 
-          {/* Level Filter */}
-          {filters.level && (
-            <div className="bg-gray-200/80 text-gray-700 px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap hover:bg-gray-300 transition-colors flex items-center gap-2">
-              <span>{filters.level}</span>
-              <button
-                onClick={() => setFilters({ ...filters, level: '' })}
-                className="hover:text-red-600"
+          {/* Spacer between groups */}
+          {(filters.jobFunction || []).length > 0 &&
+            ((filters.level || []).length > 0 ||
+              (filters.stack || []).length > 0 ||
+              (filters.locationType || []).length > 0 ||
+              (filters.excludedTitles || []).length > 0 ||
+              (filters.muteKeywords || []).length > 0 ||
+              (filters.experienceYears &&
+                (filters.experienceYears.min !== 0 || filters.experienceYears.max !== 10))) && (
+              <div className="w-4" />
+            )}
+
+          {/* Attribute Group (Bottom Row) */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Level chips */}
+            {(filters.level || []).map((l) => (
+              <div
+                key={l}
+                className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
               >
-                ×
-              </button>
-            </div>
-          )}
+                <span>Level: {l}</span>
+              </div>
+            ))}
 
-          {/* Tech Stack Filters */}
-          {filters.stack.map((tech, idx) => (
-            <div
-              key={idx}
-              className="bg-gray-200/80 text-gray-700 px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap hover:bg-gray-300 transition-colors flex items-center gap-2"
-            >
-              <span>{tech}</span>
-              <button
-                onClick={() =>
-                  setFilters({
-                    ...filters,
-                    stack: filters.stack.filter((_, i) => i !== idx),
-                  })
-                }
-                className="hover:text-red-600"
+            {/* Stack chips */}
+            {(filters.stack || []).map((s) => (
+              <div
+                key={s}
+                className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
               >
-                ×
-              </button>
-            </div>
-          ))}
+                <span>Tech: {s}</span>
+              </div>
+            ))}
 
-          {/* Location Type Filters */}
-          {filters.locationType.map((type) => (
-            <div
-              key={type}
-              className="bg-gray-200/80 text-gray-700 px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap hover:bg-gray-300 transition-colors flex items-center gap-2"
-            >
-              <span>{type.charAt(0).toUpperCase() + type.slice(1)}</span>
-              <button
-                onClick={() =>
-                  setFilters({
-                    ...filters,
-                    locationType: filters.locationType.filter((t) => t !== type),
-                  })
-                }
-                className="hover:text-red-600"
+            {/* Location type chips */}
+            {(filters.locationType || []).map((t) => (
+              <div
+                key={t}
+                className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
               >
-                ×
-              </button>
-            </div>
-          ))}
+                <span>Location: {t}</span>
+              </div>
+            ))}
 
-          {/* Excluded Titles */}
-          {filters.excludedTitles.map((title, idx) => (
-            <div
-              key={idx}
-              className="bg-orange-100 text-orange-700 px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap hover:bg-orange-200 transition-colors flex items-center gap-2"
-            >
-              <span>Exclude: {title}</span>
-              <button
-                onClick={() =>
-                  setFilters({
-                    ...filters,
-                    excludedTitles: filters.excludedTitles.filter((_, i) => i !== idx),
-                  })
-                }
-                className="hover:text-red-600"
+            {/* Excluded titles chips */}
+            {(filters.excludedTitles || []).map((t) => (
+              <div
+                key={t}
+                className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
               >
-                ×
-              </button>
-            </div>
-          ))}
+                <span>Excluded: {t}</span>
+              </div>
+            ))}
 
-          {/* Mute Keywords */}
-          {filters.muteKeywords.map((keyword, idx) => (
-            <div
-              key={idx}
-              className="bg-red-100 text-red-700 px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap hover:bg-red-200 transition-colors flex items-center gap-2"
-            >
-              <span>Mute: {keyword}</span>
-              <button
-                onClick={() =>
-                  setFilters({
-                    ...filters,
-                    muteKeywords: filters.muteKeywords.filter((_, i) => i !== idx),
-                  })
-                }
-                className="hover:text-red-600"
+            {/* Mute keywords chips */}
+            {(filters.muteKeywords || []).map((k) => (
+              <div
+                key={k}
+                className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
               >
-                ×
-              </button>
-            </div>
-          ))}
+                <span>Muted: {k}</span>
+              </div>
+            ))}
 
-          {/* Edit Filters Button */}
-          <button
-            onClick={() => setShowFiltersPanel(true)}
-            className="bg-cyan-500 hover:bg-cyan-400 text-white px-3 py-1.5 rounded-md text-sm font-semibold flex items-center gap-1.5 transition-transform transform active:scale-95"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 20h9" />
-              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-            </svg>
-            Edit Filters
-          </button>
+            {/* Experience years chip */}
+            {filters.experienceYears &&
+              (filters.experienceYears.min !== 0 || filters.experienceYears.max !== 10) && (
+                <div className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap">
+                  <span>
+                    {filters.experienceYears.min}-
+                    {filters.experienceYears.max >= 10 ? '10+' : filters.experienceYears.max} Years
+                  </span>
+                </div>
+              )}
 
-          {/* Clear All (if any filters active) */}
-          {(filters.jobFunction ||
-            filters.level ||
-            filters.stack ||
-            filters.locationType.length > 0 ||
-            filters.excludedTitles.length > 0 ||
-            filters.muteKeywords.length > 0) && (
+            {/* Edit Filters Button */}
             <button
-              onClick={() =>
-                setFilters({
-                  ...filters,
-                  jobFunction: '',
-                  level: '',
-                  stack: [],
-                  locationType: [],
-                  excludedTitles: [],
-                  muteKeywords: [],
-                })
-              }
-              className="text-gray-500 hover:text-red-600 text-sm font-medium underline ml-2"
+              onClick={() => setShowFiltersPanel(true)}
+              className="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1 rounded-md text-xs font-semibold flex items-center gap-2 ml-2 transition-colors"
             >
-              Clear All
+              <SlidersHorizontal size={16} />
+              Edit Filters
             </button>
-          )}
-        </div>
+          </div>
+        </section>
       </div>
 
       {/* Main content area */}
       <div className="bg-gray-50 min-h-screen">
-        <div className="container mx-auto px-4 md:px-6 pt-8 pb-6 max-w-7xl">
+        <div className="container mx-auto px-4 md:px-6 pt-6 pb-6 max-w-7xl">
           {/* Welcome Card */}
           <div className="mb-6">
             <Card className="bg-white border border-gray-100 shadow-sm">

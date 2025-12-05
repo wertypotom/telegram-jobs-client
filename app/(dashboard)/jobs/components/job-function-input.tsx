@@ -3,14 +3,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { X, Plus, Trash2, Loader2 } from 'lucide-react';
 import { Label } from '@/shared/ui/label';
-import { useSearchSkills } from '@/shared/hooks/use-jobs';
+import { useSearchJobFunctions } from '@/shared/hooks/use-jobs';
 
-interface TechStackInputProps {
-  skills: string[];
-  onChange: (skills: string[]) => void;
+interface JobFunctionInputProps {
+  jobFunctions: string[];
+  onChange: (jobFunctions: string[]) => void;
 }
 
-export function TechStackInput({ skills, onChange }: TechStackInputProps) {
+export function JobFunctionInput({ jobFunctions, onChange }: JobFunctionInputProps) {
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -28,7 +28,10 @@ export function TechStackInput({ skills, onChange }: TechStackInputProps) {
   }, [searchQuery]);
 
   // Use React Query hook for search
-  const { data: searchResults = [], isLoading } = useSearchSkills(debouncedQuery, isSearching);
+  const { data: searchResults = [], isLoading } = useSearchJobFunctions(
+    debouncedQuery,
+    isSearching
+  );
 
   // Reset highlighted index when results change
   useEffect(() => {
@@ -47,16 +50,16 @@ export function TechStackInput({ skills, onChange }: TechStackInputProps) {
     setSearchQuery('');
   };
 
-  const handleAddSkill = (skill: string) => {
-    if (!skills.includes(skill)) {
-      onChange([...skills, skill]);
+  const handleAddJobFunction = (func: string) => {
+    if (!jobFunctions.includes(func)) {
+      onChange([...jobFunctions, func]);
     }
     setIsSearching(false);
     setSearchQuery('');
   };
 
   const handleRemove = (index: number) => {
-    onChange(skills.filter((_, i) => i !== index));
+    onChange(jobFunctions.filter((_, i) => i !== index));
   };
 
   const handleClearAll = () => {
@@ -75,7 +78,7 @@ export function TechStackInput({ skills, onChange }: TechStackInputProps) {
       setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : 0));
     } else if (e.key === 'Enter' && searchResults.length > 0) {
       e.preventDefault();
-      handleAddSkill(searchResults[highlightedIndex]);
+      handleAddJobFunction(searchResults[highlightedIndex]);
     }
   };
 
@@ -95,8 +98,8 @@ export function TechStackInput({ skills, onChange }: TechStackInputProps) {
   return (
     <div className="mb-4">
       <div className="flex items-center justify-between mb-3">
-        <Label className="font-semibold text-base text-gray-900">Skill</Label>
-        {skills.length > 0 && (
+        <Label className="font-semibold text-base text-gray-900">Job Function</Label>
+        {jobFunctions.length > 0 && (
           <button
             onClick={handleClearAll}
             className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1.5 font-medium"
@@ -107,16 +110,16 @@ export function TechStackInput({ skills, onChange }: TechStackInputProps) {
         )}
       </div>
 
-      {/* Selected Skills */}
+      {/* Selected Job Functions */}
       <div className="space-y-2 mb-3">
-        {skills.map((skill, index) => (
+        {jobFunctions.map((func, index) => (
           <div
             key={index}
             className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
           >
             <div className="flex items-center gap-3">
               <div className="w-5 h-5 border-2 border-gray-300 rounded"></div>
-              <span className="text-sm font-medium text-gray-900">{skill}</span>
+              <span className="text-sm font-medium text-gray-900">{func}</span>
             </div>
             <button
               onClick={() => handleRemove(index)}
@@ -152,7 +155,7 @@ export function TechStackInput({ skills, onChange }: TechStackInputProps) {
                 setSearchQuery('');
               }, 200);
             }}
-            placeholder="Search skills..."
+            placeholder="Search job functions..."
             className="w-full p-3 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400"
           />
 
@@ -162,17 +165,17 @@ export function TechStackInput({ skills, onChange }: TechStackInputProps) {
               ref={resultsRef}
               className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
             >
-              {searchResults.map((skill, index) => (
+              {searchResults.map((func, index) => (
                 <div
-                  key={skill}
-                  onClick={() => handleAddSkill(skill)}
+                  key={func}
+                  onClick={() => handleAddJobFunction(func)}
                   className={`p-3 cursor-pointer text-sm transition-colors ${
                     index === highlightedIndex
                       ? 'bg-cyan-50 text-cyan-900'
                       : 'hover:bg-gray-50 text-gray-900'
                   }`}
                 >
-                  {skill}
+                  {func}
                 </div>
               ))}
             </div>
@@ -186,7 +189,7 @@ export function TechStackInput({ skills, onChange }: TechStackInputProps) {
         </div>
       )}
 
-      <p className="text-xs text-gray-500 mt-3">Search and select from popular tech skills</p>
+      <p className="text-xs text-gray-500 mt-3">Search and select from popular job titles</p>
     </div>
   );
 }

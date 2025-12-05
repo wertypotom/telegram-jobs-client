@@ -1,100 +1,75 @@
 'use client';
 
-import { X, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Label } from '@/shared/ui/label';
 import { TechStackInput } from './tech-stack-input';
-
-const JOB_FUNCTIONS = [
-  'Frontend Software Engineer',
-  'React Developer',
-  'UI/UX Developer',
-  'Full Stack Engineer',
-  'Backend Developer',
-  'DevOps Engineer',
-  'Mobile Developer',
-  'Data Engineer',
-  'QA Engineer',
-  'Product Manager',
-];
+import { JobFunctionInput } from './job-function-input';
+import { ExperienceSlider } from './experience-slider';
 
 const LEVELS = ['Junior', 'Middle', 'Senior', 'Lead', 'Principal'];
 
 interface JobCriteriaSectionProps {
   filters: {
-    jobFunction: string;
-    level: string;
+    jobFunction: string[];
+    level: string[];
     stack: string[];
+    experienceYears?: { min: number; max: number };
   };
   onChange: (filters: any) => void;
 }
 
 export function JobCriteriaSection({ filters, onChange }: JobCriteriaSectionProps) {
-  const handleJobFunctionChange = (func: string) => {
-    onChange({ ...filters, jobFunction: func });
-  };
-
   const handleLevelToggle = (level: string) => {
-    onChange({ ...filters, level: filters.level === level ? '' : level });
+    const currentLevels = filters.level || [];
+    const isSelected = currentLevels.includes(level);
+
+    const newLevels = isSelected
+      ? currentLevels.filter((l) => l !== level)
+      : [...currentLevels, level];
+
+    onChange({ ...filters, level: newLevels });
   };
 
   return (
     <div className="space-y-4">
       {/* Job Function Card */}
       <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-        <Label className="font-semibold text-sm text-gray-800 mb-2 block">Job Function</Label>
-        <p className="text-xs text-gray-500 mb-3">Select from dropdown for best results</p>
-
-        {filters.jobFunction && (
-          <div className="flex items-center bg-cyan-100 text-cyan-900 px-3 py-2 rounded-md text-sm font-medium mb-3 w-fit">
-            {filters.jobFunction}
-            <button
-              onClick={() => handleJobFunctionChange('')}
-              className="ml-2 hover:text-cyan-700"
-            >
-              <X size={14} />
-            </button>
-          </div>
-        )}
-
-        <select
-          value={filters.jobFunction}
-          onChange={(e) => handleJobFunctionChange(e.target.value)}
-          className="w-full bg-gray-50 border border-gray-100 rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-cyan-400 outline-none transition-all"
-        >
-          <option value="">Select job function...</option>
-          {JOB_FUNCTIONS.map((func) => (
-            <option key={func} value={func}>
-              {func}
-            </option>
-          ))}
-        </select>
+        <JobFunctionInput
+          jobFunctions={filters.jobFunction || []}
+          onChange={(jobFunctions) => onChange({ ...filters, jobFunction: jobFunctions })}
+        />
       </div>
 
-      {/* Seniority Level Card */}
+      {/* Level Card */}
       <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-        <Label className="font-semibold text-sm text-gray-800 mb-3 block">Seniority Level</Label>
-        <div className="grid grid-cols-2 gap-3">
-          {LEVELS.map((level) => (
-            <label
-              key={level}
-              className={`flex items-center p-3 rounded-lg border cursor-pointer transition-all ${
-                filters.level === level
-                  ? 'bg-cyan-50/30 border-cyan-100'
-                  : 'bg-white border-gray-100 hover:bg-gray-50'
-              }`}
-            >
-              <div
-                className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${
-                  filters.level === level ? 'bg-cyan-500' : 'border border-gray-300'
-                }`}
+        <Label className="text-base font-semibold text-gray-800 mb-3 block">Seniority Level</Label>
+        <div className="flex flex-wrap gap-2">
+          {LEVELS.map((level) => {
+            const isSelected = (filters.level || []).includes(level);
+            return (
+              <button
+                key={level}
                 onClick={() => handleLevelToggle(level)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  isSelected
+                    ? 'bg-brand-green text-black shadow-sm'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
               >
-                {filters.level === level && <Check size={14} className="text-white" />}
-              </div>
-              <span className="text-sm font-medium text-gray-700">{level}</span>
-            </label>
-          ))}
+                {isSelected && <Check className="inline h-4 w-4 mr-1" />}
+                {level}
+              </button>
+            );
+          })}
         </div>
+      </div>
+
+      {/* Experience Range Card */}
+      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+        <ExperienceSlider
+          value={filters.experienceYears || { min: 0, max: 10 }}
+          onChange={(value) => onChange({ ...filters, experienceYears: value })}
+        />
       </div>
 
       {/* Tech Stack Card */}

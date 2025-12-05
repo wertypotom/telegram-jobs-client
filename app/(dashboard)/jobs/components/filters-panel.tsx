@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/shared/ui/button';
+import { useSaveFilters } from '@/shared/hooks/use-preferences';
 import { CategorySidebar } from './category-sidebar';
-import { TagInput } from './tag-input';
+import { SimpleTagInput } from './simple-tag-input';
 import { JobCriteriaSection } from './job-criteria-section';
 import { LocationSection } from './location-section';
 
@@ -11,12 +12,13 @@ interface FiltersPanelProps {
   open: boolean;
   onClose: () => void;
   filters: {
-    jobFunction: string;
-    level: string;
+    jobFunction: string[];
+    level: string[];
     stack: string[];
     excludedTitles: string[];
     muteKeywords: string[];
     locationType: string[];
+    experienceYears?: { min: number; max: number };
   };
   onFiltersChange: (filters: any) => void;
 }
@@ -40,8 +42,8 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
 
   const handleClearAll = () => {
     setLocalFilters({
-      jobFunction: '',
-      level: '',
+      jobFunction: [],
+      level: [],
       stack: [],
       locationType: [],
       excludedTitles: [],
@@ -49,14 +51,19 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
     });
   };
 
+  const { mutate: saveFilters } = useSaveFilters();
+
   const handleUpdate = () => {
+    // Save to backend
+    saveFilters(localFilters);
+    // Update parent state
     onFiltersChange(localFilters);
     onClose();
   };
 
   const activeFilterCount =
-    (localFilters.jobFunction ? 1 : 0) +
-    (localFilters.level ? 1 : 0) +
+    (localFilters.jobFunction?.length || 0) +
+    (localFilters.level?.length || 0) +
     (localFilters.stack?.length || 0) +
     (localFilters.locationType?.length || 0) +
     (localFilters.excludedTitles?.length || 0) +
@@ -86,7 +93,7 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
           </div>
           <Button
             onClick={handleUpdate}
-            className="bg-cyan-500 hover:bg-cyan-400 text-white font-semibold py-1.5 px-4 rounded-md text-sm"
+            className="bg-cyan-500 hover:bg-cyan-400 text-white font-semibold py-1 px-3 rounded-md text-xs"
           >
             UPDATE
           </Button>
@@ -116,51 +123,33 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
               <div className="space-y-4">
                 {/* Mute Keywords Card */}
                 <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-                  <TagInput
+                  <SimpleTagInput
                     label="Mute Keywords"
                     description='Hide jobs containing these words (e.g. "Gambling", "C++", "Unpaid")'
                     placeholder="Enter keyword to mute..."
                     tags={localFilters.muteKeywords || []}
-                    onAdd={(keyword) =>
+                    onChange={(keywords: string[]) =>
                       setLocalFilters({
                         ...localFilters,
-                        muteKeywords: [...(localFilters.muteKeywords || []), keyword],
+                        muteKeywords: keywords,
                       })
                     }
-                    onRemove={(index) =>
-                      setLocalFilters({
-                        ...localFilters,
-                        muteKeywords: (localFilters.muteKeywords || []).filter(
-                          (_, i) => i !== index
-                        ),
-                      })
-                    }
-                    variant="danger"
                   />
                 </div>
 
                 {/* Excluded Titles Card */}
                 <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-                  <TagInput
+                  <SimpleTagInput
                     label="Excluded Job Titles"
                     description="Hide specific job titles you're not interested in"
                     placeholder="Enter title to exclude..."
                     tags={localFilters.excludedTitles || []}
-                    onAdd={(title) =>
+                    onChange={(titles: string[]) =>
                       setLocalFilters({
                         ...localFilters,
-                        excludedTitles: [...(localFilters.excludedTitles || []), title],
+                        excludedTitles: titles,
                       })
                     }
-                    onRemove={(index) =>
-                      setLocalFilters({
-                        ...localFilters,
-                        excludedTitles: (localFilters.excludedTitles || []).filter(
-                          (_, i) => i !== index
-                        ),
-                      })
-                    }
-                    variant="warning"
                   />
                 </div>
               </div>

@@ -1,15 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { jobsApi } from '../api';
-import type { JobsRequest } from '../types/api';
+import { jobsApi, JobFilters } from '../api/jobs.api';
 
-export function useJobs(params: JobsRequest = {}) {
+export function useJobs(
+  filters: JobFilters = {},
+  pagination: { limit?: number; offset?: number } = {},
+  enabled: boolean = true
+) {
   return useQuery({
-    queryKey: ['jobs', params],
-    queryFn: () => jobsApi.getJobs(params),
+    queryKey: ['jobs', filters, pagination],
+    queryFn: () => jobsApi.getJobs(filters, pagination),
+    enabled,
   });
 }
 
-export function useJob(id: string) {
+export function useJobById(id: string) {
   return useQuery({
     queryKey: ['job', id],
     queryFn: () => jobsApi.getJobById(id),
@@ -17,13 +21,16 @@ export function useJob(id: string) {
   });
 }
 
+// Alias for backward compatibility
+export const useJob = useJobById;
+
 export function useMarkJobAsViewed() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (jobId: string) => jobsApi.markJobAsViewed(jobId),
-    onSuccess: () => {
-      // Invalidate jobs list to refresh isVisited status
+    mutationFn: (id: string) => jobsApi.markJobAsViewed(id),
+    onSuccess: (_, jobId) => {
+      queryClient.invalidateQueries({ queryKey: ['job', jobId] });
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
   });
@@ -35,5 +42,14 @@ export function useSearchSkills(query: string, enabled: boolean = true) {
     queryFn: () => jobsApi.searchSkills(query),
     enabled: enabled && query.trim().length > 0,
     staleTime: 5 * 60 * 1000, // 5 minutes - skills don't change often
+  });
+}
+
+export function useSearchJobFunctions(query: string, enabled: boolean = true) {
+  return useQuery({
+    queryKey: ['jobFunctions', query],
+    queryFn: () => jobsApi.searchJobFunctions(query),
+    enabled: enabled && query.trim().length > 0,
+    staleTime: 5 * 60 * 1000, // 5 minutes - job functions don't change often
   });
 }

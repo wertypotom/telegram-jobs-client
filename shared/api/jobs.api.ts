@@ -1,11 +1,32 @@
 import { apiClient } from '../lib/api-client';
-import type { JobsRequest, JobsResponse, ApiResponse } from '../types/api';
+import type { ApiResponse } from '../types/api';
 import type { Job } from '../types/models';
 
+export interface JobFilters {
+  jobFunction?: string[];
+  level?: string[];
+  stack?: string[];
+  locationType?: string[];
+  excludedTitles?: string[];
+  muteKeywords?: string[];
+  experienceYears?: { min: number; max: number };
+}
+
+export interface JobsResponse {
+  jobs: Job[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
 export const jobsApi = {
-  getJobs: async (params: JobsRequest = {}): Promise<JobsResponse> => {
-    const response = await apiClient.get<ApiResponse<JobsResponse>>('/api/jobs', {
-      params,
+  getJobs: async (
+    filters: JobFilters = {},
+    pagination: { limit?: number; offset?: number } = {}
+  ): Promise<JobsResponse> => {
+    const response = await apiClient.post<ApiResponse<JobsResponse>>('/api/jobs/search', {
+      filters,
+      pagination,
     });
     return response.data.data;
   },
@@ -21,6 +42,13 @@ export const jobsApi = {
 
   searchSkills: async (query: string = ''): Promise<string[]> => {
     const response = await apiClient.get<ApiResponse<string[]>>('/api/jobs/skills/search', {
+      params: { q: query },
+    });
+    return response.data.data;
+  },
+
+  searchJobFunctions: async (query: string = ''): Promise<string[]> => {
+    const response = await apiClient.get<ApiResponse<string[]>>('/api/jobs/functions/search', {
       params: { q: query },
     });
     return response.data.data;
