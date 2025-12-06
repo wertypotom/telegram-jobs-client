@@ -54,12 +54,36 @@ export const authOptions: NextAuthOptions = {
     error: '/login',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       // Persist user id and onboarding status to token on signin
       if (user) {
         token.id = user.id;
         token.hasCompletedOnboarding = user.hasCompletedOnboarding;
       }
+
+      // When update() is called, fetch fresh user data from database
+      if (trigger === 'update' && token.id) {
+        try {
+          const { ObjectId } = await import('mongodb');
+          const clientPromise = (await import('@/lib/mongodb')).default;
+          const client = await clientPromise;
+          const db = client.db();
+
+          const freshUser = await db
+            .collection('users')
+            .findOne(
+              { _id: new ObjectId(token.id) },
+              { projection: { hasCompletedOnboarding: 1 } }
+            );
+
+          if (freshUser) {
+            token.hasCompletedOnboarding = freshUser.hasCompletedOnboarding;
+          }
+        } catch (error) {
+          console.error('Failed to fetch updated user data:', error);
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {

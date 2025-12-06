@@ -8,3 +8,4 @@ export {
   useAvailableChannels,
   useAddChannels,
 } from './use-channels';
+export { useBundles, useBundleById } from './use-bundles';

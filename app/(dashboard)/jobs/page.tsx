@@ -47,6 +47,7 @@ export default function JobsPage() {
 
   // Show onboarding modal if user hasn't completed it
 
+  console.log('user ', user);
   const showOnboarding = user && !user.hasCompletedOnboarding;
 
   if (loadingUser) {
