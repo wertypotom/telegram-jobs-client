@@ -11,7 +11,11 @@ export interface User {
 
 export interface Job {
   id: string;
+  telegramMessageId: string;
   channelId: string;
+  channelUsername?: string;
+  senderUserId?: string;
+  senderUsername?: string;
   rawText: string;
   parsedData?: ParsedJobData;
   status?: 'pending_parse' | 'parsed' | 'failed';

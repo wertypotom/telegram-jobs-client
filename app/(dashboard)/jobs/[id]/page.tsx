@@ -8,7 +8,6 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-  Badge,
   Button,
   Skeleton,
 } from '@/shared/ui';
@@ -20,6 +19,7 @@ import {
   Download,
   MessageSquare,
   ArrowLeft,
+  ExternalLink,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useState, useEffect } from 'react';
@@ -31,6 +31,12 @@ export default function JobDetailPage() {
 
   const { data: job, isLoading } = useJob(jobId);
   const { mutate: generateResume, isPending, data: tailoredResume } = useGenerateTailoredResume();
+  // Extract numeric message ID from composite key (e.g., "@channel_12345" -> "12345")
+  const getMessageId = (telegramMessageId: string) => {
+    const parts = telegramMessageId.split('_');
+    return parts[parts.length - 1]; // Get last part after underscore
+  };
+
   const { mutate: markAsViewed } = useMarkJobAsViewed();
   const [showResult, setShowResult] = useState(false);
 
@@ -94,17 +100,19 @@ export default function JobDetailPage() {
                 {job.parsedData?.company || 'Company'}
               </CardDescription>
             </div>
-            {job.parsedData?.isRemote && (
-              <Badge variant="secondary" className="text-base px-4 py-2">
-                Remote
-              </Badge>
+            {job.channelUsername && job.telegramMessageId && (
+              <Button variant="outline" size="sm" asChild>
+                <a
+                  href={`https://t.me/${job.channelUsername.replace('@', '')}/${getMessageId(job.telegramMessageId)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  View Original Post
+                </a>
+              </Button>
             )}
-          </div>
-
-          <div className="flex flex-wrap gap-2 mt-4">
-            {job.parsedData?.techStack?.map((tech) => (
-              <Badge key={tech}>{tech}</Badge>
-            ))}
           </div>
 
           <div className="flex items-center gap-6 mt-4 text-muted-foreground">
@@ -118,6 +126,13 @@ export default function JobDetailPage() {
               <div className="flex items-center gap-2">
                 <MapPin className="h-5 w-5" />
                 {job.parsedData.level}
+              </div>
+            )}
+            {/* Job Type (Remote/Onsite/Hybrid) */}
+            {(job.parsedData?.isRemote || job.parsedData?.location) && (
+              <div className="flex items-center gap-2">
+                <MapPin className="h-5 w-5" />
+                {job.parsedData.isRemote ? 'Remote' : job.parsedData.location}
               </div>
             )}
             <div className="flex items-center gap-2">
@@ -229,9 +244,13 @@ export default function JobDetailPage() {
           )}
 
           {/* Contact Information */}
-          {job.parsedData?.contactInfo && (
-            <div className="border-t pt-6">
-              <h3 className="font-semibold text-lg mb-3">Contact Information</h3>
+          <div className="border-t pt-6">
+            <h3 className="font-semibold text-lg mb-3">Contact Information</h3>
+            {job.parsedData?.contactInfo &&
+            (job.parsedData.contactInfo.telegram ||
+              job.parsedData.contactInfo.email ||
+              job.parsedData.contactInfo.applicationUrl ||
+              job.parsedData.contactInfo.other) ? (
               <div className="space-y-2">
                 {job.parsedData.contactInfo.telegram && (
                   <div className="flex items-center gap-2">
@@ -279,8 +298,41 @@ export default function JobDetailPage() {
                   </div>
                 )}
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+                <p className="text-muted-foreground">Contact information not provided.</p>
+                {job.senderUsername && (
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">Direct message the job poster:</p>
+                    <div className="flex items-center gap-2">
+                      <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                      <a
+                        href={`https://t.me/${job.senderUsername.replace('@', '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline font-medium"
+                      >
+                        {job.senderUsername}
+                      </a>
+                    </div>
+                  </div>
+                )}
+                {!job.senderUsername && job.channelUsername && job.telegramMessageId && (
+                  <Button variant="outline" size="sm" asChild>
+                    <a
+                      href={`https://t.me/${job.channelUsername.replace('@', '')}/${getMessageId(job.telegramMessageId)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 w-fit"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      View Original Post to Contact
+                    </a>
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 
