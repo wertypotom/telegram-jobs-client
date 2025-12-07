@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/shared/hooks';
+import { useAuth, useLogout } from '@/shared/hooks';
 import Link from 'next/link';
 import { Sparkles, Briefcase, FileText, User, LogOut } from 'lucide-react';
 import { Button } from '@/shared/ui';
@@ -10,6 +10,7 @@ import { Button } from '@/shared/ui';
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { data, isLoading } = useAuth();
+  const logout = useLogout();
 
   useEffect(() => {
     if (!isLoading && !data?.id) {
@@ -68,13 +69,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <Button
             variant="ghost"
             className="w-full justify-center lg:justify-start p-3 rounded-xl hover:bg-gray-50 text-gray-600"
-            onClick={() => {
-              localStorage.removeItem('auth_token');
-              router.push('/login');
-            }}
+            onClick={() => logout.mutate()}
           >
             <LogOut className="h-5 w-5 lg:mr-3 flex-shrink-0" />
-            <span className="hidden lg:inline">Logout</span>
+            <span className="ml-3 font-medium hidden lg:block text-gray-600 group-hover:text-gray-900">
+              Logout
+            </span>
           </Button>
         </div>
       </aside>
