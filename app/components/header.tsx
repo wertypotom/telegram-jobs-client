@@ -58,12 +58,6 @@ export function Header() {
           <div className="hidden md:flex items-center gap-4 flex-shrink-0">
             <Link
               href="/login"
-              className="text-sm font-semibold text-slate-600 hover:text-cyan-600 transition-colors"
-            >
-              Login
-            </Link>
-            <Link
-              href="/login"
               className="bg-cyan-500 hover:bg-cyan-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-lg shadow-cyan-500/30"
             >
               Join Now
@@ -105,9 +99,6 @@ export function Header() {
             Pricing
           </a>
           <hr className="border-slate-100" />
-          <Link href="/login" className="text-base font-medium text-slate-600 py-2">
-            Login
-          </Link>
           <Link
             href="/login"
             className="bg-cyan-500 text-white w-full py-3 rounded-lg font-semibold text-center"

@@ -30,9 +30,12 @@ export default function LoginPage() {
   return (
     <Card>
       <CardHeader className="text-center">
-        <div className="flex justify-center mb-4">
+        <Link
+          href="/"
+          className="flex justify-center mb-4 cursor-pointer hover:opacity-80 transition-opacity"
+        >
           <Sparkles className="h-12 w-12 text-primary" />
-        </div>
+        </Link>
         <CardTitle className="text-2xl">Welcome to JobSniper</CardTitle>
         <CardDescription>
           Sign in to access curated job feeds from top Telegram channels

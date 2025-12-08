@@ -21,12 +21,7 @@ export function HeroSection() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           {/* Left: Copy */}
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-50 border border-cyan-100 text-cyan-700 text-xs font-semibold uppercase tracking-wider mb-6">
-              <Lock size={12} />
-              <span>Unlock Exclusive Access</span>
-            </div>
-
-            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
+            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-extrabold text-slate-900 tracking-tight leading-tigLoginht mb-6">
               Unlock the{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">
                 Hidden Job Market

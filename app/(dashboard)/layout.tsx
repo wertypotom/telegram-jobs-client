@@ -1,14 +1,15 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth, useLogout } from '@/shared/hooks';
 import Link from 'next/link';
-import { Sparkles, Briefcase, FileText, User, LogOut } from 'lucide-react';
+import { Sparkles, Briefcase, User, LogOut } from 'lucide-react';
 import { Button } from '@/shared/ui';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { data, isLoading } = useAuth();
   const logout = useLogout();
 
@@ -22,6 +23,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (!data?.id) {
     return null;
   }
+
+  // Helper to determine if link is active
+  const isActive = (path: string) => pathname === path;
 
   return (
     <div className="min-h-screen flex bg-gray-50">
@@ -38,29 +42,70 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <nav className="p-4 space-y-2">
             <Link
               href="/jobs"
-              className="w-full flex items-center p-3 rounded-xl transition-colors group relative bg-cyan-50"
+              className={`w-full flex items-center p-3 rounded-xl transition-colors group relative ${
+                isActive('/jobs') ? 'bg-cyan-50' : 'hover:bg-gray-50'
+              }`}
             >
-              <Briefcase className="h-5 w-5 flex-shrink-0 text-cyan-600" />
-              <span className="ml-3 font-medium hidden lg:block text-cyan-900">Browse Jobs</span>
-              <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-cyan-500 lg:hidden"></div>
+              <Briefcase
+                className={`h-5 w-5 flex-shrink-0 ${
+                  isActive('/jobs') ? 'text-cyan-600' : 'text-gray-500 group-hover:text-gray-900'
+                }`}
+              />
+              <span
+                className={`ml-3 font-medium hidden lg:block ${
+                  isActive('/jobs') ? 'text-cyan-900' : 'text-gray-600 group-hover:text-gray-900'
+                }`}
+              >
+                Browse Jobs
+              </span>
+              {isActive('/jobs') && (
+                <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-cyan-500 lg:hidden"></div>
+              )}
             </Link>
-            <Link
+
+            {/* Temporarily commented out */}
+            {/* <Link
               href="/resume"
-              className="w-full flex items-center p-3 rounded-xl hover:bg-gray-50 transition-colors group"
+              className={`w-full flex items-center p-3 rounded-xl transition-colors group relative ${
+                isActive('/resume')
+                  ? 'bg-cyan-50'
+                  : 'hover:bg-gray-50'
+              }`}
             >
-              <FileText className="h-5 w-5 flex-shrink-0 text-gray-500 group-hover:text-gray-900" />
-              <span className="ml-3 font-medium hidden lg:block text-gray-600 group-hover:text-gray-900">
+              <FileText className={`h-5 w-5 flex-shrink-0 ${
+                isActive('/resume') ? 'text-cyan-600' : 'text-gray-500 group-hover:text-gray-900'
+              }`} />
+              <span className={`ml-3 font-medium hidden lg:block ${
+                isActive('/resume') ? 'text-cyan-900' : 'text-gray-600 group-hover:text-gray-900'
+              }`}>
                 My Resume
               </span>
-            </Link>
+              {isActive('/resume') && (
+                <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-cyan-500 lg:hidden"></div>
+              )}
+            </Link> */}
+
             <Link
               href="/profile"
-              className="w-full flex items-center p-3 rounded-xl hover:bg-gray-50 transition-colors group"
+              className={`w-full flex items-center p-3 rounded-xl transition-colors group relative ${
+                isActive('/profile') ? 'bg-cyan-50' : 'hover:bg-gray-50'
+              }`}
             >
-              <User className="h-5 w-5 flex-shrink-0 text-gray-500 group-hover:text-gray-900" />
-              <span className="ml-3 font-medium hidden lg:block text-gray-600 group-hover:text-gray-900">
+              <User
+                className={`h-5 w-5 flex-shrink-0 ${
+                  isActive('/profile') ? 'text-cyan-600' : 'text-gray-500 group-hover:text-gray-900'
+                }`}
+              />
+              <span
+                className={`ml-3 font-medium hidden lg:block ${
+                  isActive('/profile') ? 'text-cyan-900' : 'text-gray-600 group-hover:text-gray-900'
+                }`}
+              >
                 Profile
               </span>
+              {isActive('/profile') && (
+                <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-cyan-500 lg:hidden"></div>
+              )}
             </Link>
           </nav>
         </div>
