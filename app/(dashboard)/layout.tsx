@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth, useLogout } from '@/shared/hooks';
 import Link from 'next/link';
-import { Sparkles, Briefcase, User, LogOut } from 'lucide-react';
+import { Sparkles, Briefcase, LogOut } from 'lucide-react';
 import { Button } from '@/shared/ui';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -85,7 +85,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               )}
             </Link> */}
 
-            <Link
+            {/* <Link
               href="/profile"
               className={`w-full flex items-center p-3 rounded-xl transition-colors group relative ${
                 isActive('/profile') ? 'bg-cyan-50' : 'hover:bg-gray-50'
@@ -106,7 +106,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {isActive('/profile') && (
                 <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-cyan-500 lg:hidden"></div>
               )}
-            </Link>
+            </Link> */}
           </nav>
         </div>
 
