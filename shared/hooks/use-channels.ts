@@ -37,9 +37,41 @@ export function useAddChannels() {
   return useMutation({
     mutationFn: (channels: string[]) => channelApi.addChannels(channels),
     onSuccess: () => {
-      // Invalidate subscribed channels to refresh the list
-      queryClient.invalidateQueries({ queryKey: ['subscribed-channels'] });
-      // Invalidate jobs to show new jobs from added channels
+      // Critical: Invalidate auth to refresh subscribedChannels in session
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+      // Refresh channel lists
+      queryClient.invalidateQueries({ queryKey: ['user-channels'] });
+      queryClient.invalidateQueries({ queryKey: ['channels', 'explore'] });
+      // Refresh jobs to show new jobs from added channels
+      queryClient.invalidateQueries({ queryKey: ['jobs'] });
+    },
+  });
+}
+
+/**
+ * Hook to explore channels with filters (Phase 2C Discovery)
+ */
+export function useExploreChannels(params: { searchQuery?: string; categories?: string[] }) {
+  return useQuery({
+    queryKey: ['channels', 'explore', params],
+    queryFn: () => channelApi.exploreChannels(params),
+    staleTime: 30000, // Cache for 30 seconds
+  });
+}
+
+/**
+ * Hook to unsubscribe from a channel (Phase 2C My Channels)
+ */
+export function useUnsubscribeChannel() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (channelUsername: string) => channelApi.unsubscribeChannel(channelUsername),
+    onSuccess: () => {
+      // Invalidate queries to refresh UI
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+      queryClient.invalidateQueries({ queryKey: ['user-channels'] });
+      queryClient.invalidateQueries({ queryKey: ['channels', 'explore'] });
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
   });

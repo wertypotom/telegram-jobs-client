@@ -67,7 +67,7 @@ export default function LoginPage() {
             Continue with Google
           </Button>
 
-          <Button
+          {/* <Button
             variant="outline"
             className="w-full"
             onClick={() => signIn('yandex', { callbackUrl: '/jobs' })}
@@ -76,7 +76,7 @@ export default function LoginPage() {
               <path d="M13.5 2h-3v20h3v-9h2.5l3.5 9h3.5l-4-10c2-1 3-3 3-5.5C22 3.5 19.5 2 16 2h-2.5zm0 3h2.5c1.5 0 2.5.5 2.5 2s-1 2-2.5 2h-2.5V5z" />
             </svg>
             Continue with Yandex
-          </Button>
+          </Button> */}
         </div>
 
         <div className="relative">

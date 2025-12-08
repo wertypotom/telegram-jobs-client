@@ -8,9 +8,9 @@ import { JobList } from './components/job-list';
 import { FiltersPanel } from './components/filters-panel';
 import { ChannelOnboardingModal } from '../components/channel-onboarding-modal';
 import { ChannelManager } from '../components/channel-manager';
-import { DebugChannelWidget } from './components/debug-channel-widget';
+import { ExploreChannelsModal } from '../components/explore-channels-modal';
 import { Skeleton, Card, CardContent, Badge } from '@/shared/ui';
-import { Loader2, SlidersHorizontal } from 'lucide-react';
+import { Loader2, SlidersHorizontal, Sparkles } from 'lucide-react';
 
 export default function JobsPage() {
   const [filters, setFilters] = useState<JobFilters>({
@@ -24,6 +24,7 @@ export default function JobsPage() {
   const pagination = { limit: 20, offset: 0 };
   const [showChannelManager, setShowChannelManager] = useState(false);
   const [showFiltersPanel, setShowFiltersPanel] = useState(false);
+  const [showExploreModal, setShowExploreModal] = useState(false);
   const [isFiltersLoaded, setIsFiltersLoaded] = useState(false);
 
   // Load saved filters from backend on mount
@@ -62,6 +63,7 @@ export default function JobsPage() {
     <>
       <ChannelOnboardingModal open={showOnboarding || false} />
       <ChannelManager open={showChannelManager} onClose={() => setShowChannelManager(false)} />
+      <ExploreChannelsModal open={showExploreModal} onClose={() => setShowExploreModal(false)} />
       <FiltersPanel
         open={showFiltersPanel}
         onClose={() => setShowFiltersPanel(false)}
@@ -85,7 +87,8 @@ export default function JobsPage() {
           <Badge className="bg-black text-white hover:bg-black px-3 py-1 rounded-full text-xs font-bold">
             Recommended
           </Badge>
-          <div className="hidden md:flex items-center gap-4 text-xs font-semibold">
+          {/* TODO: Phase 2D - Implement Liked/Applied/External tracking */}
+          {/* <div className="hidden md:flex items-center gap-4 text-xs font-semibold">
             <span className="text-gray-500">
               Liked <span className="bg-gray-100 px-1.5 rounded ml-1 text-gray-900">1</span>
             </span>
@@ -95,8 +98,15 @@ export default function JobsPage() {
             <span className="text-gray-500">
               External <span className="bg-gray-100 px-1.5 rounded ml-1 text-gray-900">53</span>
             </span>
-          </div>
+          </div> */}
         </div>
+        <button
+          onClick={() => setShowExploreModal(true)}
+          className="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center gap-2 transition-colors"
+        >
+          <Sparkles className="h-4 w-4" />
+          Explore Channels
+        </button>
       </header>
 
       {/* Active Filters Bar */}
@@ -215,9 +225,6 @@ export default function JobsPage() {
               </CardContent>
             </Card>
           </div>
-
-          {/* Debug Widget - POC for testing subscription filtering */}
-          <DebugChannelWidget />
 
           {/* Jobs List */}
           <div>

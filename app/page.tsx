@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/shared/hooks';
 import { Header } from './components/header';
 import { HeroSection } from './components/hero-section';
+import { StatsBar } from './components/stats-bar';
+import { WhyTelegram } from './components/why-telegram';
+import { AggregatorAdvantage } from './components/aggregator-advantage';
 import { FeaturesSection } from './components/features-section';
-import { HowItWorksSection } from './components/how-it-works-section';
-import { CtaSection } from './components/cta-section';
+import { PricingTeaser } from './components/pricing-teaser';
 import { Footer } from './components/footer';
 import { Loader2 } from 'lucide-react';
 
@@ -32,14 +34,17 @@ export default function HomePage() {
   if (user) {
     return null; // Will redirect
   }
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen bg-white text-slate-900">
       <Header />
-      <main className="flex-1">
+      <main>
         <HeroSection />
+        <StatsBar />
+        <WhyTelegram />
+        <AggregatorAdvantage />
         <FeaturesSection />
-        <HowItWorksSection />
-        <CtaSection />
+        <PricingTeaser />
       </main>
       <Footer />
     </div>

@@ -5,8 +5,9 @@ export interface ChannelInfo {
   username: string;
   title: string;
   description?: string;
-  memberCount?: number;
+  memberCount?: number | string; // Can be number or string (e.g. "80K+")
   isJoined: boolean;
+  dailyJobCount?: number; // Average jobs per day
 }
 
 export interface SubscribeChannelsRequest {
@@ -16,6 +17,16 @@ export interface SubscribeChannelsRequest {
 export interface SubscribeChannelsResponse {
   success: boolean;
   jobsCount: number;
+}
+
+export interface ExploreChannelsRequest {
+  searchQuery?: string;
+  categories?: string[];
+}
+
+export interface ExploreChannelsResponse {
+  channels: ChannelInfo[];
+  missedJobsCount: number;
 }
 
 export const channelApi = {
@@ -43,6 +54,24 @@ export const channelApi = {
     const response = await apiClient.post<
       ApiResponse<SubscribeChannelsResponse & { totalChannels: number }>
     >('/api/channels/add', { channels });
+    return response.data.data;
+  },
+
+  exploreChannels: async (params: ExploreChannelsRequest): Promise<ExploreChannelsResponse> => {
+    const response = await apiClient.get<ApiResponse<ExploreChannelsResponse>>(
+      '/api/channels/explore',
+      { params: { searchQuery: params.searchQuery, categories: params.categories?.join(',') } }
+    );
+    return response.data.data;
+  },
+
+  unsubscribeChannel: async (
+    channelUsername: string
+  ): Promise<{ success: boolean; totalChannels: number }> => {
+    const response = await apiClient.post<ApiResponse<{ success: boolean; totalChannels: number }>>(
+      '/api/channels/unsubscribe',
+      { channel: channelUsername }
+    );
     return response.data.data;
   },
 };

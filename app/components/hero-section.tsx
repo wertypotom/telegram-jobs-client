@@ -1,65 +1,187 @@
+import React from 'react';
 import Link from 'next/link';
-import { Button } from '@/shared/ui';
-import { ArrowRight, Send, Bot } from 'lucide-react';
+import {
+  CheckCircle2,
+  Zap,
+  Lock,
+  UserCheck,
+  ArrowRight,
+  MessageSquare,
+  ExternalLink,
+} from 'lucide-react';
 
 export function HeroSection() {
   return (
-    <section className="relative pt-16 pb-20 lg:pt-24 lg:pb-32 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
-          Find Jobs from <span className="text-primary">Telegram</span>.<br />
-          Tailor Resumes with <span className="text-accent">AI</span>.
-        </h1>
+    <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-cyan-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[400px] h-[400px] bg-blue-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
-        <p className="max-w-2xl mx-auto text-lg md:text-xl mb-10 leading-relaxed text-muted-foreground">
-          Browse job postings directly from Telegram channels and generate perfectly tailored
-          resumes for each position using advanced AI. Land your dream job faster.
-        </p>
-
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Button
-            asChild
-            size="lg"
-            className="px-8 py-4 font-bold  text-primary-foreground shadow-xl transition-all hover:scale-105 flex items-center justify-center gap-2"
-          >
-            <Link href="/login">
-              Start Finding Jobs <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
-        </div>
-
-        {/* Mock Chat Interface */}
-        <div className="mt-16 relative max-w-4xl mx-auto">
-          <div className="rounded-2xl shadow-2xl overflow-hidden border">
-            {/* Browser Chrome */}
-            <div className="h-8 bg-secondary flex items-center px-4 gap-2 border-b">
-              <div className="w-3 h-3 rounded-full bg-red-400"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-              <div className="w-3 h-3 rounded-full bg-green-400"></div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+          {/* Left: Copy */}
+          <div className="max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-50 border border-cyan-100 text-cyan-700 text-xs font-semibold uppercase tracking-wider mb-6">
+              <Lock size={12} />
+              <span>Unlock Exclusive Access</span>
             </div>
 
-            {/* Chat Content */}
-            <div className="bg-card p-6 md:p-10 flex flex-col md:flex-row gap-8 items-center">
-              <div className="flex-1 w-full space-y-4">
-                {/* Job Alert Message */}
-                <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center bg-secondary">
-                    <Send size={14} className="text-primary" />
+            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
+              Unlock the{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">
+                Hidden Job Market
+              </span>{' '}
+              on Telegram
+            </h1>
+
+            <p className="text-lg text-slate-600 mb-8 leading-relaxed">
+              The best tech jobs aren't on LinkedIn. They're in communities. We aggregate thousands
+              of exclusive roles from private channels and chats in real-time, giving you the
+              first-mover advantage.
+            </p>
+
+            <div className="space-y-4 mb-10">
+              <div className="flex items-start gap-3">
+                <div className="mt-1 bg-cyan-100 p-1 rounded-full text-cyan-600">
+                  <Zap size={16} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900">First Mover Advantage</h3>
+                  <p className="text-sm text-slate-500">
+                    Apply days before a role appears on generic job boards.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="mt-1 bg-cyan-100 p-1 rounded-full text-cyan-600">
+                  <Lock size={16} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900">Exclusive Inventory</h3>
+                  <p className="text-sm text-slate-500">
+                    40% of our listings are only found in Telegram channels.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="mt-1 bg-cyan-100 p-1 rounded-full text-cyan-600">
+                  <UserCheck size={16} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900">Direct Contact</h3>
+                  <p className="text-sm text-slate-500">
+                    Skip the ATS. 70% of posts include a direct contact for the founder.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link
+                href="/login"
+                className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-2"
+              >
+                Start Finding Jobs
+                <ArrowRight size={20} />
+              </Link>
+              <a
+                href="#pricing"
+                className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-xl font-semibold text-lg transition-all flex items-center justify-center gap-2"
+              >
+                View Pricing
+              </a>
+            </div>
+          </div>
+
+          {/* Right: Visual (Chaos vs Order) */}
+          <div className="relative">
+            {/* The Container for the Visual */}
+            <div className="relative w-full aspect-square max-w-[550px] mx-auto">
+              {/* Back Layer: Chaos (Telegram Chat) */}
+              <div className="absolute top-0 right-0 w-[90%] h-[80%] bg-slate-100 rounded-2xl border border-slate-200 overflow-hidden shadow-inner transform translate-x-4 -translate-y-4 opacity-60 scale-95 origin-bottom-right rotate-2">
+                <div className="p-3 bg-slate-200 border-b border-slate-300 flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-slate-400"></div>
+                  <div className="h-3 w-32 bg-slate-400 rounded"></div>
+                </div>
+                <div className="p-4 space-y-3">
+                  <div className="bg-white p-2 rounded-lg rounded-tl-none shadow-sm max-w-[80%] text-[10px] text-slate-400">
+                    <div className="h-2 w-full bg-slate-200 rounded mb-1"></div>
+                    <div className="h-2 w-2/3 bg-slate-200 rounded"></div>
                   </div>
-                  <div className="rounded-2xl rounded-tl-none p-3 text-sm max-w-[85%] bg-secondary">
-                    <p className="font-semibold mb-1">New Job Alert: Senior React Dev</p>
-                    <p className="opacity-80">Remote • $120k - $150k • TypeScript required...</p>
+                  <div className="bg-white p-2 rounded-lg rounded-tl-none shadow-sm max-w-[90%] text-[10px] text-slate-400">
+                    <div className="h-2 w-full bg-slate-200 rounded mb-1"></div>
+                    <div className="h-2 w-full bg-slate-200 rounded mb-1"></div>
+                    <div className="h-2 w-1/2 bg-slate-200 rounded"></div>
+                  </div>
+                  <div className="bg-green-100 p-2 rounded-lg rounded-tr-none shadow-sm max-w-[70%] ml-auto">
+                    <div className="h-2 w-full bg-green-200 rounded"></div>
+                  </div>
+                  <div className="bg-white p-2 rounded-lg rounded-tl-none shadow-sm max-w-[85%]">
+                    <div className="h-2 w-full bg-slate-200 rounded mb-1"></div>
+                    <div className="h-2 w-4/5 bg-slate-200 rounded"></div>
+                  </div>
+                </div>
+                {/* Overlay suggesting chaos */}
+                <div className="absolute inset-0 bg-slate-500/10 flex items-center justify-center">
+                  <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-pulse">
+                    99+ Unread
+                  </span>
+                </div>
+              </div>
+
+              {/* Front Layer: Order (TeleJob Card) */}
+              <div className="absolute bottom-8 left-0 w-[95%] bg-white rounded-2xl border border-slate-200 shadow-2xl p-6 transform transition-transform hover:-translate-y-2 duration-300">
+                {/* Job Card Header */}
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex gap-4">
+                    <div className="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                      T
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-900 text-lg">Senior React Engineer</h4>
+                      <p className="text-slate-500 text-sm">TechFlow Systems • Remote (EU)</p>
+                    </div>
+                  </div>
+                  <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">
+                    Just Now
+                  </span>
+                </div>
+
+                {/* Parsed Data */}
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <p className="text-xs text-slate-400 uppercase font-semibold mb-1">Salary</p>
+                    <p className="text-slate-900 font-bold">$120k - $150k</p>
+                  </div>
+                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <p className="text-xs text-slate-400 uppercase font-semibold mb-1">Stack</p>
+                    <p className="text-slate-900 font-bold">React, TS, Node</p>
                   </div>
                 </div>
 
-                {/* AI Response */}
-                <div className="flex gap-3 flex-row-reverse">
-                  <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center bg-accent">
-                    <Bot size={14} className="text-white" />
+                {/* Direct Action */}
+                <div className="flex items-center justify-between border-t border-slate-100 pt-4">
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <MessageSquare size={16} className="text-cyan-500" />
+                    <span>Contact: </span>
+                    <span className="font-semibold text-cyan-600 hover:underline cursor-pointer">
+                      @alex_cto
+                    </span>
                   </div>
-                  <div className="rounded-2xl rounded-tr-none p-3 text-sm max-w-[85%] bg-background border">
-                    <p>I've analyzed this listing. Tailoring your resume now...</p>
-                  </div>
+                  <button className="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors flex items-center gap-2">
+                    Apply Now <ExternalLink size={14} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Floating Badge */}
+              <div className="absolute top-1/2 -right-4 bg-white px-4 py-2 rounded-xl shadow-xl border border-slate-100 flex items-center gap-3 animate-bounce">
+                <div className="bg-green-100 p-1.5 rounded-full">
+                  <CheckCircle2 size={16} className="text-green-600" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-slate-900">AI Parsed</p>
+                  <p className="text-[10px] text-slate-500">From unstructured text</p>
                 </div>
               </div>
             </div>

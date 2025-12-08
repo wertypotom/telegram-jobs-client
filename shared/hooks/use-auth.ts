@@ -13,6 +13,8 @@ export function useAuth() {
           name: session.user.name,
           image: session.user.image,
           hasCompletedOnboarding: session.user.hasCompletedOnboarding,
+          subscribedChannels: session.user.subscribedChannels || [],
+          plan: session.user.plan || 'free',
           isAuthenticated: true,
         }
       : null,
