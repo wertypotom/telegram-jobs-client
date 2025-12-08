@@ -10,7 +10,8 @@ import { ChannelOnboardingModal } from '../components/channel-onboarding-modal';
 import { ChannelManager } from '../components/channel-manager';
 import { ExploreChannelsModal } from '../components/explore-channels-modal';
 import { Skeleton, Card, CardContent, Badge } from '@/shared/ui';
-import { Loader2, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { Loader2, SlidersHorizontal, Sparkles, Bell } from 'lucide-react';
+import Link from 'next/link';
 
 export default function JobsPage() {
   const [filters, setFilters] = useState<JobFilters>({
@@ -100,13 +101,25 @@ export default function JobsPage() {
             </span>
           </div> */}
         </div>
-        <button
-          onClick={() => setShowExploreModal(true)}
-          className="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center gap-2 transition-colors"
-        >
-          <Sparkles className="h-4 w-4" />
-          Explore Channels
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Notification Bell */}
+          <Link
+            href="/settings/notifications"
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors group"
+            title="Notification Settings"
+          >
+            <Bell className="h-5 w-5 text-gray-600 group-hover:text-cyan-600 group-hover:animate-[wiggle_0.5s_ease-in-out]" />
+          </Link>
+
+          {/* Explore Channels Button */}
+          <button
+            onClick={() => setShowExploreModal(true)}
+            className="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center gap-2 transition-colors"
+          >
+            <Sparkles className="h-4 w-4" />
+            Explore Channels
+          </button>
+        </div>
       </header>
 
       {/* Active Filters Bar */}
