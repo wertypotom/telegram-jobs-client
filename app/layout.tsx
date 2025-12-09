@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Telegram Job Scraper - AI-Powered Resume Tailoring',
   description: 'Browse Telegram job postings and generate AI-tailored resumes instantly',
+  icons: {
+    icon: '/favicon.png',
+  },
 };
 
 export default function RootLayout({
