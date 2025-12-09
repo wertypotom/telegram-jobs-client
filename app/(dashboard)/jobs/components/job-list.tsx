@@ -39,25 +39,21 @@ export function JobList({ jobs, total }: JobListProps) {
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-1 flex-1 min-w-0">
-                    <CardTitle className="text-xl">
-                      {job.parsedData?.jobTitle || 'Untitled Position'}
-                    </CardTitle>
+                    <div className="flex items-center gap-2">
+                      <CardTitle className="text-xl">
+                        {job.parsedData?.jobTitle || 'Untitled Position'}
+                      </CardTitle>
+                      {/* Unread indicator dot */}
+                      {!job.isVisited && (
+                        <div className="h-2 w-2 rounded-full bg-blue-500 flex-shrink-0" />
+                      )}
+                    </div>
                     <CardDescription className="flex items-center gap-2">
                       <Building2 className="h-4 w-4 flex-shrink-0" />
                       <span className="truncate">
                         {job.parsedData?.company || 'Company not specified'}
                       </span>
                     </CardDescription>
-                  </div>
-                  <div className="flex gap-2 flex-shrink-0">
-                    {job.parsedData?.isRemote && <Badge variant="secondary">Remote</Badge>}
-                    {job.isVisited ? (
-                      <Badge variant="outline" className="text-muted-foreground">
-                        Visited
-                      </Badge>
-                    ) : (
-                      <Badge variant="default">New</Badge>
-                    )}
                   </div>
                 </div>
               </CardHeader>

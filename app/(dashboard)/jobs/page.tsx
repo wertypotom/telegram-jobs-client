@@ -1,16 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useJobs, useAuth } from '@/shared/hooks';
+import { useInfiniteJobs, useAuth, useIntersectionObserver } from '@/shared/hooks';
 import { useFilters } from '@/shared/hooks/use-preferences';
 import type { JobFilters } from '@/shared/api/jobs.api';
 import { JobList } from './components/job-list';
 import { FiltersPanel } from './components/filters-panel';
+import { JobSkeletonList } from './components/job-skeleton';
 import { ChannelOnboardingModal } from '../components/channel-onboarding-modal';
 import { ChannelManager } from '../components/channel-manager';
 import { ExploreChannelsModal } from '../components/explore-channels-modal';
-import { Skeleton, Card, CardContent, Badge } from '@/shared/ui';
-import { Loader2, SlidersHorizontal, Sparkles, Bell } from 'lucide-react';
+import { Card, CardContent, Badge } from '@/shared/ui';
+import { SlidersHorizontal, Sparkles, Bell } from 'lucide-react';
 import Link from 'next/link';
 
 export default function JobsPage() {
@@ -22,7 +23,6 @@ export default function JobsPage() {
     muteKeywords: [],
     locationType: [],
   });
-  const pagination = { limit: 20, offset: 0 };
   const [showChannelManager, setShowChannelManager] = useState(false);
   const [showFiltersPanel, setShowFiltersPanel] = useState(false);
   const [showExploreModal, setShowExploreModal] = useState(false);
@@ -44,8 +44,17 @@ export default function JobsPage() {
 
   const { data: user, isLoading: loadingUser } = useAuth();
 
-  // Only run jobs query after filters are loaded
-  const { data, isLoading, error } = useJobs(filters, pagination, isFiltersLoaded);
+  // Use infinite scrolling for jobs
+  const { jobs, totalCount, isLoading, isFetchingMore, error, hasMore, loadMore } = useInfiniteJobs(
+    filters,
+    isFiltersLoaded
+  );
+
+  // Intersection observer for infinite scroll
+  const loadMoreRef = useIntersectionObserver({
+    onIntersect: loadMore,
+    enabled: hasMore && !isFetchingMore,
+  });
 
   // Show onboarding modal if user hasn't completed it
 
@@ -55,7 +64,7 @@ export default function JobsPage() {
   if (loadingUser) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-black" />
       </div>
     );
   }
@@ -241,21 +250,43 @@ export default function JobsPage() {
 
           {/* Jobs List */}
           <div>
-            {isLoading && (
-              <div className="space-y-6">
-                {[...Array(5)].map((_, i) => (
-                  <Skeleton key={i} className="h-48 w-full" />
-                ))}
-              </div>
-            )}
+            {/* Initial loading */}
+            {isLoading && <JobSkeletonList />}
 
+            {/* Error state */}
             {error && (
               <div className="text-center py-12">
-                <p className="text-destructive">Failed to load jobs. Please try again.</p>
+                <p className="text-red-600">Failed to load jobs. Please try again.</p>
               </div>
             )}
 
-            {data && <JobList jobs={data.jobs} total={data.total} />}
+            {/* Jobs list */}
+            {!isLoading && jobs.length > 0 && (
+              <>
+                <JobList jobs={jobs} total={totalCount} />
+
+                {/* Load more trigger */}
+                {hasMore && (
+                  <div ref={loadMoreRef} className="mt-8">
+                    {isFetchingMore && <JobSkeletonList />}
+                  </div>
+                )}
+
+                {/* End of results message */}
+                {!hasMore && jobs.length > 0 && (
+                  <div className="text-center py-8 text-gray-500 text-sm">
+                    You've reached the end! 🎉
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Empty state */}
+            {!isLoading && jobs.length === 0 && (
+              <div className="text-center py-12 text-gray-500">
+                No jobs found. Try adjusting your filters.
+              </div>
+            )}
           </div>
         </div>
       </div>
