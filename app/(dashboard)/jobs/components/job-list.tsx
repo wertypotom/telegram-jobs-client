@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, Badge } from '@/shared/ui';
 import type { Job } from '@/shared/types/models';
-import { Building2, MapPin, DollarSign, Calendar } from 'lucide-react';
+import { Building2, MapPin, Calendar } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 interface JobListProps {
@@ -68,10 +68,7 @@ export function JobList({ jobs, total }: JobListProps) {
 
                 <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
                   {job.parsedData?.salary && (
-                    <div className="flex items-center gap-1">
-                      <DollarSign className="h-4 w-4" />
-                      {job.parsedData.salary}
-                    </div>
+                    <div className="flex items-center gap-1">{job.parsedData.salary}</div>
                   )}
                   {job.parsedData?.level && (
                     <div className="flex items-center gap-1">

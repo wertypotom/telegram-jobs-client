@@ -102,7 +102,7 @@ export function ChannelOnboardingModal({ open }: ChannelOnboardingModalProps) {
   return (
     <Dialog open={open} onOpenChange={() => {}}>
       <DialogContent
-        className="max-w-4xl w-full h-[65vh] overflow-hidden flex flex-col border-border outline-none focus-visible:outline-none"
+        className="max-w-4xl w-full h-[85vh] overflow-hidden flex flex-col border-border outline-none focus-visible:outline-none"
         showCloseButton={false}
       >
         <DialogHeader>
@@ -111,7 +111,7 @@ export function ChannelOnboardingModal({ open }: ChannelOnboardingModalProps) {
           </DialogTitle>
           <DialogDescription>
             {step === 'BUNDLE'
-              ? 'Get started with a curated bundle or create your own custom feed'
+              ? 'Get started with a curated bundle or create your own custom feed. You can always change your channels later.'
               : `Select up to ${MAX_FREE_CHANNELS} channels to monitor for job postings`}
           </DialogDescription>
         </DialogHeader>

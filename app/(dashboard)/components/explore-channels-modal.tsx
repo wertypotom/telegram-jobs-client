@@ -13,19 +13,9 @@ import {
   useAddChannels,
   useUnsubscribeChannel,
 } from '@/shared/hooks/use-channels';
+import { useCategories } from '@/shared/hooks/use-categories';
 import { useAuth } from '@/shared/hooks';
 import { cn } from '@/shared/utils/cn';
-
-const CATEGORIES = [
-  'Frontend',
-  'Backend',
-  'Mobile',
-  'DevOps',
-  'Data Science',
-  'QA',
-  'GameDev',
-  'InfoSec',
-];
 
 interface ExploreChannelsModalProps {
   open: boolean;
@@ -136,6 +126,7 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
 
   const { data: user } = useAuth();
   const { data: userChannels } = useUserChannels();
+  const { data: categories, isLoading: loadingCategories } = useCategories();
   const { data: exploreData, isLoading } = useExploreChannels({
     searchQuery: searchQuery || undefined,
     categories: selectedCategories.length > 0 ? selectedCategories : undefined,
@@ -228,21 +219,25 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
 
               {/* Category Chips */}
               <div className="flex flex-wrap gap-2">
-                {CATEGORIES.map((category) => (
-                  <Button
-                    key={category}
-                    onClick={() => toggleCategory(category)}
-                    variant={selectedCategories.includes(category) ? 'default' : 'outline'}
-                    size="sm"
-                    className={cn(
-                      'rounded-full',
-                      selectedCategories.includes(category) &&
-                        'bg-cyan-600 hover:bg-cyan-500 text-white'
-                    )}
-                  >
-                    {category}
-                  </Button>
-                ))}
+                {loadingCategories ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
+                ) : (
+                  categories?.map((category: string) => (
+                    <Button
+                      key={category}
+                      onClick={() => toggleCategory(category)}
+                      variant={selectedCategories.includes(category) ? 'default' : 'outline'}
+                      size="sm"
+                      className={cn(
+                        'rounded-full',
+                        selectedCategories.includes(category) &&
+                          'bg-cyan-600 hover:bg-cyan-500 text-white'
+                      )}
+                    >
+                      {category}
+                    </Button>
+                  ))
+                )}
               </div>
 
               {/* Hero FOMO Banner */}

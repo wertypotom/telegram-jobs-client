@@ -74,4 +74,9 @@ export const channelApi = {
     );
     return response.data.data;
   },
+
+  getCategories: async (): Promise<string[]> => {
+    const response = await apiClient.get<ApiResponse<string[]>>('/api/channels/categories');
+    return response.data.data;
+  },
 };
