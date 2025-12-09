@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { jobsApi, JobFilters } from '../api/jobs.api';
 import type { Job } from '../types/models';
 
@@ -16,63 +16,43 @@ interface UseInfiniteJobsResult {
 }
 
 /**
- * Hook for infinite scrolling jobs
- * Automatically loads more jobs as user scrolls
+ * Hook for infinite scrolling jobs with persistent caching
+ * Uses useInfiniteQuery for automatic page management and cache persistence
  */
 export function useInfiniteJobs(
   filters: JobFilters = {},
   enabled: boolean = true
 ): UseInfiniteJobsResult {
-  const [allJobs, setAllJobs] = useState<Job[]>([]);
-  const [offset, setOffset] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
-  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  // Stable filter key for query cache
+  const filterKey = useMemo(() => JSON.stringify(filters), [filters]);
 
-  // Fetch jobs with current offset
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['jobs', filters, offset],
-    queryFn: () => jobsApi.getJobs(filters, { limit: JOBS_PER_PAGE, offset }),
-    enabled,
-  });
+  const { data, isLoading, isFetchingNextPage, error, hasNextPage, fetchNextPage } =
+    useInfiniteQuery({
+      queryKey: ['jobs', filterKey],
+      queryFn: ({ pageParam = 0 }) =>
+        jobsApi.getJobs(filters, { limit: JOBS_PER_PAGE, offset: pageParam }),
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, allPages) => {
+        const loadedCount = allPages.reduce((acc, page) => acc + page.jobs.length, 0);
+        return loadedCount < lastPage.total ? loadedCount : undefined;
+      },
+      enabled,
+      staleTime: 5 * 60 * 1000, // 5 min - prevents refetch on navigation
+      gcTime: 30 * 60 * 1000, // 30 min - keeps data in cache
+    });
 
-  // Update jobs list when new data arrives
-  useEffect(() => {
-    if (data?.jobs) {
-      if (offset === 0) {
-        // First page - replace all jobs
-        setAllJobs(data.jobs);
-      } else {
-        // Additional page - append to existing jobs
-        setAllJobs((prev) => [...prev, ...data.jobs]);
-        setIsFetchingMore(false);
-      }
-      setTotalCount(data.total);
-    }
-  }, [data, offset]);
+  // Flatten all pages into single jobs array
+  const jobs = useMemo(() => data?.pages.flatMap((page) => page.jobs) ?? [], [data]);
 
-  // Reset when filters change
-  useEffect(() => {
-    setOffset(0);
-    setAllJobs([]);
-  }, [JSON.stringify(filters)]);
-
-  // Load more function
-  const loadMore = useCallback(() => {
-    if (!isFetchingMore && allJobs.length < totalCount) {
-      setIsFetchingMore(true);
-      setOffset((prev) => prev + JOBS_PER_PAGE);
-    }
-  }, [isFetchingMore, allJobs.length, totalCount]);
-
-  const hasMore = allJobs.length < totalCount;
+  const totalCount = data?.pages[0]?.total ?? 0;
 
   return {
-    jobs: allJobs,
+    jobs,
     totalCount,
-    isLoading: isLoading && offset === 0, // Only show loading on first page
-    isFetchingMore,
+    isLoading,
+    isFetchingMore: isFetchingNextPage,
     error: error as Error | null,
-    hasMore,
-    loadMore,
+    hasMore: hasNextPage ?? false,
+    loadMore: fetchNextPage,
   };
 }

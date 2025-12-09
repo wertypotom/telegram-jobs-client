@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useInfiniteJobs, useAuth, useIntersectionObserver } from '@/shared/hooks';
 import { useFilters } from '@/shared/hooks/use-preferences';
+import { useJobsStore } from '@/shared/store/jobs.store';
 import type { JobFilters } from '@/shared/api/jobs.api';
 import { JobList } from './components/job-list';
 import { FiltersPanel } from './components/filters-panel';
@@ -57,6 +58,29 @@ export default function JobsPage() {
     onIntersect: loadMore,
     enabled: hasMore && !isFetchingMore,
   });
+
+  // Scroll position persistence
+  const { scrollPosition, setScrollPosition } = useJobsStore();
+
+  // Save scroll position on scroll
+  const handleScroll = useCallback(() => {
+    setScrollPosition(window.scrollY);
+  }, [setScrollPosition]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
+
+  // Restore scroll position after jobs load
+  useEffect(() => {
+    if (jobs.length > 0 && scrollPosition > 0) {
+      // Small delay to ensure DOM is ready
+      requestAnimationFrame(() => {
+        window.scrollTo(0, scrollPosition);
+      });
+    }
+  }, [jobs.length > 0]); // Only run once when jobs first load
 
   // Show onboarding modal if user hasn't completed it
   const showOnboarding = user && !user.hasCompletedOnboarding;
@@ -241,7 +265,7 @@ export default function JobsPage() {
                 {/* Load more trigger */}
                 {hasMore && (
                   <div ref={loadMoreRef} className="mt-8">
-                    {isFetchingMore && <JobSkeletonList count={3} />}
+                    {isFetchingMore && <JobSkeletonList count={1} />}
                   </div>
                 )}
 
