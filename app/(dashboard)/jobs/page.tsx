@@ -10,8 +10,9 @@ import { JobSkeletonList } from './components/job-skeleton';
 import { ChannelOnboardingModal } from '../components/channel-onboarding-modal';
 import { ChannelManager } from '../components/channel-manager';
 import { ExploreChannelsModal } from '../components/explore-channels-modal';
+import { FeedbackModal } from '../components/feedback-modal';
 import { Card, CardContent, Badge } from '@/shared/ui';
-import { SlidersHorizontal, Sparkles, Bell } from 'lucide-react';
+import { SlidersHorizontal, Sparkles, Bell, MessageSquarePlus } from 'lucide-react';
 import Link from 'next/link';
 
 export default function JobsPage() {
@@ -26,6 +27,7 @@ export default function JobsPage() {
   const [showChannelManager, setShowChannelManager] = useState(false);
   const [showFiltersPanel, setShowFiltersPanel] = useState(false);
   const [showExploreModal, setShowExploreModal] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [isFiltersLoaded, setIsFiltersLoaded] = useState(false);
 
   // Load saved filters from backend on mount
@@ -57,8 +59,6 @@ export default function JobsPage() {
   });
 
   // Show onboarding modal if user hasn't completed it
-
-  console.log('user ', user);
   const showOnboarding = user && !user.hasCompletedOnboarding;
 
   if (loadingUser) {
@@ -74,6 +74,8 @@ export default function JobsPage() {
       <ChannelOnboardingModal open={showOnboarding || false} />
       <ChannelManager open={showChannelManager} onClose={() => setShowChannelManager(false)} />
       <ExploreChannelsModal open={showExploreModal} onClose={() => setShowExploreModal(false)} />
+      <FeedbackModal open={feedbackOpen} onOpenChange={setFeedbackOpen} />
+
       <FiltersPanel
         open={showFiltersPanel}
         onClose={() => setShowFiltersPanel(false)}
@@ -89,7 +91,6 @@ export default function JobsPage() {
         onFiltersChange={setFilters}
       />
 
-      {/* Top Header - white background like reference */}
       <header className="bg-white border-b sticky top-0 z-10 px-4 md:px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h1 className="text-xl font-bold tracking-tight text-gray-900">JOBS</h1>
@@ -97,20 +98,17 @@ export default function JobsPage() {
           <Badge className="bg-black text-white hover:bg-black px-3 py-1 rounded-full text-xs font-bold">
             Recommended
           </Badge>
-          {/* TODO: Phase 2D - Implement Liked/Applied/External tracking */}
-          {/* <div className="hidden md:flex items-center gap-4 text-xs font-semibold">
-            <span className="text-gray-500">
-              Liked <span className="bg-gray-100 px-1.5 rounded ml-1 text-gray-900">1</span>
-            </span>
-            <span className="text-gray-500">
-              Applied <span className="bg-gray-100 px-1.5 rounded ml-1 text-gray-900">64</span>
-            </span>
-            <span className="text-gray-500">
-              External <span className="bg-gray-100 px-1.5 rounded ml-1 text-gray-900">53</span>
-            </span>
-          </div> */}
         </div>
         <div className="flex items-center gap-2">
+          {/* Feedback Icon */}
+          <button
+            onClick={() => setFeedbackOpen(true)}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors group"
+            title="Send Feedback"
+          >
+            <MessageSquarePlus className="h-5 w-5 text-gray-600 group-hover:text-cyan-600 group-hover:animate-[wiggle_0.5s_ease-in-out]" />
+          </button>
+
           {/* Notification Bell */}
           <Link
             href="/settings/notifications"
@@ -131,109 +129,84 @@ export default function JobsPage() {
         </div>
       </header>
 
-      {/* Active Filters Bar */}
       <div className="bg-white px-4 md:px-6 py-4 border-b">
-        <section className="flex flex-wrap items-center gap-y-3">
-          {/* Job Title Group (Top Row) */}
-          <div className="flex items-center gap-2">
-            {(filters.jobFunction || []).map((func) => (
-              <div
-                key={func}
-                className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
-              >
-                <span>{func}</span>
-              </div>
-            ))}
-          </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Active Chips */}
+          {(filters.jobFunction || []).map((func) => (
+            <div
+              key={func}
+              className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
+            >
+              <span>{func}</span>
+            </div>
+          ))}
 
-          {/* Spacer between groups */}
-          {(filters.jobFunction || []).length > 0 &&
-            ((filters.level || []).length > 0 ||
-              (filters.stack || []).length > 0 ||
-              (filters.locationType || []).length > 0 ||
-              (filters.excludedTitles || []).length > 0 ||
-              (filters.muteKeywords || []).length > 0 ||
-              (filters.experienceYears &&
-                (filters.experienceYears.min !== 0 || filters.experienceYears.max !== 10))) && (
-              <div className="w-4" />
+          {(filters.level || []).map((l) => (
+            <div
+              key={l}
+              className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
+            >
+              <span>Level: {l}</span>
+            </div>
+          ))}
+
+          {(filters.stack || []).map((s) => (
+            <div
+              key={s}
+              className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
+            >
+              <span>Tech: {s}</span>
+            </div>
+          ))}
+
+          {(filters.locationType || []).map((t) => (
+            <div
+              key={t}
+              className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
+            >
+              <span>Location: {t}</span>
+            </div>
+          ))}
+
+          {(filters.excludedTitles || []).map((t) => (
+            <div
+              key={t}
+              className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
+            >
+              <span>Excluded: {t}</span>
+            </div>
+          ))}
+
+          {(filters.muteKeywords || []).map((k) => (
+            <div
+              key={k}
+              className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
+            >
+              <span>Muted: {k}</span>
+            </div>
+          ))}
+
+          {filters.experienceYears &&
+            (filters.experienceYears.min !== 0 || filters.experienceYears.max !== 10) && (
+              <div className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap">
+                <span>
+                  {filters.experienceYears.min}-
+                  {filters.experienceYears.max >= 10 ? '10+' : filters.experienceYears.max} Years
+                </span>
+              </div>
             )}
 
-          {/* Attribute Group (Bottom Row) */}
-          <div className="flex items-center gap-2 flex-wrap">
-            {/* Level chips */}
-            {(filters.level || []).map((l) => (
-              <div
-                key={l}
-                className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
-              >
-                <span>Level: {l}</span>
-              </div>
-            ))}
-
-            {/* Stack chips */}
-            {(filters.stack || []).map((s) => (
-              <div
-                key={s}
-                className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
-              >
-                <span>Tech: {s}</span>
-              </div>
-            ))}
-
-            {/* Location type chips */}
-            {(filters.locationType || []).map((t) => (
-              <div
-                key={t}
-                className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
-              >
-                <span>Location: {t}</span>
-              </div>
-            ))}
-
-            {/* Excluded titles chips */}
-            {(filters.excludedTitles || []).map((t) => (
-              <div
-                key={t}
-                className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
-              >
-                <span>Excluded: {t}</span>
-              </div>
-            ))}
-
-            {/* Mute keywords chips */}
-            {(filters.muteKeywords || []).map((k) => (
-              <div
-                key={k}
-                className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
-              >
-                <span>Muted: {k}</span>
-              </div>
-            ))}
-
-            {/* Experience years chip */}
-            {filters.experienceYears &&
-              (filters.experienceYears.min !== 0 || filters.experienceYears.max !== 10) && (
-                <div className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap">
-                  <span>
-                    {filters.experienceYears.min}-
-                    {filters.experienceYears.max >= 10 ? '10+' : filters.experienceYears.max} Years
-                  </span>
-                </div>
-              )}
-
-            {/* Edit Filters Button */}
-            <button
-              onClick={() => setShowFiltersPanel(true)}
-              className="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1 rounded-md text-xs font-semibold flex items-center gap-2 ml-2 transition-colors"
-            >
-              <SlidersHorizontal size={16} />
-              Edit Filters
-            </button>
-          </div>
-        </section>
+          {/* Edit Filters Button */}
+          <button
+            onClick={() => setShowFiltersPanel(true)}
+            className="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1 rounded-md text-xs font-semibold flex items-center gap-2 ml-2 transition-colors"
+          >
+            <SlidersHorizontal size={16} />
+            Edit Filters
+          </button>
+        </div>
       </div>
 
-      {/* Main content area */}
       <div className="bg-gray-50 min-h-screen">
         <div className="container mx-auto px-4 md:px-6 pt-6 pb-6 max-w-7xl">
           {/* Welcome Card */}
@@ -251,7 +224,7 @@ export default function JobsPage() {
           {/* Jobs List */}
           <div>
             {/* Initial loading */}
-            {isLoading && <JobSkeletonList />}
+            {isLoading && <JobSkeletonList count={5} />}
 
             {/* Error state */}
             {error && (
@@ -268,7 +241,7 @@ export default function JobsPage() {
                 {/* Load more trigger */}
                 {hasMore && (
                   <div ref={loadMoreRef} className="mt-8">
-                    {isFetchingMore && <JobSkeletonList />}
+                    {isFetchingMore && <JobSkeletonList count={3} />}
                   </div>
                 )}
 

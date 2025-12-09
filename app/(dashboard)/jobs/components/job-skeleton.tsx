@@ -42,8 +42,18 @@ export function JobCardSkeleton() {
 }
 
 /**
- * Single skeleton for loading state
+ * Multiple skeleton cards for loading state
  */
-export function JobSkeletonList() {
-  return <JobCardSkeleton />;
+interface JobSkeletonListProps {
+  count?: number;
+}
+
+export function JobSkeletonList({ count = 1 }: JobSkeletonListProps) {
+  return (
+    <div className="space-y-4">
+      {Array.from({ length: count }).map((_, i) => (
+        <JobCardSkeleton key={i} />
+      ))}
+    </div>
+  );
 }

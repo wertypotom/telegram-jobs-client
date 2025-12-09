@@ -13,4 +13,8 @@ export {
   DialogTrigger,
   DialogClose,
 } from './dialog';
+export { Label } from './label';
+export { RadioGroup, RadioGroupItem } from './radio-group';
+export { Textarea } from './textarea';
+export { Toaster } from './sonner';
 export { Checkbox } from './checkbox';
