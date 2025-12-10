@@ -6,7 +6,7 @@ import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
 import { Badge } from '@/shared/ui/badge';
 import { Card, CardContent } from '@/shared/ui/card';
-import { Search, Sparkles, Loader2, X, Zap, Users, FileText } from 'lucide-react';
+import { Search, Sparkles, Loader2, X, Zap, Users } from 'lucide-react';
 import {
   useExploreChannels,
   useUserChannels,
@@ -39,10 +39,6 @@ function FlipCard({
   handleUnsubscribe,
   formatMemberCount,
 }: FlipCardProps) {
-  const [showStats, setShowStats] = useState(false);
-
-  const toggleStats = () => setShowStats(!showStats);
-
   const handleSubscribeClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (channel.isJoined) {
@@ -53,7 +49,7 @@ function FlipCard({
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 flex flex-col justify-between h-[220px] shadow-sm hover:shadow-md transition-all duration-200 ease-in-out">
+    <div className="bg-white border border-gray-200 rounded-xl p-6 flex flex-col justify-between h-[180px] shadow-sm hover:shadow-md transition-all duration-200 ease-in-out">
       {/* Header Section */}
       <div>
         <div className="flex justify-between items-start">
@@ -63,50 +59,23 @@ function FlipCard({
         </div>
         <p className="text-gray-500 text-sm mb-2">{channel.username}</p>
 
-        {/* Content Area: Swaps between Description and Stats */}
-        <div className="flex-grow">
-          {!showStats ? (
-            <p className="text-gray-600 text-sm leading-snug line-clamp-3">
-              {channel.description || 'No description available'}
-            </p>
-          ) : (
-            <div className="space-y-2 animate-in fade-in duration-200">
-              <div className="flex items-center justify-between border-b border-gray-100 pb-1.5">
-                <div className="flex items-center gap-1.5 text-gray-500">
-                  <Users className="w-3.5 h-3.5" />
-                  <span className="text-xs font-medium">Members</span>
-                </div>
-                <span className="font-bold text-gray-800 text-base">
-                  {formatMemberCount(channel.memberCount)}
-                </span>
-              </div>
-              {channel.dailyJobCount !== undefined && channel.dailyJobCount > 0 && (
-                <div className="flex items-center justify-between border-b border-gray-100 pb-1.5">
-                  <div className="flex items-center gap-1.5 text-gray-500">
-                    <FileText className="w-3.5 h-3.5" />
-                    <span className="text-xs font-medium">Avg. Daily Posts</span>
-                  </div>
-                  <span className="font-bold text-gray-800 text-base">{channel.dailyJobCount}</span>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        {/* Description */}
+        <p className="text-gray-600 text-sm leading-snug line-clamp-2">
+          {channel.description || 'No description available'}
+        </p>
       </div>
 
       {/* Footer / Actions */}
       <div className="flex items-center justify-between mt-2 pt-2">
-        <button
-          onClick={toggleStats}
-          className="text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded px-3 py-1.5 hover:bg-gray-50 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-200"
-        >
-          {showStats ? 'Back to info' : 'Click to see stats'}
-        </button>
+        <div className="flex items-center gap-1.5 text-gray-500">
+          <Users className="w-4 h-4" />
+          <span className="text-sm font-medium">{formatMemberCount(channel.memberCount)}</span>
+        </div>
 
         <button
           onClick={handleSubscribeClick}
           disabled={!channel.isJoined && (!canSubscribe || subscribeToChannel.isPending)}
-          className={`text-sm font-medium px-4 py-1.5 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 ${
+          className={`text-sm font-medium px-4 py-1.5 rounded transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 ${
             channel.isJoined
               ? 'bg-green-100 text-green-700 hover:bg-green-200 focus:ring-green-200'
               : 'bg-cyan-600 text-white hover:bg-cyan-500 focus:ring-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed'
