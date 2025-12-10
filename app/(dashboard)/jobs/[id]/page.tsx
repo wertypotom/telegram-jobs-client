@@ -14,7 +14,6 @@ import {
 import {
   Building2,
   MapPin,
-  DollarSign,
   Calendar,
   Download,
   MessageSquare,
@@ -117,10 +116,7 @@ export default function JobDetailPage() {
 
           <div className="flex items-center gap-6 mt-4 text-muted-foreground">
             {job.parsedData?.salary && (
-              <div className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5" />
-                {job.parsedData.salary}
-              </div>
+              <div className="flex items-center gap-2">{job.parsedData.salary}</div>
             )}
             {job.parsedData?.level && (
               <div className="flex items-center gap-2">
