@@ -14,7 +14,7 @@ import { Button } from '@/shared/ui/button';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { Badge } from '@/shared/ui/badge';
 import { Input } from '@/shared/ui/input';
-import { Loader2, CheckCircle2, Search, ArrowLeft } from 'lucide-react';
+import { Loader2, CheckCircle2, Search, ArrowLeft, HelpCircle } from 'lucide-react';
 import Fuse from 'fuse.js';
 import { BundleSelectionStep } from './bundle-selection-step';
 
@@ -109,10 +109,20 @@ export function ChannelOnboardingModal({ open }: ChannelOnboardingModalProps) {
           <DialogTitle className="text-2xl ">
             {step === 'BUNDLE' ? 'Welcome to JobSniper' : 'Customize Your Feed'}
           </DialogTitle>
-          <DialogDescription>
-            {step === 'BUNDLE'
-              ? 'Get started with a curated bundle or create your own custom feed. You can always change your channels later.'
-              : `Select up to ${MAX_FREE_CHANNELS} channels to monitor for job postings`}
+          <DialogDescription className="flex items-center gap-1.5">
+            {step === 'BUNDLE' ? (
+              <>
+                Get started with a curated bundle. You can swap channels up to 6 times per month.
+                <span
+                  title="A swap is any change to your channel list (adding or removing a channel). Premium users get unlimited swaps."
+                  className="inline-flex cursor-help"
+                >
+                  <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
+                </span>
+              </>
+            ) : (
+              `Select up to ${MAX_FREE_CHANNELS} channels to monitor for job postings`
+            )}
           </DialogDescription>
         </DialogHeader>
 

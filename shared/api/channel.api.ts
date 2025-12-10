@@ -50,9 +50,9 @@ export const channelApi = {
 
   addChannels: async (
     channels: string[]
-  ): Promise<SubscribeChannelsResponse & { totalChannels: number }> => {
+  ): Promise<SubscribeChannelsResponse & { totalChannels: number; swapsRemaining?: number }> => {
     const response = await apiClient.post<
-      ApiResponse<SubscribeChannelsResponse & { totalChannels: number }>
+      ApiResponse<SubscribeChannelsResponse & { totalChannels: number; swapsRemaining?: number }>
     >('/api/channels/add', { channels });
     return response.data.data;
   },
@@ -67,11 +67,10 @@ export const channelApi = {
 
   unsubscribeChannel: async (
     channelUsername: string
-  ): Promise<{ success: boolean; totalChannels: number }> => {
-    const response = await apiClient.post<ApiResponse<{ success: boolean; totalChannels: number }>>(
-      '/api/channels/unsubscribe',
-      { channel: channelUsername }
-    );
+  ): Promise<{ success: boolean; totalChannels: number; swapsRemaining?: number }> => {
+    const response = await apiClient.post<
+      ApiResponse<{ success: boolean; totalChannels: number; swapsRemaining?: number }>
+    >('/api/channels/unsubscribe', { channel: channelUsername });
     return response.data.data;
   },
 

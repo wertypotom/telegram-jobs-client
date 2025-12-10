@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { channelApi } from '../api/channel.api';
+import { toast } from 'sonner';
 
 export function useUserChannels() {
   return useQuery({
@@ -36,7 +37,11 @@ export function useAddChannels() {
 
   return useMutation({
     mutationFn: (channels: string[]) => channelApi.addChannels(channels),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Show swap remaining notification for free users
+      if (data.swapsRemaining !== undefined && data.swapsRemaining >= 0) {
+        toast.info(`Channel added! ${data.swapsRemaining} swaps remaining this month.`);
+      }
       // Critical: Invalidate auth to refresh subscribedChannels in session
       queryClient.invalidateQueries({ queryKey: ['user'] });
       // Refresh channel lists
@@ -67,7 +72,11 @@ export function useUnsubscribeChannel() {
 
   return useMutation({
     mutationFn: (channelUsername: string) => channelApi.unsubscribeChannel(channelUsername),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Show swap remaining notification for free users
+      if (data.swapsRemaining !== undefined && data.swapsRemaining >= 0) {
+        toast.info(`Unsubscribed! ${data.swapsRemaining} swaps remaining this month.`);
+      }
       // Invalidate queries to refresh UI
       queryClient.invalidateQueries({ queryKey: ['user'] });
       queryClient.invalidateQueries({ queryKey: ['user-channels'] });
