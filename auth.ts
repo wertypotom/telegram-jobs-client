@@ -9,6 +9,15 @@ if (!process.env.NEXTAUTH_SECRET) {
   throw new Error('NEXTAUTH_SECRET is not set in environment variables');
 }
 
+// Debug: Log auth config on startup
+console.log('[NextAuth] Config:', {
+  NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+  NODE_ENV: process.env.NODE_ENV,
+  hasSecret: !!process.env.NEXTAUTH_SECRET,
+  hasGoogleId: !!process.env.GOOGLE_CLIENT_ID,
+  hasMongoUri: !!process.env.MONGODB_URI,
+});
+
 export const authOptions: NextAuthOptions = {
   adapter: MongoDBAdapter(clientPromise),
   providers: [
@@ -98,19 +107,7 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
-  cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        // TODO: Re-enable after fixing middleware cookie reading
-        // domain: process.env.NODE_ENV === 'production' ? '.jobsniper.work' : undefined,
-      },
-    },
-  },
+  // Cookie config removed temporarily for debugging - using NextAuth defaults
 };
 
 export default NextAuth(authOptions);
