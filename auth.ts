@@ -106,8 +106,8 @@ export const authOptions: NextAuthOptions = {
         sameSite: 'lax',
         path: '/',
         secure: process.env.NODE_ENV === 'production',
-        // CRITICAL: Share cookie across subdomains
-        domain: process.env.NODE_ENV === 'production' ? '.jobsniper.work' : undefined,
+        // TODO: Re-enable after fixing middleware cookie reading
+        // domain: process.env.NODE_ENV === 'production' ? '.jobsniper.work' : undefined,
       },
     },
   },
