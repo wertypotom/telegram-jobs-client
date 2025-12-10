@@ -248,7 +248,7 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
                     <Zap className="h-6 w-6 text-cyan-600 flex-shrink-0" />
                     <div>
                       <p className="font-bold text-lg text-gray-900">
-                        {exploreData.missedJobsCount} jobs found in these channels!
+                        {exploreData.missedJobsCount} more jobs are found in unsubscribed channels!
                       </p>
                       <p className="text-sm text-gray-600">
                         Subscribe to see opportunities you're missing
