@@ -135,7 +135,8 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
   const subscribeToChannel = useAddChannels();
   const unsubscribeChannel = useUnsubscribeChannel();
 
-  const subscribedCount = user?.subscribedChannels?.length ?? 0;
+  // Use userChannels from API, not session - always up to date
+  const subscribedCount = userChannels?.length ?? 0;
   const maxChannels = user?.plan === 'premium' ? 50 : 5;
   const canSubscribe = subscribedCount < maxChannels;
 
@@ -328,7 +329,7 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
                           size="sm"
                           onClick={() => handleUnsubscribe(channel.username)}
                           disabled={unsubscribeChannel.isPending}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 cursor-pointer"
                         >
                           <X className="h-4 w-4 mr-1" />
                           Unsubscribe
