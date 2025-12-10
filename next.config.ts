@@ -4,8 +4,9 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        // Proxy /api/backend/* to external API server
-        source: '/api/backend/:path*',
+        // Client calls: /api/backend/api/channels/...
+        // Destination: https://api.jobsniper.work/api/channels/...
+        source: '/api/backend/api/:path*',
         destination: 'https://api.jobsniper.work/api/:path*',
       },
     ];
