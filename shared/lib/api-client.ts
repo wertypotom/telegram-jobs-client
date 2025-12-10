@@ -1,6 +1,11 @@
 import axios, { type AxiosInstance, type AxiosError } from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+// In production, use Next.js proxy to keep cookies on same domain
+// In development, call API directly
+const API_URL =
+  process.env.NODE_ENV === 'production'
+    ? '/api/backend'
+    : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 // Track if we're already redirecting to prevent infinite loops
 let isRedirecting = false;
