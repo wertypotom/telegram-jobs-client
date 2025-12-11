@@ -31,10 +31,15 @@ A centralized dashboard that aggregates jobs from Telegram, applies intelligent 
 - **React Query** (@tanstack/react-query) - Server state management & caching
 - **Zustand** - Lightweight client state management
 - **Axios** - HTTP client with interceptors
-- **shadcn/ui** - Accessible, customizable component system
+- **shadcn/ui** - Accessible, customizable component system built on Radix UI
 - **Lucide React** - Beautiful, consistent icon library (1,500+ icons)
-- **NextAuth.js** - Authentication with Telegram integration
-- **MongoDB** - Database via MongoDB Atlas
+- **NextAuth.js v4** - Authentication with Google, Yandex, and Email providers
+- **MongoDB** - Database via MongoDB Atlas with MongoDB Adapter
+- **React Hook Form** - Performant form validation with Zod schemas
+- **Sonner** - Toast notifications
+- **Framer Motion** - Smooth animations and transitions
+- **Fuse.js** - Fuzzy search for channel filtering
+- **date-fns** - Modern date utility library
 
 ### Design Philosophy
 
@@ -88,22 +93,37 @@ All HTTP requests go through a single axios instance (`shared/lib/api-client.ts`
 telegram-jobs-client/
 ├── app/                          # Next.js App Router
 │   ├── (auth)/                   # Auth route group
-│   │   └── login/                # Login page with Telegram widget
+│   │   └── login/                # Login page with OAuth providers
 │   ├── (dashboard)/              # Protected routes
+│   │   ├── components/           # Shared dashboard components
+│   │   │   ├── channel-onboarding-modal.tsx  # First-time channel selection
+│   │   │   ├── explore-channels-modal.tsx    # Channel discovery
+│   │   │   ├── bundle-selection-step.tsx     # Bundle onboarding step
+│   │   │   ├── bundle-card.tsx               # Bundle display card
+│   │   │   ├── channel-manager.tsx           # Channel management
+│   │   │   └── feedback-modal.tsx            # User feedback
 │   │   ├── jobs/                 # Job feed & filters
 │   │   │   ├── [id]/             # Job detail & AI tailoring
 │   │   │   └── components/       # Job-specific components
-│   │   │       ├── filters-panel.tsx        # Advanced filters drawer
-│   │   │       ├── category-sidebar.tsx     # Filter category nav
-│   │   │       ├── job-criteria-section.tsx # Role/level/stack filters
-│   │   │       ├── location-section.tsx     # Location filters
-│   │   │       ├── tech-stack-input.tsx     # Autocomplete tech input
-│   │   │       ├── tag-input.tsx            # Reusable tag input
-│   │   │       ├── job-list.tsx             # Job cards grid
-│   │   │       └── job-filters.tsx          # Quick filters bar
+│   │   │       ├── filters-panel.tsx          # Advanced filters drawer
+│   │   │       ├── category-sidebar.tsx       # Filter category nav
+│   │   │       ├── job-criteria-section.tsx   # Role/level/stack filters
+│   │   │       ├── location-section.tsx       # Location filters
+│   │   │       ├── tech-stack-input.tsx       # Autocomplete tech input
+│   │   │       ├── tag-input.tsx              # Reusable tag input
+│   │   │       ├── simple-tag-input.tsx       # Simple tag variant
+│   │   │       ├── job-function-input.tsx     # Job role selector
+│   │   │       ├── experience-slider.tsx      # Experience level slider
+│   │   │       ├── job-list.tsx               # Job cards grid
+│   │   │       ├── job-filters.tsx            # Quick filters bar
+│   │   │       ├── job-skeleton.tsx           # Loading skeleton
+│   │   │       └── debug-channel-widget.tsx   # Debug tool
 │   │   ├── resume/               # Resume upload
 │   │   ├── profile/              # User profile
+│   │   ├── settings/             # User settings
 │   │   └── layout.tsx            # Dashboard layout with sidebar
+│   ├── api/                      # API routes
+│   │   └── auth/[...nextauth]/   # NextAuth endpoints
 │   ├── components/               # Landing page components
 │   │   ├── header.tsx
 │   │   ├── hero-section.tsx
@@ -113,6 +133,7 @@ telegram-jobs-client/
 │   │   └── footer.tsx
 │   ├── layout.tsx                # Root layout
 │   ├── page.tsx                  # Landing page
+│   ├── providers.tsx             # Client providers wrapper
 │   └── globals.css               # Global styles & CSS variables
 │
 ├── shared/                       # Shared code across app
@@ -121,17 +142,31 @@ telegram-jobs-client/
 │   │   ├── jobs.api.ts           # Job endpoints
 │   │   ├── resume.api.ts         # Resume upload
 │   │   ├── sniper.api.ts         # AI tailoring
+│   │   ├── channel.api.ts        # Channel management
+│   │   ├── bundles.api.ts        # Bundle endpoints
+│   │   ├── preferences.api.ts    # User preferences
+│   │   ├── notification.api.ts   # Notifications
+│   │   ├── feedback.api.ts       # User feedback
+│   │   ├── stats.api.ts          # Analytics/stats
 │   │   └── index.ts              # Barrel exports
 │   ├── hooks/                    # React Query hooks
 │   │   ├── use-auth.ts           # useAuth, useLogin
 │   │   ├── use-jobs.ts           # useJobs, useJob, useMarkJobAsViewed
+│   │   ├── use-infinite-jobs.ts  # Infinite scroll jobs
 │   │   ├── use-resume.ts         # useUploadResume
 │   │   ├── use-sniper.ts         # useGenerateTailoredResume
+│   │   ├── use-channels.ts       # Channel CRUD operations
+│   │   ├── use-bundles.ts        # Bundle fetching
+│   │   ├── use-preferences.ts    # User preferences
+│   │   ├── use-categories.ts     # Job categories
+│   │   ├── use-intersection-observer.ts  # Scroll detection
 │   │   └── index.ts
 │   ├── lib/
 │   │   └── api-client.ts         # Centralized axios instance
 │   ├── providers/
 │   │   └── query-provider.tsx    # React Query provider
+│   ├── store/
+│   │   └── filters-store.ts      # Zustand filter state
 │   ├── types/
 │   │   ├── api.ts                # API request/response types
 │   │   └── models.ts             # Domain models (Job, User, etc.)
@@ -141,12 +176,27 @@ telegram-jobs-client/
 │   │   ├── input.tsx
 │   │   ├── badge.tsx
 │   │   ├── skeleton.tsx
+│   │   ├── dialog.tsx
+│   │   ├── sheet.tsx
+│   │   ├── checkbox.tsx
+│   │   ├── select.tsx
+│   │   ├── slider.tsx
+│   │   ├── radio-group.tsx
+│   │   ├── popover.tsx
+│   │   ├── command.tsx
+│   │   ├── label.tsx
+│   │   ├── textarea.tsx
+│   │   ├── sonner.tsx
 │   │   └── ...
 │   ├── utils/
 │   │   └── cn.ts                 # Tailwind class merger
-│   └── constants/
-│       └── routes.ts             # Route constants
+│   ├── constants/
+│   │   └── routes.ts             # Route constants
+│   └── config/
+│       └── tech-stack.ts         # Tech stack definitions
 │
+├── lib/
+│   └── mongodb.ts                # MongoDB client
 ├── auth.ts                       # NextAuth configuration
 ├── middleware.ts                 # Route protection
 └── package.json
@@ -372,12 +422,30 @@ jobs/
 
 ## 🔑 Key Features
 
+### Channel Management System
+
+- **Bundle Onboarding**: Curated channel bundles for quick setup (e.g., "Tech Jobs", "Remote Work")
+- **Channel Discovery**: Explore and search available Telegram channels with fuzzy search
+- **Subscription Management**: Subscribe/unsubscribe to channels with swap limits (6/month for free users)
+- **My Channels**: View and manage subscribed channels
+- **Smart Limits**: Free tier limited to 5 channels, premium gets unlimited
+
 ### Advanced Multi-Dimensional Filters
 
-- **Job Criteria**: Role, seniority level, tech stack (autocomplete)
-- **Location**: Remote, hybrid, on-site
+- **Job Criteria**: Role, seniority level, tech stack (autocomplete with fuzzy search)
+- **Location**: Remote, hybrid, on-site with location preferences
+- **Experience**: Slider for years of experience (0-20+ years)
 - **Exclusions**: Mute keywords, excluded job titles
 - **Real-time filtering** with React Query cache invalidation
+- **Persistent filters** via Zustand store
+
+### Infinite Scroll Job Feed
+
+- **Optimized pagination**: 20 jobs per page with automatic loading
+- **Persistent cache**: 5-minute stale time, 30-minute garbage collection
+- **Intersection Observer**: Automatic load-more on scroll
+- **Skeleton loading states** for smooth UX
+- **Job view tracking** to mark jobs as seen
 
 ### AI-Powered Resume Tailoring
 
@@ -387,18 +455,29 @@ jobs/
 - Auto-generated cover letter
 - Telegram message template for direct application
 
-### Telegram Authentication
+### Multi-Provider Authentication
 
-- Seamless login via Telegram widget
-- JWT token management
+- **Google OAuth**: Sign in with Google account
+- **Yandex OAuth**: Sign in with Yandex account (custom provider)
+- **Email Magic Links**: Passwordless email authentication via MailerSend
+- JWT session strategy with secure cookies
+- MongoDB adapter for user persistence
 - Protected routes with middleware
+- Onboarding flow for first-time users
+
+### User Preferences & Settings
+
+- Job filter preferences persistence
+- Notification settings
+- Profile management
+- Resume storage and versioning
 
 ### Smart Job Feed
 
 - Real-time job scraping from Telegram channels
-- Pagination with infinite scroll (planned)
+- Channel-based filtering
 - Job view tracking
-- Channel-based filtering (planned)
+- Category-based organization
 
 ## 🚀 Getting Started
 
@@ -417,9 +496,45 @@ npm install
 # Copy environment template
 cp .env.local.example .env.local
 
-# Configure environment variables
-# NEXT_PUBLIC_API_URL=http://localhost:3000
-# NEXT_PUBLIC_TELEGRAM_BOT_NAME=your_bot_name
+# Configure environment variables (see below)
+```
+
+### Environment Variables
+
+Create a `.env.local` file with the following variables:
+
+```bash
+# NextAuth Configuration
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=<generate-with-openssl-rand-base64-32>
+AUTH_SECRET=<your-secret-here>
+
+# Google OAuth
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# Yandex OAuth
+YANDEX_CLIENT_ID=your-yandex-client-id
+YANDEX_CLIENT_SECRET=your-yandex-client-secret
+
+# Email Provider (MailerSend SMTP)
+EMAIL_SERVER_HOST=smtp.mailersend.net
+EMAIL_SERVER_PORT=587
+EMAIL_SERVER_USER=your-mailersend-username
+EMAIL_SERVER_PASSWORD=your-mailersend-password
+EMAIL_FROM=noreply@yourdomain.com
+
+# MongoDB
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database
+
+# Backend API
+NEXT_PUBLIC_API_URL=http://localhost:4000
+```
+
+**Generate secrets:**
+
+```bash
+openssl rand -base64 32
 ```
 
 ### Development
@@ -484,15 +599,37 @@ npm run format:check # Check formatting
 
 ## 🔒 Authentication Flow
 
+### OAuth Providers (Google & Yandex)
+
 1. User visits `/login`
-2. Telegram Login Widget loads
-3. User authenticates via Telegram
-4. Widget callback receives user data
-5. Frontend sends data to `/api/auth/login`
-6. Backend validates and returns JWT
-7. Token stored in `localStorage`
-8. API client injects token in all requests
-9. Middleware protects dashboard routes
+2. User clicks "Sign in with Google" or "Sign in with Yandex"
+3. OAuth provider redirects to authorization page
+4. User authorizes the application
+5. Provider redirects back with authorization code
+6. NextAuth exchanges code for user profile
+7. User data stored in MongoDB via MongoDB Adapter
+8. JWT session token created and stored in secure HTTP-only cookie
+9. User redirected to dashboard
+10. Middleware protects dashboard routes by validating session
+11. First-time users see channel onboarding modal
+
+### Email Magic Links
+
+1. User visits `/login`
+2. User enters email address
+3. NextAuth sends magic link via MailerSend SMTP
+4. User clicks link in email
+5. NextAuth validates token and creates session
+6. User redirected to dashboard with JWT cookie
+7. Onboarding flow for new users
+
+### Session Management
+
+- **Strategy**: JWT (stateless)
+- **Storage**: Secure HTTP-only cookies
+- **Adapter**: MongoDB for user persistence
+- **Callbacks**: Custom JWT and session callbacks for user metadata
+- **Update Trigger**: Session refresh on onboarding completion
 
 ## 🌐 Deployment
 
@@ -504,42 +641,86 @@ vercel
 
 Set environment variables in Vercel dashboard:
 
-- `NEXT_PUBLIC_API_URL`
-- `NEXT_PUBLIC_TELEGRAM_BOT_NAME`
+**Required:**
+
+- `NEXTAUTH_URL` - Your production URL (e.g., https://jobsniper.vercel.app)
+- `NEXTAUTH_SECRET` - Generate with `openssl rand -base64 32`
+- `AUTH_SECRET` - Same as NEXTAUTH_SECRET or separate secret
+- `MONGODB_URI` - MongoDB Atlas connection string
+- `NEXT_PUBLIC_API_URL` - Backend API URL
+
+**OAuth Providers (at least one required):**
+
+- `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET`
+- `YANDEX_CLIENT_ID` & `YANDEX_CLIENT_SECRET`
+
+**Email Provider (optional):**
+
+- `EMAIL_SERVER_HOST`
+- `EMAIL_SERVER_PORT`
+- `EMAIL_SERVER_USER`
+- `EMAIL_SERVER_PASSWORD`
+- `EMAIL_FROM`
 
 ## 🚧 Roadmap
 
 ### Phase 1: Core Platform ✅
 
 - [x] Landing page
-- [x] Telegram authentication
-- [x] Job feed with pagination
-- [x] Advanced filters
+- [x] Multi-provider authentication (Google, Yandex, Email)
+- [x] Job feed with infinite scroll
+- [x] Advanced multi-dimensional filters
 - [x] AI resume tailoring
 - [x] Resume upload
 
-### Phase 2: Enhanced UX (In Progress)
+### Phase 2: Channel Management ✅
 
-- [x] Multi-dimensional filters
-- [x] Tech stack autocomplete
-- [ ] Bundle onboarding (channel selection)
-- [ ] Explore modal with channel search
-- [ ] Job bookmarking
-- [ ] Infinite scroll
+- [x] Channel bundle system
+- [x] Channel onboarding flow
+- [x] Channel discovery with search
+- [x] Subscribe/unsubscribe functionality
+- [x] Swap limits for free tier (6/month)
+- [x] My Channels management
+- [x] 5-channel limit for free users
 
-### Phase 3: Intelligence
+### Phase 3: Enhanced UX (In Progress)
+
+- [x] Tech stack autocomplete with fuzzy search
+- [x] Experience level slider
+- [x] Job function selector
+- [x] Persistent filter state
+- [x] Skeleton loading states
+- [ ] Job bookmarking/favorites
+- [ ] Job application tracking
+- [ ] Advanced sorting options
+- [ ] Saved searches
+
+### Phase 4: Intelligence & Personalization
 
 - [ ] Job recommendations based on resume
 - [ ] Email notifications for new jobs
-- [ ] Application tracking
-- [ ] Analytics dashboard
+- [ ] Smart job matching algorithm
+- [ ] Analytics dashboard (views, applications, success rate)
+- [ ] Resume version history
+- [ ] A/B testing for resume variations
 
-### Phase 4: Polish
+### Phase 5: Premium Features
 
-- [ ] PWA support
+- [ ] Unlimited channel subscriptions
+- [ ] Unlimited channel swaps
+- [ ] Priority job alerts
+- [ ] Advanced analytics
+- [ ] Custom resume templates
+- [ ] API access
+
+### Phase 6: Polish & Scale
+
+- [ ] PWA support (offline mode)
 - [ ] Dark mode
-- [ ] Resume templates
-- [ ] Unit & E2E tests
+- [ ] Mobile app (React Native)
+- [ ] Unit & E2E tests (Playwright)
+- [ ] Performance monitoring
+- [ ] SEO optimization
 
 ## 📄 License
 
@@ -548,6 +729,6 @@ MIT
 ---
 
 **Built with** ❤️ **by a developer who's tired of manual job hunting**  
-**Last Updated**: 2025-12-04  
-**Version**: 0.1.0  
+**Last Updated**: 2025-12-10  
+**Version**: 0.2.0  
 **Status**: Active Development
