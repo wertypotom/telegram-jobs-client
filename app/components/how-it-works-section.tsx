@@ -1,35 +1,38 @@
-const steps = [
-  {
-    step: '01',
-    title: 'Connect Telegram',
-    description: 'Login with your Telegram account to access job channels.',
-  },
-  {
-    step: '02',
-    title: 'Upload Resume',
-    description: 'Upload your master resume (PDF or DOCX) once.',
-  },
-  {
-    step: '03',
-    title: 'Browse Jobs',
-    description: 'Browse AI-parsed job postings with smart filters.',
-  },
-  {
-    step: '04',
-    title: 'Generate & Apply',
-    description: 'Click to generate a tailored resume and apply instantly.',
-  },
-];
+'use client';
+
+import { useTranslation } from 'react-i18next';
 
 export function HowItWorksSection() {
+  const { t } = useTranslation('landing');
+
+  const steps = [
+    {
+      step: '01',
+      title: t('howItWorks.steps.connect.title'),
+      description: t('howItWorks.steps.connect.description'),
+    },
+    {
+      step: '02',
+      title: t('howItWorks.steps.upload.title'),
+      description: t('howItWorks.steps.upload.description'),
+    },
+    {
+      step: '03',
+      title: t('howItWorks.steps.browse.title'),
+      description: t('howItWorks.steps.browse.description'),
+    },
+    {
+      step: '04',
+      title: t('howItWorks.steps.generate.title'),
+      description: t('howItWorks.steps.generate.description'),
+    },
+  ];
   return (
     <section id="how-it-works" className="py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
-          <p className="text-lg text-muted-foreground">
-            Four simple steps to start applying with tailored resumes.
-          </p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('howItWorks.title')}</h2>
+          <p className="text-lg text-muted-foreground">{t('howItWorks.subtitle')}</p>
         </div>
 
         <div className="grid md:grid-cols-4 gap-8 relative">

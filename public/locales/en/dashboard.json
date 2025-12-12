@@ -1,0 +1,59 @@
+{
+  "page": {
+    "title": "JOBS",
+    "recommended": "Recommended",
+    "exploreChannels": "Explore Channels",
+    "editFilters": "Edit Filters",
+    "welcome": "Welcome back, Developer!",
+    "welcomeSubtitle": "It's great to see you again. Let's resume your journey towards your dream job.",
+    "noJobs": "No jobs found. Try adjusting your filters.",
+    "endOfResults": "You've reached the end! 🎉",
+    "failedToLoad": "Failed to load jobs. Please try again."
+  },
+  "filters": {
+    "title": "Filters",
+    "categories": {
+      "jobCriteria": "Job Criteria",
+      "jobCriteriaSubtext": "Role, Level, Tech Stack",
+      "locationWorkMode": "Location & Work Mode",
+      "locationWorkModeSubtext": "Remote, On-site, Hybrid",
+      "exclusions": "Exclusions",
+      "exclusionsSubtext": "Mute Keywords, Excluded Titles"
+    },
+    "jobFunction": "Job Function",
+    "jobFunctionPlaceholder": "Select or search role...",
+    "experienceLevel": "Experience Level",
+    "techStack": "Tech Stack",
+    "techStackPlaceholder": "Type to search technologies...",
+    "years": "Years",
+    "muteKeywords": "Mute Keywords",
+    "muteKeywordsDesc": "Hide jobs containing these words (e.g. \"Gambling\", \"C++\", \"Unpaid\")",
+    "muteKeywordsPlaceholder": "Enter keyword to mute...",
+    "excludedTitles": "Excluded Job Titles",
+    "excludedTitlesDesc": "Hide specific job titles you're not interested in",
+    "excludedTitlesPlaceholder": "Enter title to exclude...",
+    "locationType": {
+      "remote": "Remote",
+      "hybrid": "Hybrid",
+      "onsite": "On-site"
+    },
+    "chips": {
+      "level": "Level",
+      "tech": "Tech",
+      "location": "Location",
+      "excluded": "Excluded",
+      "muted": "Muted"
+    }
+  },
+  "sidebar": {
+    "appName": "JobSniper",
+    "browseJobs": "Browse Jobs",
+    "myResume": "My Resume",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "notifications": {
+    "title": "Notification Settings",
+    "sendFeedback": "Send Feedback"
+  }
+}

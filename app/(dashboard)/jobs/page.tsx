@@ -15,8 +15,10 @@ import { FeedbackModal } from '../components/feedback-modal';
 import { Card, CardContent, Badge } from '@/shared/ui';
 import { SlidersHorizontal, Sparkles, Bell, MessageSquarePlus } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 export default function JobsPage() {
+  const { t } = useTranslation('dashboard');
   const [filters, setFilters] = useState<JobFilters>({
     stack: [],
     level: [],
@@ -117,10 +119,10 @@ export default function JobsPage() {
 
       <header className="bg-white border-b sticky top-0 z-10 px-4 md:px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <h1 className="text-xl font-bold tracking-tight text-gray-900">JOBS</h1>
+          <h1 className="text-xl font-bold tracking-tight text-gray-900">{t('page.title')}</h1>
           <span className="text-gray-300 hidden sm:inline">/</span>
           <Badge className="bg-black text-white hover:bg-black px-3 py-1 rounded-full text-xs font-bold">
-            Recommended
+            {t('page.recommended')}
           </Badge>
         </div>
         <div className="flex items-center gap-2">
@@ -148,7 +150,7 @@ export default function JobsPage() {
             className="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center gap-2 transition-colors"
           >
             <Sparkles className="h-4 w-4" />
-            Explore Channels
+            {t('page.exploreChannels')}
           </button>
         </div>
       </header>
@@ -179,25 +181,31 @@ export default function JobsPage() {
               key={s}
               className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
             >
-              <span>Tech: {s}</span>
+              <span>
+                {t('filters.chips.tech')}: {s}
+              </span>
             </div>
           ))}
 
-          {(filters.locationType || []).map((t) => (
+          {(filters.locationType || []).map((locType) => (
             <div
-              key={t}
+              key={locType}
               className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
             >
-              <span>Location: {t}</span>
+              <span>
+                {t('filters.chips.location')}: {locType}
+              </span>
             </div>
           ))}
 
-          {(filters.excludedTitles || []).map((t) => (
+          {(filters.excludedTitles || []).map((title) => (
             <div
-              key={t}
+              key={title}
               className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
             >
-              <span>Excluded: {t}</span>
+              <span>
+                {t('filters.chips.excluded')}: {title}
+              </span>
             </div>
           ))}
 
@@ -206,7 +214,9 @@ export default function JobsPage() {
               key={k}
               className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
             >
-              <span>Muted: {k}</span>
+              <span>
+                {t('filters.chips.muted')}: {k}
+              </span>
             </div>
           ))}
 
@@ -215,7 +225,8 @@ export default function JobsPage() {
               <div className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap">
                 <span>
                   {filters.experienceYears.min}-
-                  {filters.experienceYears.max >= 10 ? '10+' : filters.experienceYears.max} Years
+                  {filters.experienceYears.max >= 10 ? '10+' : filters.experienceYears.max}{' '}
+                  {t('filters.years')}
                 </span>
               </div>
             )}
@@ -226,7 +237,7 @@ export default function JobsPage() {
             className="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1 rounded-md text-xs font-semibold flex items-center gap-2 ml-2 transition-colors"
           >
             <SlidersHorizontal size={16} />
-            Edit Filters
+            {t('page.editFilters')}
           </button>
         </div>
       </div>
@@ -237,10 +248,8 @@ export default function JobsPage() {
           <div className="mb-6">
             <Card className="bg-white border border-gray-100 shadow-sm">
               <CardContent className="p-4">
-                <h2 className="text-sm font-semibold text-gray-900">Welcome back, Developer!</h2>
-                <p className="text-xs text-gray-500 mt-1">
-                  It's great to see you again. Let's resume your journey towards your dream job.
-                </p>
+                <h2 className="text-sm font-semibold text-gray-900">{t('page.welcome')}</h2>
+                <p className="text-xs text-gray-500 mt-1">{t('page.welcomeSubtitle')}</p>
               </CardContent>
             </Card>
           </div>
@@ -253,7 +262,7 @@ export default function JobsPage() {
             {/* Error state */}
             {error && (
               <div className="text-center py-12">
-                <p className="text-red-600">Failed to load jobs. Please try again.</p>
+                <p className="text-red-600">{t('page.failedToLoad')}</p>
               </div>
             )}
 
@@ -272,7 +281,7 @@ export default function JobsPage() {
                 {/* End of results message */}
                 {!hasMore && jobs.length > 0 && (
                   <div className="text-center py-8 text-gray-500 text-sm">
-                    You've reached the end! 🎉
+                    {t('page.endOfResults')}
                   </div>
                 )}
               </>
@@ -280,9 +289,7 @@ export default function JobsPage() {
 
             {/* Empty state */}
             {!isLoading && jobs.length === 0 && (
-              <div className="text-center py-12 text-gray-500">
-                No jobs found. Try adjusting your filters.
-              </div>
+              <div className="text-center py-12 text-gray-500">{t('page.noJobs')}</div>
             )}
           </div>
         </div>

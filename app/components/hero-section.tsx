@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import {
@@ -9,8 +11,10 @@ import {
   MessageSquare,
   ExternalLink,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export function HeroSection() {
+  const { t } = useTranslation('landing');
   return (
     <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden">
       {/* Background Decor */}
@@ -21,19 +25,15 @@ export function HeroSection() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           {/* Left: Copy */}
           <div className="max-w-2xl">
-            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-extrabold text-slate-900 tracking-tight leading-tigLoginht mb-6">
-              Unlock the{' '}
+            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
+              {t('hero.title')}{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">
-                Hidden Job Market
+                {t('hero.titleHighlight')}
               </span>{' '}
-              on Telegram
+              {t('hero.titleEnd')}
             </h1>
 
-            <p className="text-lg text-slate-600 mb-8 leading-relaxed">
-              The best tech jobs aren't on LinkedIn. They're in communities. We aggregate thousands
-              of exclusive roles from private channels and chats in real-time, giving you the
-              first-mover advantage.
-            </p>
+            <p className="text-lg text-slate-600 mb-8 leading-relaxed">{t('hero.description')}</p>
 
             <div className="space-y-4 mb-10">
               <div className="flex items-start gap-3">
@@ -41,10 +41,8 @@ export function HeroSection() {
                   <Zap size={16} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900">First Mover Advantage</h3>
-                  <p className="text-sm text-slate-500">
-                    Apply days before a role appears on generic job boards.
-                  </p>
+                  <h3 className="font-semibold text-slate-900">{t('hero.firstMoverTitle')}</h3>
+                  <p className="text-sm text-slate-500">{t('hero.firstMoverDesc')}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -52,10 +50,8 @@ export function HeroSection() {
                   <Lock size={16} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900">Exclusive Inventory</h3>
-                  <p className="text-sm text-slate-500">
-                    40% of our listings are only found in Telegram channels.
-                  </p>
+                  <h3 className="font-semibold text-slate-900">{t('hero.exclusiveTitle')}</h3>
+                  <p className="text-sm text-slate-500">{t('hero.exclusiveDesc')}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -63,10 +59,8 @@ export function HeroSection() {
                   <UserCheck size={16} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900">Direct Contact</h3>
-                  <p className="text-sm text-slate-500">
-                    Skip the ATS. 70% of posts include a direct contact for the founder.
-                  </p>
+                  <h3 className="font-semibold text-slate-900">{t('hero.directContactTitle')}</h3>
+                  <p className="text-sm text-slate-500">{t('hero.directContactDesc')}</p>
                 </div>
               </div>
             </div>
@@ -76,14 +70,14 @@ export function HeroSection() {
                 href="/login"
                 className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-2"
               >
-                Start Finding Jobs
+                {t('hero.startFinding')}
                 <ArrowRight size={20} />
               </Link>
               <a
                 href="#pricing"
                 className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-xl font-semibold text-lg transition-all flex items-center justify-center gap-2"
               >
-                View Pricing
+                {t('hero.viewPricing')}
               </a>
             </div>
           </div>
@@ -119,7 +113,7 @@ export function HeroSection() {
                 {/* Overlay suggesting chaos */}
                 <div className="absolute inset-0 bg-slate-500/10 flex items-center justify-center">
                   <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-pulse">
-                    99+ Unread
+                    99+ {t('hero.unread')}
                   </span>
                 </div>
               </div>
@@ -138,18 +132,22 @@ export function HeroSection() {
                     </div>
                   </div>
                   <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">
-                    Just Now
+                    {t('hero.justNow')}
                   </span>
                 </div>
 
                 {/* Parsed Data */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    <p className="text-xs text-slate-400 uppercase font-semibold mb-1">Salary</p>
+                    <p className="text-xs text-slate-400 uppercase font-semibold mb-1">
+                      {t('hero.salary')}
+                    </p>
                     <p className="text-slate-900 font-bold">$120k - $150k</p>
                   </div>
                   <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    <p className="text-xs text-slate-400 uppercase font-semibold mb-1">Stack</p>
+                    <p className="text-xs text-slate-400 uppercase font-semibold mb-1">
+                      {t('hero.stack')}
+                    </p>
                     <p className="text-slate-900 font-bold">React, TS, Node</p>
                   </div>
                 </div>
@@ -158,13 +156,13 @@ export function HeroSection() {
                 <div className="flex items-center justify-between border-t border-slate-100 pt-4">
                   <div className="flex items-center gap-2 text-sm text-slate-600">
                     <MessageSquare size={16} className="text-cyan-500" />
-                    <span>Contact: </span>
+                    <span>{t('hero.contact')} </span>
                     <span className="font-semibold text-cyan-600 hover:underline cursor-pointer">
                       @alex_cto
                     </span>
                   </div>
                   <button className="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors flex items-center gap-2">
-                    Apply Now <ExternalLink size={14} />
+                    {t('hero.applyNow')} <ExternalLink size={14} />
                   </button>
                 </div>
               </div>
@@ -175,8 +173,8 @@ export function HeroSection() {
                   <CheckCircle2 size={16} className="text-green-600" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-slate-900">AI Parsed</p>
-                  <p className="text-[10px] text-slate-500">From unstructured text</p>
+                  <p className="text-xs font-bold text-slate-900">{t('hero.aiParsed')}</p>
+                  <p className="text-[10px] text-slate-500">{t('hero.unstructuredText')}</p>
                 </div>
               </div>
             </div>

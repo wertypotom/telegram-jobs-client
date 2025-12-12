@@ -1,7 +1,11 @@
+'use client';
+
 import React from 'react';
 import { Layers } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export function AggregatorAdvantage() {
+  const { t } = useTranslation('landing');
   return (
     <section className="py-24 bg-slate-900 text-white relative overflow-hidden">
       {/* Background patterns */}
@@ -17,27 +21,21 @@ export function AggregatorAdvantage() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
             <div className="inline-block bg-cyan-900 text-cyan-300 font-semibold px-4 py-1.5 rounded-full text-sm mb-6">
-              The Aggregator Advantage
+              {t('aggregatorAdvantage.badge')}
             </div>
-            <h2 className="text-4xl font-bold mb-6">
-              Stop joining 50 different channels and muting notifications.
-            </h2>
+            <h2 className="text-4xl font-bold mb-6">{t('aggregatorAdvantage.title')}</h2>
             <p className="text-slate-300 text-lg mb-8 leading-relaxed">
-              We aggregate 120+ specialized channels into one powerful dashboard. No spam. No
-              sticker packs. No crypto scams. Just high-quality job postings, verified and
-              standardized.
+              {t('aggregatorAdvantage.description')}
             </p>
 
             <ul className="space-y-4">
               <li className="flex items-center gap-3">
                 <div className="w-2 h-2 rounded-full bg-cyan-400"></div>
-                <span className="text-slate-200">
-                  One clean feed for all your specialized interests
-                </span>
+                <span className="text-slate-200">{t('aggregatorAdvantage.benefit1')}</span>
               </li>
               <li className="flex items-center gap-3">
                 <div className="w-2 h-2 rounded-full bg-cyan-400"></div>
-                <span className="text-slate-200">Deduplicated listings across multiple groups</span>
+                <span className="text-slate-200">{t('aggregatorAdvantage.benefit2')}</span>
               </li>
             </ul>
           </div>
@@ -48,7 +46,9 @@ export function AggregatorAdvantage() {
               {/* Center Node */}
               <div className="w-32 h-32 bg-cyan-500 rounded-full flex flex-col items-center justify-center shadow-[0_0_50px_rgba(6,182,212,0.4)] z-20 relative">
                 <Layers size={40} className="text-white mb-1" />
-                <span className="font-bold text-white text-sm">TeleJob AI</span>
+                <span className="font-bold text-white text-sm">
+                  {t('aggregatorAdvantage.appName')}
+                </span>
               </div>
 
               {/* Orbiting Nodes (Simulated with absolute positioning) */}

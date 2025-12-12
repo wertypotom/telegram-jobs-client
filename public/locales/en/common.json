@@ -1,0 +1,25 @@
+{
+  "header": {
+    "hiddenMarket": "Hidden Market",
+    "howItWorks": "How It Works",
+    "pricing": "Pricing",
+    "joinNow": "Join Now"
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "product": "Product",
+    "company": "Company",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "apply": "Apply",
+    "update": "UPDATE",
+    "clearAll": "Clear All",
+    "sendFeedback": "Send Feedback"
+  }
+}

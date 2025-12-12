@@ -7,6 +7,7 @@ import { CategorySidebar } from './category-sidebar';
 import { SimpleTagInput } from './simple-tag-input';
 import { JobCriteriaSection } from './job-criteria-section';
 import { LocationSection } from './location-section';
+import { useTranslation } from 'react-i18next';
 
 interface FiltersPanelProps {
   open: boolean;
@@ -26,6 +27,7 @@ interface FiltersPanelProps {
 export function FiltersPanel({ open, onClose, filters, onFiltersChange }: FiltersPanelProps) {
   const [localFilters, setLocalFilters] = useState(filters);
   const [selectedCategory, setSelectedCategory] = useState('Job Criteria');
+  const { t } = useTranslation('dashboard');
 
   // Sync local state when drawer opens
   useEffect(() => {
@@ -35,9 +37,9 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
   }, [open, filters]);
 
   const categories = [
-    { name: 'Job Criteria', subtext: 'Role, Level, Tech Stack' },
-    { name: 'Location & Work Mode', subtext: 'Remote, On-site, Hybrid' },
-    { name: 'Exclusions', subtext: 'Mute Keywords, Excluded Titles' },
+    { name: 'Job Criteria', subtext: t('filters.categories.jobCriteriaSubtext') },
+    { name: 'Location & Work Mode', subtext: t('filters.categories.locationWorkModeSubtext') },
+    { name: 'Exclusions', subtext: t('filters.categories.exclusionsSubtext') },
   ];
 
   const handleClearAll = () => {
@@ -84,7 +86,7 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
             <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
               <span className="text-xl font-bold">{'>'}</span>
             </button>
-            <h2 className="text-xl font-bold">Filters</h2>
+            <h2 className="text-xl font-bold">{t('filters.title')}</h2>
             {activeFilterCount > 0 && (
               <span className="bg-black text-white text-xs font-bold px-2 py-0.5 rounded-full">
                 {activeFilterCount}
@@ -95,7 +97,7 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
             onClick={handleUpdate}
             className="bg-cyan-500 hover:bg-cyan-400 text-white font-semibold py-1 px-3 rounded-md text-xs"
           >
-            UPDATE
+            {t('buttons.update', { ns: 'common' })}
           </Button>
         </div>
 
@@ -124,9 +126,9 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
                 {/* Mute Keywords Card */}
                 <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
                   <SimpleTagInput
-                    label="Mute Keywords"
-                    description='Hide jobs containing these words (e.g. "Gambling", "C++", "Unpaid")'
-                    placeholder="Enter keyword to mute..."
+                    label={t('filters.muteKeywords')}
+                    description={t('filters.muteKeywordsDesc')}
+                    placeholder={t('filters.muteKeywordsPlaceholder')}
                     tags={localFilters.muteKeywords || []}
                     onChange={(keywords: string[]) =>
                       setLocalFilters({
@@ -140,9 +142,9 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
                 {/* Excluded Titles Card */}
                 <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
                   <SimpleTagInput
-                    label="Excluded Job Titles"
-                    description="Hide specific job titles you're not interested in"
-                    placeholder="Enter title to exclude..."
+                    label={t('filters.excludedTitles')}
+                    description={t('filters.excludedTitlesDesc')}
+                    placeholder={t('filters.excludedTitlesPlaceholder')}
                     tags={localFilters.excludedTitles || []}
                     onChange={(titles: string[]) =>
                       setLocalFilters({

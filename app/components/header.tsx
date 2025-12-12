@@ -3,10 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Send, Menu, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from './language-switcher';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { t } = useTranslation('common');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,29 +41,30 @@ export function Header() {
               href="#features"
               className="text-sm font-medium text-slate-600 hover:text-cyan-600 transition-colors"
             >
-              Hidden Market
+              {t('header.hiddenMarket')}
             </a>
             <a
               href="#how-it-works"
               className="text-sm font-medium text-slate-600 hover:text-cyan-600 transition-colors"
             >
-              How It Works
+              {t('header.howItWorks')}
             </a>
             <a
               href="#pricing"
               className="text-sm font-medium text-slate-600 hover:text-cyan-600 transition-colors"
             >
-              Pricing
+              {t('header.pricing')}
             </a>
           </nav>
 
           {/* Buttons - Right */}
           <div className="hidden md:flex items-center gap-4 flex-shrink-0">
+            <LanguageSwitcher />
             <Link
               href="/login"
               className="bg-cyan-500 hover:bg-cyan-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-lg shadow-cyan-500/30"
             >
-              Join Now
+              {t('header.joinNow')}
             </Link>
           </div>
 
@@ -82,29 +86,32 @@ export function Header() {
             className="text-base font-medium text-slate-600"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Hidden Market
+            {t('header.hiddenMarket')}
           </a>
           <a
             href="#how-it-works"
             className="text-base font-medium text-slate-600"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            How It Works
+            {t('header.howItWorks')}
           </a>
           <a
             href="#pricing"
             className="text-base font-medium text-slate-600"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Pricing
+            {t('header.pricing')}
           </a>
           <hr className="border-slate-100" />
-          <Link
-            href="/login"
-            className="bg-cyan-500 text-white w-full py-3 rounded-lg font-semibold text-center"
-          >
-            Join Now
-          </Link>
+          <div className="flex items-center justify-between">
+            <LanguageSwitcher />
+            <Link
+              href="/login"
+              className="bg-cyan-500 text-white px-6 py-3 rounded-lg font-semibold text-center"
+            >
+              {t('header.joinNow')}
+            </Link>
+          </div>
         </div>
       )}
     </header>

@@ -3,8 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { Search, Radio, Users } from 'lucide-react';
 import { statsApi, PlatformStats } from '@/shared/api/stats.api';
+import { useTranslation } from 'react-i18next';
 
 export function StatsBar() {
+  const { t } = useTranslation('landing');
   const [stats, setStats] = useState<PlatformStats>({
     activeChannels: 0,
     jobsToday: 0,
@@ -44,7 +46,7 @@ export function StatsBar() {
               <Search size={24} />
               <span>{isLoading ? '...' : formatNumber(stats.jobsToday)}</span>
             </div>
-            <p className="text-sm text-slate-500 font-medium">New jobs in last 24h</p>
+            <p className="text-sm text-slate-500 font-medium">{t('stats.newJobs')}</p>
           </div>
 
           <div className="flex flex-col items-center justify-center p-2">
@@ -52,7 +54,7 @@ export function StatsBar() {
               <Radio size={24} />
               <span>{isLoading ? '...' : stats.activeChannels}</span>
             </div>
-            <p className="text-sm text-slate-500 font-medium">Active Channels Monitored</p>
+            <p className="text-sm text-slate-500 font-medium">{t('stats.activeChannels')}</p>
           </div>
 
           <div className="flex flex-col items-center justify-center p-2">
@@ -60,7 +62,7 @@ export function StatsBar() {
               <Users size={24} />
               <span>{isLoading ? '...' : formatNumber(stats.totalJobs)}</span>
             </div>
-            <p className="text-sm text-slate-500 font-medium">Total Jobs Curated</p>
+            <p className="text-sm text-slate-500 font-medium">{t('stats.totalJobs')}</p>
           </div>
         </div>
       </div>

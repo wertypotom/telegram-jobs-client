@@ -7,11 +7,13 @@ import { Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation('auth');
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,10 +38,8 @@ export default function LoginPage() {
         >
           <Sparkles className="h-12 w-12 text-primary" />
         </Link>
-        <CardTitle className="text-2xl">Welcome to JobSniper</CardTitle>
-        <CardDescription>
-          Sign in to access curated job feeds from top Telegram channels
-        </CardDescription>
+        <CardTitle className="text-2xl">{t('login.title')}</CardTitle>
+        <CardDescription>{t('login.subtitle')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Social Login Buttons */}
@@ -67,7 +67,7 @@ export default function LoginPage() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Continue with Google
+            {t('login.continueWithGoogle')}
           </Button>
 
           {/* <Button
@@ -87,7 +87,7 @@ export default function LoginPage() {
             <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">Or</span>
+            <span className="bg-background px-2 text-muted-foreground">{t('login.or')}</span>
           </div>
         </div>
 
@@ -96,33 +96,33 @@ export default function LoginPage() {
           <form onSubmit={handleEmailLogin} className="space-y-3">
             <Input
               type="email"
-              placeholder="Enter your email"
+              placeholder={t('login.emailPlaceholder')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Sending...' : 'Continue with Email'}
+              {isLoading ? t('login.sending') : t('login.continueWithEmail')}
             </Button>
           </form>
         ) : (
           <div className="text-center space-y-2">
-            <p className="text-sm text-muted-foreground">Check your email for a login code</p>
+            <p className="text-sm text-muted-foreground">{t('login.checkEmail')}</p>
             <Button variant="ghost" size="sm" onClick={() => setIsEmailSent(false)}>
-              Use a different email
+              {t('login.useDifferentEmail')}
             </Button>
           </div>
         )}
 
         <div className="text-center text-sm text-muted-foreground">
           <p>
-            By logging in, you agree to our{' '}
+            {t('login.termsAgree')}{' '}
             <Link href="#" className="underline hover:text-foreground">
-              Terms of Service
+              {t('login.termsOfService')}
             </Link>{' '}
-            and{' '}
+            {t('login.and')}{' '}
             <Link href="#" className="underline hover:text-foreground">
-              Privacy Policy
+              {t('login.privacyPolicy')}
             </Link>
           </p>
         </div>

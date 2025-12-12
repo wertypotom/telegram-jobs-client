@@ -1,0 +1,134 @@
+{
+  "hero": {
+    "title": "Unlock the",
+    "titleHighlight": "Hidden Job Market",
+    "titleEnd": "on Telegram",
+    "description": "The best tech jobs aren't on LinkedIn. They're in communities. We aggregate thousands of exclusive roles from private channels and chats in real-time, giving you the first-mover advantage.",
+    "firstMoverTitle": "First Mover Advantage",
+    "firstMoverDesc": "Apply days before a role appears on generic job boards.",
+    "exclusiveTitle": "Exclusive Inventory",
+    "exclusiveDesc": "40% of our listings are only found in Telegram channels.",
+    "directContactTitle": "Direct Contact",
+    "directContactDesc": "Skip the ATS. 70% of posts include a direct contact for the founder.",
+    "startFinding": "Start Finding Jobs",
+    "viewPricing": "View Pricing",
+    "justNow": "Just Now",
+    "salary": "Salary",
+    "stack": "Stack",
+    "contact": "Contact",
+    "applyNow": "Apply Now",
+    "aiParsed": "AI Parsed",
+    "unstructuredText": "From unstructured text",
+    "unread": "Unread"
+  },
+  "stats": {
+    "newJobs": "New jobs in last 24h",
+    "activeChannels": "Active Channels Monitored",
+    "totalJobs": "Total Jobs Curated"
+  },
+  "features": {
+    "title": "Powerful features for the modern job seeker",
+    "description": "We don't just find links. We restructure the entire hiring ecosystem to work in your favor.",
+    "hiddenMarket": {
+      "title": "The \"Hidden\" Market",
+      "description": "Access the largest network of tech job boards in CIS and Europe. We monitor over 120 distinct channels so you don't have to manually check them every hour."
+    },
+    "chaosToClarity": {
+      "title": "Chaos to Clarity",
+      "description": "Telegram chats are messy. Our AI standardizes unstructured messages into clean, searchable cards with Salary Ranges, Stack, and Contact Info extracted upfront."
+    },
+    "smartFiltering": {
+      "title": "Smart Filtering",
+      "description": "Noise cancellation for your job search. Filter by specific tech channel bundles (e.g., 'React', 'Python', 'DevOps') to find exactly what you need without the spam."
+    },
+    "tailorApply": {
+      "title": "Tailor & Apply",
+      "description": "Instantly generate a resume that speaks the language of the job post. Our AI matches keywords and phrasing to triple your interview response rate.",
+      "comingSoon": "COMING SOON"
+    }
+  },
+  "howItWorks": {
+    "title": "How It Works",
+    "subtitle": "Four simple steps to start applying with tailored resumes.",
+    "steps": {
+      "connect": {
+        "title": "Connect Telegram",
+        "description": "Login with your Telegram account to access job channels."
+      },
+      "upload": {
+        "title": "Upload Resume",
+        "description": "Upload your master resume (PDF or DOCX) once."
+      },
+      "browse": {
+        "title": "Browse Jobs",
+        "description": "Browse AI-parsed job postings with smart filters."
+      },
+      "generate": {
+        "title": "Generate & Apply",
+        "description": "Click to generate a tailored resume and apply instantly."
+      }
+    }
+  },
+  "whyTelegram": {
+    "title": "Why the best jobs are hidden on Telegram",
+    "subtitle": "Traditional job boards are crowded and slow. Telegram is where the real work happens, offering a direct line to decision makers.",
+    "communityDriven": {
+      "title": "Community Driven",
+      "description": "Jobs are posted by peers and community leaders in specialized groups. These listings carry higher trust and relevance than anonymous corporate boards."
+    },
+    "incredibleSpeed": {
+      "title": "Incredible Speed",
+      "description": "Roles are filled in hours, not weeks. By the time a job hits LinkedIn, it's often already in final interviews. Telegram puts you at the front of the line."
+    },
+    "directAccess": {
+      "title": "Direct Access",
+      "description": "Many posts link directly to the decision maker (@username), allowing you to DM the founder or CTO directly, bypassing the 'HR Portal Black Hole'."
+    }
+  },
+  "aggregatorAdvantage": {
+    "badge": "The Aggregator Advantage",
+    "title": "Stop joining 50 different channels and muting notifications.",
+    "description": "We aggregate 120+ specialized channels into one powerful dashboard. No spam. No sticker packs. No crypto scams. Just high-quality job postings, verified and standardized.",
+    "benefit1": "One clean feed for all your specialized interests",
+    "benefit2": "Deduplicated listings across multiple groups",
+    "appName": "TeleJob AI"
+  },
+  "cta": {
+    "title": "Ready to find your dream job?",
+    "subtitle": "Join thousands of developers finding better opportunities",
+    "button": "Get Started"
+  },
+  "pricing": {
+    "title": "Start Free. Go Faster.",
+    "subtitle": "Start for free. Supercharge when you're ready.",
+    "freeDescription": "You don't need to pay to find a job. Thousands of developers use our Free plan to browse curated bundles and land roles.",
+    "proCallout": "Serious about finding a job this month? For less than the price of a weekly coffee, the Pro Plan is your accelerator:",
+    "unlockMarket": {
+      "title": "Unlock the Full Market",
+      "description": "Monitor 120+ channels instead of 5."
+    },
+    "saveTime": {
+      "title": "Save ~20 Hours",
+      "description": "Stop manual scrolling. Let the feed do the work."
+    },
+    "zeroNoise": {
+      "title": "Zero Noise",
+      "description": "Advanced filters mean you only see exactly what you want."
+    },
+    "lessThanCoffees": "Less than 3 coffees",
+    "pricePerMonth": "₽/mo",
+    "cancelAnytime": "Cancel anytime. No hidden fees.",
+    "joinNow": "Join Now",
+    "securePayment": "Secure payment via Stripe/YooKassa"
+  },
+  "footer": {
+    "appName": "TeleJob AI",
+    "description": "Unlock the hidden job market. We help you find exclusive tech roles on Telegram before they hit the major boards.",
+    "legal": "Legal",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "cookiePolicy": "Cookie Policy",
+    "copyright": "© 2024 TeleJob AI. All rights reserved.",
+    "systemsOperational": "Systems Operational"
+  }
+}

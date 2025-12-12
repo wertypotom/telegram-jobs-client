@@ -6,12 +6,14 @@ import { useAuth, useLogout } from '@/shared/hooks';
 import Link from 'next/link';
 import { Sparkles, Briefcase, LogOut } from 'lucide-react';
 import { Button } from '@/shared/ui';
+import { useTranslation } from 'react-i18next';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { data, isLoading } = useAuth();
   const logout = useLogout();
+  const { t } = useTranslation('dashboard');
 
   useEffect(() => {
     if (!isLoading && !data?.id) {
@@ -36,7 +38,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center lg:mr-3 flex-shrink-0">
               <Sparkles className="text-white" size={18} />
             </div>
-            <span className="font-bold text-xl hidden lg:block">JobSniper</span>
+            <span className="font-bold text-xl hidden lg:block">{t('sidebar.appName')}</span>
           </div>
 
           <nav className="p-4 space-y-2">
@@ -56,7 +58,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   isActive('/jobs') ? 'text-cyan-900' : 'text-gray-600 group-hover:text-gray-900'
                 }`}
               >
-                Browse Jobs
+                {t('sidebar.browseJobs')}
               </span>
               {isActive('/jobs') && (
                 <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-cyan-500 lg:hidden"></div>
@@ -118,7 +120,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             <LogOut className="h-5 w-5 lg:mr-3 flex-shrink-0" />
             <span className="ml-3 font-medium hidden lg:block text-gray-600 group-hover:text-gray-900">
-              Logout
+              {t('sidebar.logout')}
             </span>
           </Button>
         </div>
