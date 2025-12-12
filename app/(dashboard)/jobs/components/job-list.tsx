@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, Badge } from
 import type { Job } from '@/shared/types/models';
 import { Building2, MapPin, Calendar } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 interface JobListProps {
   jobs: Job[];
@@ -13,11 +14,12 @@ interface JobListProps {
 
 export function JobList({ jobs, total }: JobListProps) {
   const router = useRouter();
+  const { t } = useTranslation('dashboard');
 
   if (jobs.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground">No jobs found. Try adjusting your filters.</p>
+        <p className="text-muted-foreground">{t('page.noJobs')}</p>
       </div>
     );
   }
@@ -25,7 +27,7 @@ export function JobList({ jobs, total }: JobListProps) {
   return (
     <div className="flex flex-col gap-6">
       <p className="text-sm text-muted-foreground">
-        Showing {jobs.length} of {total} jobs
+        {t('jobItem.showing')} {jobs.length} {t('jobItem.of')} {total} {t('page.jobs')}
       </p>
 
       <div className="grid gap-6">
@@ -41,7 +43,7 @@ export function JobList({ jobs, total }: JobListProps) {
                   <div className="space-y-1 flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <CardTitle className="text-xl">
-                        {job.parsedData?.jobTitle || 'Untitled Position'}
+                        {job.parsedData?.jobTitle || t('jobItem.untitledPosition')}
                       </CardTitle>
                       {/* Unread indicator dot */}
                       {!job.isVisited && (
@@ -51,7 +53,7 @@ export function JobList({ jobs, total }: JobListProps) {
                     <CardDescription className="flex items-center gap-2">
                       <Building2 className="h-4 w-4 flex-shrink-0" />
                       <span className="truncate">
-                        {job.parsedData?.company || 'Company not specified'}
+                        {job.parsedData?.company || t('jobItem.companyNotSpecified')}
                       </span>
                     </CardDescription>
                   </div>

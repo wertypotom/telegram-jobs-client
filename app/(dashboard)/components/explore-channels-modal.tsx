@@ -16,6 +16,7 @@ import {
 import { useCategories } from '@/shared/hooks/use-categories';
 import { useAuth } from '@/shared/hooks';
 import { cn } from '@/shared/utils/cn';
+import { useTranslation } from 'react-i18next';
 
 interface ExploreChannelsModalProps {
   open: boolean;
@@ -39,6 +40,7 @@ function FlipCard({
   handleUnsubscribe,
   formatMemberCount,
 }: FlipCardProps) {
+  const { t } = useTranslation('dashboard');
   const handleSubscribeClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (channel.isJoined) {
@@ -61,7 +63,7 @@ function FlipCard({
 
         {/* Description */}
         <p className="text-gray-600 text-sm leading-snug line-clamp-2">
-          {channel.description || 'No description available'}
+          {channel.description || t('exploreChannels.noDescription')}
         </p>
       </div>
 
@@ -81,7 +83,7 @@ function FlipCard({
               : 'bg-cyan-600 text-white hover:bg-cyan-500 focus:ring-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed'
           }`}
         >
-          {channel.isJoined ? 'Subscribed' : 'Subscribe'}
+          {channel.isJoined ? t('exploreChannels.subscribed') : t('exploreChannels.subscribe')}
         </button>
       </div>
     </div>
@@ -89,6 +91,7 @@ function FlipCard({
 }
 
 export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProps) {
+  const { t } = useTranslation('dashboard');
   const [tab, setTab] = useState<'explore' | 'my-channels'>('explore');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -137,7 +140,7 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-cyan-600" />
-            {tab === 'explore' ? 'Explore Channels' : 'My Channels'}
+            {tab === 'explore' ? t('exploreChannels.title') : t('exploreChannels.myChannels')}
           </DialogTitle>
         </DialogHeader>
 
@@ -152,7 +155,7 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             )}
           >
-            Explore
+            {t('exploreChannels.explore')}
           </button>
           <button
             onClick={() => setTab('my-channels')}
@@ -163,7 +166,7 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             )}
           >
-            My Channels
+            {t('exploreChannels.myChannels')}
             {(userChannels?.length ?? 0) > 0 && (
               <Badge variant={tab === 'my-channels' ? 'default' : 'secondary'} className="text-xs">
                 {userChannels?.length ?? 0}
@@ -180,7 +183,7 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <Input
-                  placeholder="Search channels by name, tech stack, or keywords..."
+                  placeholder={t('exploreChannels.searchPlaceholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -217,11 +220,9 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
                     <Zap className="h-6 w-6 text-cyan-600 flex-shrink-0" />
                     <div>
                       <p className="font-bold text-lg text-gray-900">
-                        {exploreData.missedJobsCount} more jobs are found in unsubscribed channels!
+                        {exploreData.missedJobsCount} {t('exploreChannels.missedJobs')}
                       </p>
-                      <p className="text-sm text-gray-600">
-                        Subscribe to see opportunities you're missing
-                      </p>
+                      <p className="text-sm text-gray-600">{t('exploreChannels.subscribeTo')}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -248,7 +249,7 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
                 </div>
               ) : (
                 <div className="text-center py-12 text-gray-500">
-                  No channels found. Try adjusting your filters.
+                  {t('exploreChannels.noChannelsFound')}
                 </div>
               )}
 
@@ -257,10 +258,10 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
                 <Card className="bg-amber-50 border-amber-200">
                   <CardContent className="p-4">
                     <p className="text-sm font-semibold text-amber-900">
-                      Free Tier Limit Reached ({subscribedCount}/{maxChannels})
+                      {t('exploreChannels.freeLimitReached')} ({subscribedCount}/{maxChannels})
                     </p>
                     <p className="text-xs text-amber-700 mt-1">
-                      Unsubscribe from channels in "My Channels" tab to add new ones.
+                      {t('exploreChannels.unsubscribeToAdd')}
                     </p>
                   </CardContent>
                 </Card>
@@ -274,10 +275,12 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-gray-700">
-                      {user?.plan === 'free' ? 'Free Plan' : 'Premium Plan'}
+                      {user?.plan === 'free'
+                        ? t('exploreChannels.freePlan')
+                        : t('exploreChannels.premiumPlan')}
                     </span>
                     <Badge variant={canSubscribe ? 'default' : 'destructive'}>
-                      {subscribedCount}/{maxChannels} Used
+                      {subscribedCount}/{maxChannels} {t('exploreChannels.used')}
                     </Badge>
                   </div>
                 </CardContent>
@@ -301,7 +304,7 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
                           className="text-red-600 hover:text-red-700 hover:bg-red-50 cursor-pointer"
                         >
                           <X className="h-4 w-4 mr-1" />
-                          Unsubscribe
+                          {t('exploreChannels.unsubscribe')}
                         </Button>
                       </CardContent>
                     </Card>
@@ -309,8 +312,8 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
                 </div>
               ) : (
                 <div className="text-center py-12 text-gray-500">
-                  <p className="font-semibold">No channels yet</p>
-                  <p className="text-sm mt-2">Switch to Explore tab to find channels</p>
+                  <p className="font-semibold">{t('exploreChannels.noChannelsYet')}</p>
+                  <p className="text-sm mt-2">{t('exploreChannels.switchToExplore')}</p>
                 </div>
               )}
             </div>

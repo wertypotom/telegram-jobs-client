@@ -8,7 +8,10 @@
     "welcomeSubtitle": "It's great to see you again. Let's resume your journey towards your dream job.",
     "noJobs": "No jobs found. Try adjusting your filters.",
     "endOfResults": "You've reached the end! 🎉",
-    "failedToLoad": "Failed to load jobs. Please try again."
+    "failedToLoad": "Failed to load jobs. Please try again.",
+    "showingJobs": "Showing",
+    "ofJobs": "of",
+    "jobs": "jobs"
   },
   "filters": {
     "title": "Filters",
@@ -54,6 +57,104 @@
   },
   "notifications": {
     "title": "Notification Settings",
-    "sendFeedback": "Send Feedback"
+    "sendFeedback": "Send Feedback",
+    "subtitle": "Configure Telegram notifications for job matches",
+    "telegramNotifications": "Telegram Notifications",
+    "telegramDescription": "Receive instant alerts when jobs match your filters",
+    "enableTelegram": "Enable Telegram Notifications",
+    "enableTelegramDesc": "Get instant job alerts in Telegram with one click!",
+    "openInTelegram": "Open in Telegram",
+    "subscribed": "Subscribed to @jobsniper_v2_bot",
+    "testNotification": "Test Notification",
+    "sending": "Sending...",
+    "howItWorks": "How Notifications Work",
+    "howLine1": "Notifications use the",
+    "howLine1Strong": "same filters",
+    "howLine1Suffix": "you set on the",
+    "jobsPage": "Jobs page",
+    "howLine2": "When a new job matches your filters, you'll get",
+    "howLine2Strong": "instant",
+    "howLine2Suffix": "Telegram notification",
+    "howLine3": "Maximum",
+    "howLine3Strong": "10 notifications per hour",
+    "howLine3Suffix": "to prevent spam",
+    "howLine4": "Use",
+    "howLine4Strong": "Quiet Hours",
+    "howLine4Suffix": "below to pause notifications at specific times",
+    "tip": "💡 To change what jobs you get notified about, edit your filters on the",
+    "quietHours": "Quiet Hours",
+    "quietHoursDesc": "Pause notifications during specific hours",
+    "dontNotifyBetween": "Don't notify between:",
+    "to": "to",
+    "loading": "Loading...",
+    "toast": {
+      "testSent": "✅ Test notification sent! Check your Telegram.",
+      "testFailed": "Failed to send test notification",
+      "opening": "✅ Opening Telegram... Click \"START\" in the bot to complete subscription!",
+      "linkFailed": "Failed to generate Telegram link. Please try again."
+    }
+  },
+  "jobItem": {
+    "untitledPosition": "Untitled Position",
+    "companyNotSpecified": "Company not specified"
+  },
+  "feedback": {
+    "title": "Feedback & Support",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "labels": {
+      "topic": "* What would you like to tell us?",
+      "details": "* Can you give us more details?"
+    },
+    "placeholder": "Please describe your experience or share your ideas. The more specific you are, the better we can address your feedback.",
+    "categories": {
+      "bug": "Bug Report",
+      "feature": "Feature Request",
+      "ux": "User Experience Feedback",
+      "subscription": "Subscription and Membership",
+      "other": "Others"
+    },
+    "toast": {
+      "success": "Thank you for your feedback! 🚀",
+      "error": "Failed to submit feedback. Please try again."
+    }
+  },
+  "exploreChannels": {
+    "title": "Explore Channels",
+    "myChannels": "My Channels",
+    "explore": "Explore",
+    "searchPlaceholder": "Search channels by name, tech stack, or keywords...",
+    "subscribed": "Subscribed",
+    "subscribe": "Subscribe",
+    "unsubscribe": "Unsubscribe",
+    "noDescription": "No description available",
+    "noChannelsFound": "No channels found. Try adjusting your filters.",
+    "missedJobs": "more jobs are found in unsubscribed channels!",
+    "subscribeTo": "Subscribe to see opportunities you're missing",
+    "freeLimitReached": "Free Tier Limit Reached",
+    "unsubscribeToAdd": "Unsubscribe from channels in \"My Channels\" tab to add new ones.",
+    "freePlan": "Free Plan",
+    "premiumPlan": "Premium Plan",
+    "used": "Used",
+    "noChannelsYet": "No channels yet",
+    "switchToExplore": "Switch to Explore tab to find channels"
+  },
+  "jobDetail": {
+    "backToJobs": "Back to Jobs",
+    "viewOriginalPost": "View Original Post",
+    "aboutTheRole": "About the Role",
+    "employmentType": "Employment Type",
+    "companyLocation": "Company Location",
+    "candidateLocation": "Candidate Location",
+    "responsibilities": "Responsibilities",
+    "requiredQualifications": "Required Qualifications",
+    "preferredQualifications": "Preferred Qualifications",
+    "benefits": "Benefits",
+    "contactInformation": "Contact Information",
+    "contactNotProvided": "Contact information not provided.",
+    "directMessage": "Direct message the job poster:",
+    "viewOriginalToContact": "View Original Post to Contact",
+    "jobNotFound": "Job not found",
+    "loading": "Loading..."
   }
 }

@@ -16,21 +16,24 @@ import {
 } from '@/shared/ui';
 import { Loader2, Bug, Lightbulb, Palette, CreditCard, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 interface FeedbackModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const CATEGORIES = [
-  { id: 'BUG', label: 'Bug Report', icon: Bug },
-  { id: 'FEATURE', label: 'Feature Request', icon: Lightbulb },
-  { id: 'UX', label: 'User Experience Feedback', icon: Palette },
-  { id: 'SUBSCRIPTION', label: 'Subscription and Membership', icon: CreditCard },
-  { id: 'OTHER', label: 'Others', icon: MessageSquare },
-] as const;
-
 export function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
+  const { t } = useTranslation('dashboard');
+
+  const CATEGORIES = [
+    { id: 'BUG', label: t('feedback.categories.bug'), icon: Bug },
+    { id: 'FEATURE', label: t('feedback.categories.feature'), icon: Lightbulb },
+    { id: 'UX', label: t('feedback.categories.ux'), icon: Palette },
+    { id: 'SUBSCRIPTION', label: t('feedback.categories.subscription'), icon: CreditCard },
+    { id: 'OTHER', label: t('feedback.categories.other'), icon: MessageSquare },
+  ] as const;
+
   /* State */
   const [category, setCategory] = useState<FeedbackData['category']>('OTHER');
   const [message, setMessage] = useState('');
@@ -39,14 +42,14 @@ export function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
   const { mutate, isPending } = useMutation({
     mutationFn: feedbackApi.createFeedback,
     onSuccess: () => {
-      toast.success('Thank you for your feedback! 🚀');
+      toast.success(t('feedback.toast.success'));
       onOpenChange(false);
       // Reset form
       setCategory('OTHER');
       setMessage('');
     },
     onError: () => {
-      toast.error('Failed to submit feedback. Please try again.');
+      toast.error(t('feedback.toast.error'));
     },
   });
 
@@ -65,12 +68,12 @@ export function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Feedback & Support</DialogTitle>
+          <DialogTitle>{t('feedback.title')}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 py-4">
           <div className="space-y-3">
-            <Label className="text-base font-medium">* What would you like to tell us?</Label>
+            <Label className="text-base font-medium">{t('feedback.labels.topic')}</Label>
             <RadioGroup
               value={category}
               onValueChange={(val) => setCategory(val as FeedbackData['category'])}
@@ -91,9 +94,9 @@ export function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
           </div>
 
           <div className="space-y-3">
-            <Label className="text-base font-medium">* Can you give us more details?</Label>
+            <Label className="text-base font-medium">{t('feedback.labels.details')}</Label>
             <Textarea
-              placeholder="Please describe your experience or share your ideas. The more specific you are, the better we can address your feedback."
+              placeholder={t('feedback.placeholder')}
               className="min-h-[120px] resize-none"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -108,14 +111,14 @@ export function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
               onClick={() => onOpenChange(false)}
               disabled={isPending}
             >
-              Cancel
+              {t('feedback.cancel')}
             </Button>
             <Button
               type="submit"
               className="bg-primary hover:bg-primary/90 min-w-24"
               disabled={isPending || !message.trim()}
             >
-              {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Submit'}
+              {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : t('feedback.submit')}
             </Button>
           </div>
         </form>

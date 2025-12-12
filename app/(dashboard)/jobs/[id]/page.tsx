@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useJob, useGenerateTailoredResume, useMarkJobAsViewed } from '@/shared/hooks';
+import { useJob, useMarkJobAsViewed } from '@/shared/hooks';
 import {
   Card,
   CardHeader,
@@ -11,25 +11,18 @@ import {
   Button,
   Skeleton,
 } from '@/shared/ui';
-import {
-  Building2,
-  MapPin,
-  Calendar,
-  Download,
-  MessageSquare,
-  ArrowLeft,
-  ExternalLink,
-} from 'lucide-react';
+import { Building2, MapPin, Calendar, MessageSquare, ArrowLeft, ExternalLink } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function JobDetailPage() {
+  const { t } = useTranslation('dashboard');
   const params = useParams();
   const router = useRouter();
   const jobId = params.id as string;
 
   const { data: job, isLoading } = useJob(jobId);
-  const { mutate: generateResume, isPending, data: tailoredResume } = useGenerateTailoredResume();
   // Extract numeric message ID from composite key (e.g., "@channel_12345" -> "12345")
   const getMessageId = (telegramMessageId: string) => {
     const parts = telegramMessageId.split('_');
@@ -37,7 +30,6 @@ export default function JobDetailPage() {
   };
 
   const { mutate: markAsViewed } = useMarkJobAsViewed();
-  const [showResult, setShowResult] = useState(false);
 
   // Mark job as viewed when page loads
   useEffect(() => {
@@ -45,23 +37,6 @@ export default function JobDetailPage() {
       markAsViewed(jobId);
     }
   }, [jobId, markAsViewed]);
-
-  const handleGenerateResume = () => {
-    generateResume(
-      { jobId },
-      {
-        onSuccess: () => {
-          setShowResult(true);
-        },
-        onError: (error: any) => {
-          alert(
-            error?.response?.data?.message ||
-              'Failed to generate resume. Please upload your master resume first.'
-          );
-        },
-      }
-    );
-  };
 
   if (isLoading) {
     return (
@@ -75,7 +50,7 @@ export default function JobDetailPage() {
   if (!job) {
     return (
       <div className="container mx-auto px-6 py-8">
-        <p className="text-center text-muted-foreground">Job not found</p>
+        <p className="text-center text-muted-foreground">{t('jobDetail.jobNotFound')}</p>
       </div>
     );
   }
@@ -84,7 +59,7 @@ export default function JobDetailPage() {
     <div className="container mx-auto px-6 py-8">
       <Button variant="ghost" onClick={() => router.push('/jobs')} className="mb-4">
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Jobs
+        {t('jobDetail.backToJobs')}
       </Button>
 
       <Card className="mb-6">
@@ -108,7 +83,7 @@ export default function JobDetailPage() {
                   className="flex items-center gap-2"
                 >
                   <ExternalLink className="h-4 w-4" />
-                  View Original Post
+                  {t('jobDetail.viewOriginalPost')}
                 </a>
               </Button>
             )}
@@ -142,7 +117,7 @@ export default function JobDetailPage() {
           {/* Description */}
           {job.parsedData?.description && (
             <div>
-              <h3 className="font-semibold text-lg mb-2">About the Role</h3>
+              <h3 className="font-semibold text-lg mb-2">{t('jobDetail.aboutTheRole')}</h3>
               <p className="text-muted-foreground">{job.parsedData.description}</p>
             </div>
           )}
@@ -151,19 +126,19 @@ export default function JobDetailPage() {
           <div className="grid md:grid-cols-2 gap-4">
             {job.parsedData?.employmentType && (
               <div>
-                <h4 className="font-semibold text-sm mb-1">Employment Type</h4>
+                <h4 className="font-semibold text-sm mb-1">{t('jobDetail.employmentType')}</h4>
                 <p className="text-muted-foreground">{job.parsedData.employmentType}</p>
               </div>
             )}
             {job.parsedData?.location && (
               <div>
-                <h4 className="font-semibold text-sm mb-1">Company Location</h4>
+                <h4 className="font-semibold text-sm mb-1">{t('jobDetail.companyLocation')}</h4>
                 <p className="text-muted-foreground">{job.parsedData.location}</p>
               </div>
             )}
             {job.parsedData?.candidateLocation && (
               <div>
-                <h4 className="font-semibold text-sm mb-1">Candidate Location</h4>
+                <h4 className="font-semibold text-sm mb-1">{t('jobDetail.candidateLocation')}</h4>
                 <p className="text-muted-foreground">{job.parsedData.candidateLocation}</p>
               </div>
             )}
@@ -173,7 +148,7 @@ export default function JobDetailPage() {
           {job.parsedData?.responsibilities && job.parsedData.responsibilities.length > 0 && (
             <div>
               <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                <span className="text-green-600">💼</span> Responsibilities
+                <span className="text-green-600">💼</span> {t('jobDetail.responsibilities')}
               </h3>
               <ul className="space-y-2">
                 {job.parsedData.responsibilities.map((item, index) => (
@@ -191,7 +166,7 @@ export default function JobDetailPage() {
             job.parsedData.requiredQualifications.length > 0 && (
               <div>
                 <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                  <span className="text-blue-600">✓</span> Required Qualifications
+                  <span className="text-blue-600">✓</span> {t('jobDetail.requiredQualifications')}
                 </h3>
                 <ul className="space-y-2">
                   {job.parsedData.requiredQualifications.map((item, index) => (
@@ -209,7 +184,8 @@ export default function JobDetailPage() {
             job.parsedData.preferredQualifications.length > 0 && (
               <div>
                 <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                  <span className="text-purple-600">+</span> Preferred Qualifications
+                  <span className="text-purple-600">+</span>{' '}
+                  {t('jobDetail.preferredQualifications')}
                 </h3>
                 <ul className="space-y-2">
                   {job.parsedData.preferredQualifications.map((item, index) => (
@@ -226,7 +202,7 @@ export default function JobDetailPage() {
           {job.parsedData?.benefits && job.parsedData.benefits.length > 0 && (
             <div>
               <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                <span className="text-yellow-600">★</span> Benefits
+                <span className="text-yellow-600">★</span> {t('jobDetail.benefits')}
               </h3>
               <ul className="space-y-2">
                 {job.parsedData.benefits.map((item, index) => (
@@ -241,7 +217,7 @@ export default function JobDetailPage() {
 
           {/* Contact Information */}
           <div className="border-t pt-6">
-            <h3 className="font-semibold text-lg mb-3">Contact Information</h3>
+            <h3 className="font-semibold text-lg mb-3">{t('jobDetail.contactInformation')}</h3>
             {job.parsedData?.contactInfo &&
             (job.parsedData.contactInfo.telegram ||
               job.parsedData.contactInfo.email ||
@@ -296,10 +272,10 @@ export default function JobDetailPage() {
               </div>
             ) : (
               <div className="bg-muted/50 rounded-lg p-4 space-y-3">
-                <p className="text-muted-foreground">Contact information not provided.</p>
+                <p className="text-muted-foreground">{t('jobDetail.contactNotProvided')}</p>
                 {job.senderUsername && (
                   <div className="space-y-2">
-                    <p className="text-sm font-medium">Direct message the job poster:</p>
+                    <p className="text-sm font-medium">{t('jobDetail.directMessage')}</p>
                     <div className="flex items-center gap-2">
                       <MessageSquare className="h-4 w-4 text-muted-foreground" />
                       <a
@@ -322,69 +298,13 @@ export default function JobDetailPage() {
                       className="flex items-center gap-2 w-fit"
                     >
                       <ExternalLink className="h-4 w-4" />
-                      View Original Post to Contact
+                      {t('jobDetail.viewOriginalToContact')}
                     </a>
                   </Button>
                 )}
               </div>
             )}
           </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Generate Tailored Resume</CardTitle>
-          <CardDescription>
-            Create a customized resume specifically for this job using AI
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Button onClick={handleGenerateResume} disabled={isPending} size="lg" className="w-full">
-            {isPending ? 'Generating...' : 'Generate Tailored Resume'}
-          </Button>
-
-          {showResult && tailoredResume && (
-            <div className="space-y-4 pt-4 border-t">
-              <h3 className="font-semibold">Your Tailored Resume is Ready!</h3>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <Button asChild variant="outline">
-                  <a href={tailoredResume.pdfUrl} download>
-                    <Download className="mr-2 h-4 w-4" />
-                    Download PDF
-                  </a>
-                </Button>
-                <Button asChild variant="outline">
-                  <a href={tailoredResume.docxUrl} download>
-                    <Download className="mr-2 h-4 w-4" />
-                    Download DOCX
-                  </a>
-                </Button>
-              </div>
-
-              <div className="space-y-2">
-                <h4 className="font-semibold flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4" />
-                  Telegram Message
-                </h4>
-                <Card>
-                  <CardContent className="pt-6">
-                    <p className="text-sm whitespace-pre-wrap">{tailoredResume.telegramMessage}</p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="space-y-2">
-                <h4 className="font-semibold">Cover Letter</h4>
-                <Card>
-                  <CardContent className="pt-6">
-                    <p className="text-sm whitespace-pre-wrap">{tailoredResume.coverLetter}</p>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          )}
         </CardContent>
       </Card>
     </div>

@@ -7,8 +7,11 @@ import { notificationApi, NotificationSettings } from '@/shared/api/notification
 import { Button } from '@/shared/ui';
 import { Bell, BellOff, Check, Moon, TestTube2 } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 export default function NotificationSettingsPage() {
+  const { t } = useTranslation('dashboard');
   const router = useRouter();
   const { data: user, isLoading: authLoading } = useAuth();
   const [settings, setSettings] = useState<NotificationSettings | null>(null);
@@ -70,9 +73,9 @@ export default function NotificationSettingsPage() {
     try {
       setTestSending(true);
       await notificationApi.sendTestNotification();
-      alert('✅ Test notification sent! Check your Telegram.');
+      toast.success(t('notifications.toast.testSent'));
     } catch (error: any) {
-      alert(error.response?.data?.message || 'Failed to send test notification');
+      toast.error(error.response?.data?.message || t('notifications.toast.testFailed'));
     } finally {
       setTestSending(false);
     }
@@ -87,10 +90,10 @@ export default function NotificationSettingsPage() {
       window.open(deepLink, '_blank');
 
       // Show success message
-      alert('✅ Opening Telegram... Click "START" in the bot to complete subscription!');
+      toast.success(t('notifications.toast.opening'));
     } catch (error: any) {
       console.error('Failed to generate link:', error);
-      alert(error.response?.data?.message || 'Failed to generate Telegram link. Please try again.');
+      toast.error(error.response?.data?.message || t('notifications.toast.linkFailed'));
     } finally {
       setSaving(false);
     }
@@ -99,7 +102,7 @@ export default function NotificationSettingsPage() {
   if (loading || !settings) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-gray-500">Loading...</div>
+        <div className="text-gray-500">{t('notifications.loading')}</div>
       </div>
     );
   }
@@ -108,8 +111,8 @@ export default function NotificationSettingsPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Notification Settings</h1>
-          <p className="text-gray-500 mt-2">Configure Telegram notifications for job matches</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('notifications.title')}</h1>
+          <p className="text-gray-500 mt-2">{t('notifications.subtitle')}</p>
         </div>
 
         {/* Telegram Subscription */}
@@ -122,11 +125,9 @@ export default function NotificationSettingsPage() {
                 ) : (
                   <BellOff className="h-5 w-5 text-gray-400" />
                 )}
-                Telegram Notifications
+                {t('notifications.telegramNotifications')}
               </h2>
-              <p className="text-sm text-gray-500 mt-1">
-                Receive instant alerts when jobs match your filters
-              </p>
+              <p className="text-sm text-gray-500 mt-1">{t('notifications.telegramDescription')}</p>
             </div>
             <button
               onClick={handleToggleNotifications}
@@ -148,9 +149,11 @@ export default function NotificationSettingsPage() {
 
           {!settings.subscribed ? (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <h3 className="font-medium text-yellow-900 mb-2">📱 Enable Telegram Notifications</h3>
+              <h3 className="font-medium text-yellow-900 mb-2">
+                📱 {t('notifications.enableTelegram')}
+              </h3>
               <p className="text-sm text-yellow-800 mb-4">
-                Get instant job alerts in Telegram with one click!
+                {t('notifications.enableTelegramDesc')}
               </p>
               <Button
                 onClick={handleOpenTelegram}
@@ -158,13 +161,13 @@ export default function NotificationSettingsPage() {
                 className="w-full bg-cyan-600 hover:bg-cyan-700 text-white flex items-center justify-center gap-2"
               >
                 {saving ? (
-                  <>Loading...</>
+                  <>{t('notifications.loading')}</>
                 ) : (
                   <>
                     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z" />
                     </svg>
-                    Open in Telegram
+                    {t('notifications.openInTelegram')}
                   </>
                 )}
               </Button>
@@ -173,7 +176,7 @@ export default function NotificationSettingsPage() {
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Check className="h-5 w-5 text-green-600" />
-                <span className="text-green-900 font-medium">Subscribed to @jobsniper_v2_bot</span>
+                <span className="text-green-900 font-medium">{t('notifications.subscribed')}</span>
               </div>
               <Button
                 onClick={handleTestNotification}
@@ -182,7 +185,7 @@ export default function NotificationSettingsPage() {
                 className="flex items-center gap-2"
               >
                 <TestTube2 className="h-4 w-4" />
-                {testSending ? 'Sending...' : 'Test Notification'}
+                {testSending ? t('notifications.sending') : t('notifications.testNotification')}
               </Button>
             </div>
           )}
@@ -192,42 +195,51 @@ export default function NotificationSettingsPage() {
         {settings.subscribed && (
           <>
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">How Notifications Work</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                {t('notifications.howItWorks')}
+              </h2>
               <div className="space-y-3 text-sm text-gray-600">
                 <p className="flex items-start gap-2">
                   <span className="text-cyan-600 font-bold">•</span>
                   <span>
-                    Notifications use the <strong>same filters</strong> you set on the{' '}
+                    {t('notifications.howLine1')}{' '}
+                    <strong>{t('notifications.howLine1Strong')}</strong>{' '}
+                    {t('notifications.howLine1Suffix')}{' '}
                     <Link href="/jobs" className="text-cyan-600 underline hover:text-cyan-700">
-                      Jobs page
+                      {t('notifications.jobsPage')}
                     </Link>
                   </span>
                 </p>
                 <p className="flex items-start gap-2">
                   <span className="text-cyan-600 font-bold">•</span>
                   <span>
-                    When a new job matches your filters, you'll get <strong>instant</strong>{' '}
-                    Telegram notification
+                    {t('notifications.howLine2')}{' '}
+                    <strong>{t('notifications.howLine2Strong')}</strong>{' '}
+                    {t('notifications.howLine2Suffix')}
                   </span>
                 </p>
                 <p className="flex items-start gap-2">
                   <span className="text-cyan-600 font-bold">•</span>
                   <span>
-                    Maximum <strong>10 notifications per hour</strong> to prevent spam
+                    {t('notifications.howLine3')}{' '}
+                    <strong>{t('notifications.howLine3Strong')}</strong>{' '}
+                    {t('notifications.howLine3Suffix')}
                   </span>
                 </p>
                 <p className="flex items-start gap-2">
                   <span className="text-cyan-600 font-bold">•</span>
                   <span>
-                    Use <strong>Quiet Hours</strong> below to pause notifications at specific times
+                    {t('notifications.howLine4')}{' '}
+                    <strong>{t('notifications.howLine4Strong')}</strong>{' '}
+                    {t('notifications.howLine4Suffix')}
                   </span>
                 </p>
               </div>
               <div className="mt-4 p-4 bg-cyan-50 rounded-lg border border-cyan-200">
                 <p className="text-sm text-cyan-900 font-medium">
-                  💡 To change what jobs you get notified about, edit your filters on the{' '}
+                  {t('notifications.tip')}{' '}
                   <Link href="/jobs" className="underline hover:text-cyan-700">
-                    Jobs page
+                    {t('notifications.jobsPage')}
                   </Link>
                 </p>
               </div>
@@ -239,11 +251,9 @@ export default function NotificationSettingsPage() {
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                     <Moon className="h-5 w-5" />
-                    Quiet Hours
+                    {t('notifications.quietHours')}
                   </h2>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Pause notifications during specific hours
-                  </p>
+                  <p className="text-sm text-gray-500 mt-1">{t('notifications.quietHoursDesc')}</p>
                 </div>
                 <button
                   onClick={() =>
@@ -272,7 +282,7 @@ export default function NotificationSettingsPage() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Don't notify between:
+                      {t('notifications.dontNotifyBetween')}
                     </label>
                     <div className="flex items-center gap-4">
                       <input
@@ -288,7 +298,7 @@ export default function NotificationSettingsPage() {
                         }
                         className="w-20 px-3 py-2 border border-gray-300 rounded-lg"
                       />
-                      <span className="text-gray-500">to</span>
+                      <span className="text-gray-500">{t('notifications.to')}</span>
                       <input
                         type="number"
                         min="0"
