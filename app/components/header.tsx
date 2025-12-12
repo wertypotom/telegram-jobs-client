@@ -38,16 +38,16 @@ export function Header() {
           {/* Desktop Nav - Absolute Center */}
           <nav className="hidden md:flex items-center gap-8 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <a
-              href="#features"
+              href="#"
               className="text-sm font-medium text-slate-600 hover:text-cyan-600 transition-colors"
             >
               {t('header.hiddenMarket')}
             </a>
             <a
-              href="#how-it-works"
+              href="#why-telegram"
               className="text-sm font-medium text-slate-600 hover:text-cyan-600 transition-colors"
             >
-              {t('header.howItWorks')}
+              {t('header.whyTelegram')}
             </a>
             <a
               href="#pricing"
@@ -82,18 +82,18 @@ export function Header() {
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t border-slate-100 p-4 flex flex-col gap-4">
           <a
-            href="#features"
+            href="#"
             className="text-base font-medium text-slate-600"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             {t('header.hiddenMarket')}
           </a>
           <a
-            href="#how-it-works"
+            href="#why-telegram"
             className="text-base font-medium text-slate-600"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            {t('header.howItWorks')}
+            {t('header.whyTelegram')}
           </a>
           <a
             href="#pricing"

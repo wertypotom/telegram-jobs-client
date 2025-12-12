@@ -8,7 +8,7 @@ import { HeroSection } from './components/hero-section';
 import { StatsBar } from './components/stats-bar';
 import { WhyTelegram } from './components/why-telegram';
 import { AggregatorAdvantage } from './components/aggregator-advantage';
-import { FeaturesSection } from './components/features-section';
+// import { FeaturesSection } from './components/features-section';
 import { PricingTeaser } from './components/pricing-teaser';
 import { Footer } from './components/footer';
 import { Loader2 } from 'lucide-react';
@@ -43,7 +43,7 @@ export default function HomePage() {
         <StatsBar />
         <WhyTelegram />
         <AggregatorAdvantage />
-        <FeaturesSection />
+        {/* <FeaturesSection /> */}
         <PricingTeaser />
       </main>
       <Footer />
