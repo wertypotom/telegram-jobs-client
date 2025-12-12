@@ -51,16 +51,11 @@ export function LoginModal() {
 
       {/* Modal */}
       <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md p-4 animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-4 duration-300">
-        <div
-          className="bg-white rounded-2xl shadow-2xl"
-          style={{
-            animation: 'modalFloat 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          }}
-        >
+        <div className="bg-white rounded-2xl shadow-2xl">
           {/* Close Button */}
           <button
             onClick={handleClose}
-            className="absolute right-4 top-4 rounded-full p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors z-10"
+            className="absolute right-6 top-6 rounded-full p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors z-10"
           >
             <X size={20} />
           </button>
