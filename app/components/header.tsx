@@ -5,11 +5,13 @@ import Link from 'next/link';
 import { Send, Menu, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from './language-switcher';
+import { useLoginModal } from '@/shared/stores/use-login-modal';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { t } = useTranslation('common');
+  const { openModal } = useLoginModal();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,14 +60,14 @@ export function Header() {
           </nav>
 
           {/* Buttons - Right */}
-          <div className="hidden md:flex items-center gap-4 flex-shrink-0">
+          <div className="flex items-center gap-4">
             <LanguageSwitcher />
-            <Link
-              href="/login"
-              className="bg-cyan-500 hover:bg-cyan-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-lg shadow-cyan-500/30"
+            <button
+              onClick={openModal}
+              className="hidden md:block bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-2.5 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg shadow-cyan-500/25"
             >
               {t('header.joinNow')}
-            </Link>
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -105,12 +107,15 @@ export function Header() {
           <hr className="border-slate-100" />
           <div className="flex items-center justify-between">
             <LanguageSwitcher />
-            <Link
-              href="/login"
+            <button
+              onClick={() => {
+                openModal();
+                setIsMobileMenuOpen(false);
+              }}
               className="bg-cyan-500 text-white px-6 py-3 rounded-lg font-semibold text-center"
             >
               {t('header.joinNow')}
-            </Link>
+            </button>
           </div>
         </div>
       )}

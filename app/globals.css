@@ -118,3 +118,18 @@
     transform: rotate(15deg);
   }
 }
+
+/* Modal floating animation */
+@keyframes modalFloat {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

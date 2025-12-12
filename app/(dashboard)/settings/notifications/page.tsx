@@ -18,7 +18,7 @@ export default function NotificationSettingsPage() {
 
   useEffect(() => {
     if (!authLoading && !user?.id) {
-      router.push('/login');
+      router.push('/');
     }
   }, [user, authLoading, router]);
 

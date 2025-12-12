@@ -1,12 +1,13 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { Coffee, Lock, Clock, Sliders } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useLoginModal } from '@/shared/stores/use-login-modal';
 
 export function PricingTeaser() {
   const { t } = useTranslation('landing');
+  const { openModal } = useLoginModal();
   return (
     <section id="pricing" className="py-24 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -83,12 +84,12 @@ export function PricingTeaser() {
                 {t('pricing.cancelAnytime')}
               </p>
 
-              <Link
-                href="/login"
+              <button
+                onClick={openModal}
                 className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-cyan-500/25 transition-all transform hover:-translate-y-1 mb-4 text-center"
               >
                 {t('pricing.joinNow')}
-              </Link>
+              </button>
               <p className="text-xs text-slate-400 text-center">{t('pricing.securePayment')}</p>
             </div>
           </div>

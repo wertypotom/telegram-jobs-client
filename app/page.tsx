@@ -12,6 +12,7 @@ import { AggregatorAdvantage } from './components/aggregator-advantage';
 import { PricingTeaser } from './components/pricing-teaser';
 import { Footer } from './components/footer';
 import { Loader2 } from 'lucide-react';
+import { LoginModal } from './components/login-modal';
 
 export default function HomePage() {
   const router = useRouter();
@@ -47,6 +48,7 @@ export default function HomePage() {
         <PricingTeaser />
       </main>
       <Footer />
+      <LoginModal />
     </div>
   );
 }

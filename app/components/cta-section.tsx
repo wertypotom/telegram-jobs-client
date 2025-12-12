@@ -1,7 +1,11 @@
+'use client';
+
 import Link from 'next/link';
 import { Button } from '@/shared/ui';
+import { useLoginModal } from '@/shared/stores/use-login-modal';
 
 export function CtaSection() {
+  const { openModal } = useLoginModal();
   return (
     <section className="py-20 px-4">
       <div className="max-w-5xl mx-auto rounded-3xl p-10 md:p-16 text-center shadow-2xl relative overflow-hidden bg-primary">
@@ -18,11 +22,11 @@ export function CtaSection() {
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
           <Button
-            asChild
+            onClick={openModal}
             size="lg"
             className="bg-card text-primary hover:bg-card/90 shadow-lg hover:shadow-xl transition-all"
           >
-            <Link href="/login">Get Started Now</Link>
+            Get Started Now
           </Button>
           <Button
             asChild

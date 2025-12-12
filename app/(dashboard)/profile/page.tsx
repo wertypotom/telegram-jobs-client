@@ -9,7 +9,7 @@ export default function ProfilePage() {
 
   const handleLogout = () => {
     localStorage.removeItem('auth_token');
-    router.push('/login');
+    router.push('/');
   };
 
   return (

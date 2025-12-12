@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import {
   CheckCircle2,
   Zap,
@@ -12,9 +11,11 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useLoginModal } from '@/shared/stores/use-login-modal';
 
 export function HeroSection() {
   const { t } = useTranslation('landing');
+  const { openModal } = useLoginModal();
   return (
     <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden">
       {/* Background Decor */}
@@ -65,14 +66,14 @@ export function HeroSection() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link
-                href="/login"
-                className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-2"
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={openModal}
+                className="bg-cyan-500 text-white px-8 py-4 rounded-lg font-bold hover:bg-cyan-600 transition-all transform hover:scale-105 shadow-xl shadow-cyan-500/25 text-lg flex items-center justify-center gap-2"
               >
                 {t('hero.startFinding')}
                 <ArrowRight size={20} />
-              </Link>
+              </button>
               <a
                 href="#pricing"
                 className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-xl font-semibold text-lg transition-all flex items-center justify-center gap-2"
