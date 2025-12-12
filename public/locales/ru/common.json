@@ -1,9 +1,9 @@
 {
   "header": {
-    "hiddenMarket": "Скрытый рынок",
-    "whyTelegram": "Почему Telegram",
-    "pricing": "Цены",
-    "joinNow": "Присоединиться"
+    "hiddenMarket": "Скрытый рынок вакансий",
+    "whyTelegram": "Почему именно Telegram",
+    "pricing": "Тарифы",
+    "joinNow": "Войти"
   },
   "footer": {
     "rights": "Все права защищены",
@@ -18,8 +18,8 @@
     "cancel": "Отмена",
     "close": "Закрыть",
     "apply": "Применить",
-    "update": "ОБНОВИТЬ",
-    "clearAll": "Очистить все",
+    "update": "Обновить",
+    "clearAll": "Сбросить все",
     "sendFeedback": "Отправить отзыв"
   }
 }
