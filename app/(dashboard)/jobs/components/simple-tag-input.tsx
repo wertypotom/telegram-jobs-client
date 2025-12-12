@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import { X, Plus } from 'lucide-react';
 import { Label } from '@/shared/ui/label';
 
+import { useTranslation } from 'react-i18next';
+
 interface SimpleTagInputProps {
   label: string;
   description: string;
@@ -19,6 +21,7 @@ export function SimpleTagInput({
   placeholder,
   onChange,
 }: SimpleTagInputProps) {
+  const { t } = useTranslation('dashboard');
   const [isAdding, setIsAdding] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -101,7 +104,7 @@ export function SimpleTagInput({
           className="w-full flex items-center justify-center gap-2 p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
         >
           <Plus size={18} />
-          Add
+          {t('filters.add')}
         </button>
       ) : (
         <input

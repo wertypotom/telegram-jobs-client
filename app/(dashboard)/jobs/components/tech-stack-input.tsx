@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { X, Plus, Trash2, Loader2 } from 'lucide-react';
 import { Label } from '@/shared/ui/label';
 import { useSearchSkills } from '@/shared/hooks/use-jobs';
+import { useTranslation } from 'react-i18next';
 
 interface TechStackInputProps {
   skills: string[];
@@ -11,6 +12,7 @@ interface TechStackInputProps {
 }
 
 export function TechStackInput({ skills, onChange }: TechStackInputProps) {
+  const { t } = useTranslation('dashboard');
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -95,14 +97,14 @@ export function TechStackInput({ skills, onChange }: TechStackInputProps) {
   return (
     <div className="mb-4">
       <div className="flex items-center justify-between mb-3">
-        <Label className="font-semibold text-base text-gray-900">Skill</Label>
+        <Label className="font-semibold text-base text-gray-900">{t('filters.skill')}</Label>
         {skills.length > 0 && (
           <button
             onClick={handleClearAll}
             className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1.5 font-medium"
           >
             <Trash2 size={16} />
-            Clear All
+            {t('filters.clearAll')}
           </button>
         )}
       </div>
@@ -135,7 +137,7 @@ export function TechStackInput({ skills, onChange }: TechStackInputProps) {
           className="w-full flex items-center justify-center gap-2 p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
         >
           <Plus size={18} />
-          Add
+          {t('filters.add')}
         </button>
       ) : (
         <div className="relative">
@@ -152,7 +154,7 @@ export function TechStackInput({ skills, onChange }: TechStackInputProps) {
                 setSearchQuery('');
               }, 200);
             }}
-            placeholder="Search skills..."
+            placeholder={t('filters.searchSkills')}
             className="w-full p-3 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400"
           />
 
@@ -186,7 +188,7 @@ export function TechStackInput({ skills, onChange }: TechStackInputProps) {
         </div>
       )}
 
-      <p className="text-xs text-gray-500 mt-3">Search and select from popular tech skills</p>
+      <p className="text-xs text-gray-500 mt-3">{t('filters.searchSkillsDesc')}</p>
     </div>
   );
 }

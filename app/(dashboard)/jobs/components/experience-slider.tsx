@@ -1,6 +1,7 @@
 'use client';
 
 import { Slider } from '@/shared/ui/slider';
+import { useTranslation } from 'react-i18next';
 
 interface ExperienceSliderProps {
   value: { min: number; max: number };
@@ -8,6 +9,7 @@ interface ExperienceSliderProps {
 }
 
 export function ExperienceSlider({ value, onChange }: ExperienceSliderProps) {
+  const { t } = useTranslation('dashboard');
   const handleChange = (values: number[]) => {
     onChange({ min: values[0], max: values[1] });
   };
@@ -15,9 +17,9 @@ export function ExperienceSlider({ value, onChange }: ExperienceSliderProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between text-sm font-medium">
-        <span>Required Experience</span>
+        <span>{t('filters.requiredExperience')}</span>
         <span className="text-brand-green font-semibold">
-          {value.min}-{value.max >= 10 ? '10+' : value.max} Years
+          {value.min}-{value.max >= 10 ? '10+' : value.max} {t('filters.yearsLabel')}
         </span>
       </div>
 
@@ -32,8 +34,8 @@ export function ExperienceSlider({ value, onChange }: ExperienceSliderProps) {
           aria-label="Experience Range"
         />
         <div className="flex justify-between text-xs text-gray-500 mt-3">
-          <span>0 years</span>
-          <span>10+ years</span>
+          <span>0 {t('filters.yearsRange')}</span>
+          <span>10+ {t('filters.yearsRange')}</span>
         </div>
       </div>
     </div>

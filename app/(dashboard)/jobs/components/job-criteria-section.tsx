@@ -18,7 +18,11 @@ interface JobCriteriaSectionProps {
   onChange: (filters: any) => void;
 }
 
+import { useTranslation } from 'react-i18next';
+
 export function JobCriteriaSection({ filters, onChange }: JobCriteriaSectionProps) {
+  const { t } = useTranslation('dashboard');
+
   const handleLevelToggle = (level: string) => {
     const currentLevels = filters.level || [];
     const isSelected = currentLevels.includes(level);
@@ -42,7 +46,9 @@ export function JobCriteriaSection({ filters, onChange }: JobCriteriaSectionProp
 
       {/* Level Card */}
       <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-        <Label className="text-base font-semibold text-gray-800 mb-3 block">Seniority Level</Label>
+        <Label className="text-base font-semibold text-gray-800 mb-3 block">
+          {t('filters.seniorityLevel')}
+        </Label>
         <div className="flex flex-wrap gap-2">
           {LEVELS.map((level) => {
             const isSelected = (filters.level || []).includes(level);

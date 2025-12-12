@@ -2,6 +2,7 @@
 
 import { Check } from 'lucide-react';
 import { Label } from '@/shared/ui/label';
+import { useTranslation } from 'react-i18next';
 
 const LOCATION_TYPES = ['on-site', 'remote', 'hybrid'];
 
@@ -13,6 +14,8 @@ interface LocationSectionProps {
 }
 
 export function LocationSection({ filters, onChange }: LocationSectionProps) {
+  const { t } = useTranslation('dashboard');
+
   const handleLocationChange = (locationType: string, checked: boolean) => {
     const currentTypes = filters.locationType || [];
     const updated = checked
@@ -21,9 +24,16 @@ export function LocationSection({ filters, onChange }: LocationSectionProps) {
     onChange({ ...filters, locationType: updated });
   };
 
+  const getLocationLabel = (type: string) => {
+    const key = type === 'on-site' ? 'onsite' : type;
+    return t(`filters.locationType.${key}`);
+  };
+
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-      <Label className="font-semibold text-sm text-gray-800 mb-3 block">Work Location Type</Label>
+      <Label className="font-semibold text-sm text-gray-800 mb-3 block">
+        {t('filters.workLocationType')}
+      </Label>
       <div className="grid grid-cols-2 gap-3">
         {LOCATION_TYPES.map((type) => (
           <label
@@ -42,7 +52,9 @@ export function LocationSection({ filters, onChange }: LocationSectionProps) {
             >
               {filters.locationType?.includes(type) && <Check size={14} className="text-white" />}
             </div>
-            <span className="text-sm font-medium text-gray-700 capitalize">{type}</span>
+            <span className="text-sm font-medium text-gray-700 capitalize">
+              {getLocationLabel(type)}
+            </span>
           </label>
         ))}
       </div>

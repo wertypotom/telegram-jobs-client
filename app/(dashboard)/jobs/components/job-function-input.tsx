@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { X, Plus, Trash2, Loader2 } from 'lucide-react';
 import { Label } from '@/shared/ui/label';
 import { useSearchJobFunctions } from '@/shared/hooks/use-jobs';
+import { useTranslation } from 'react-i18next';
 
 interface JobFunctionInputProps {
   jobFunctions: string[];
@@ -11,6 +12,7 @@ interface JobFunctionInputProps {
 }
 
 export function JobFunctionInput({ jobFunctions, onChange }: JobFunctionInputProps) {
+  const { t } = useTranslation('dashboard');
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -98,14 +100,14 @@ export function JobFunctionInput({ jobFunctions, onChange }: JobFunctionInputPro
   return (
     <div className="mb-4">
       <div className="flex items-center justify-between mb-3">
-        <Label className="font-semibold text-base text-gray-900">Job Function</Label>
+        <Label className="font-semibold text-base text-gray-900">{t('filters.jobFunction')}</Label>
         {jobFunctions.length > 0 && (
           <button
             onClick={handleClearAll}
             className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1.5 font-medium"
           >
             <Trash2 size={16} />
-            Clear All
+            {t('filters.clearAll')}
           </button>
         )}
       </div>
@@ -138,7 +140,7 @@ export function JobFunctionInput({ jobFunctions, onChange }: JobFunctionInputPro
           className="w-full flex items-center justify-center gap-2 p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
         >
           <Plus size={18} />
-          Add
+          {t('filters.add')}
         </button>
       ) : (
         <div className="relative">
@@ -155,7 +157,7 @@ export function JobFunctionInput({ jobFunctions, onChange }: JobFunctionInputPro
                 setSearchQuery('');
               }, 200);
             }}
-            placeholder="Search job functions..."
+            placeholder={t('filters.searchJobFunctions')}
             className="w-full p-3 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400"
           />
 
@@ -189,7 +191,7 @@ export function JobFunctionInput({ jobFunctions, onChange }: JobFunctionInputPro
         </div>
       )}
 
-      <p className="text-xs text-gray-500 mt-3">Search and select from popular job titles</p>
+      <p className="text-xs text-gray-500 mt-3">{t('filters.searchJobFunctionsDesc')}</p>
     </div>
   );
 }

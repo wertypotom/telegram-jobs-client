@@ -26,7 +26,7 @@ interface FiltersPanelProps {
 
 export function FiltersPanel({ open, onClose, filters, onFiltersChange }: FiltersPanelProps) {
   const [localFilters, setLocalFilters] = useState(filters);
-  const [selectedCategory, setSelectedCategory] = useState('Job Criteria');
+  const [selectedCategoryId, setSelectedCategoryId] = useState('JOB_CRITERIA');
   const { t } = useTranslation('dashboard');
 
   // Sync local state when drawer opens
@@ -37,9 +37,21 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
   }, [open, filters]);
 
   const categories = [
-    { name: 'Job Criteria', subtext: t('filters.categories.jobCriteriaSubtext') },
-    { name: 'Location & Work Mode', subtext: t('filters.categories.locationWorkModeSubtext') },
-    { name: 'Exclusions', subtext: t('filters.categories.exclusionsSubtext') },
+    {
+      id: 'JOB_CRITERIA',
+      name: t('filters.categories.jobCriteria'),
+      subtext: t('filters.categories.jobCriteriaSubtext'),
+    },
+    {
+      id: 'LOCATION_WORK_MODE',
+      name: t('filters.categories.locationWorkMode'),
+      subtext: t('filters.categories.locationWorkModeSubtext'),
+    },
+    {
+      id: 'EXCLUSIONS',
+      name: t('filters.categories.exclusions'),
+      subtext: t('filters.categories.exclusionsSubtext'),
+    },
   ];
 
   const handleClearAll = () => {
@@ -105,23 +117,23 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
           {/* Left Sidebar */}
           <CategorySidebar
             categories={categories}
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
+            selectedCategory={selectedCategoryId}
+            onSelectCategory={setSelectedCategoryId}
             activeFilterCount={activeFilterCount}
             onClearAll={handleClearAll}
           />
 
           {/* Right Content */}
           <div className="flex-1 overflow-y-auto bg-gray-50/80 p-8">
-            {selectedCategory === 'Job Criteria' && (
+            {selectedCategoryId === 'JOB_CRITERIA' && (
               <JobCriteriaSection filters={localFilters} onChange={setLocalFilters} />
             )}
 
-            {selectedCategory === 'Location & Work Mode' && (
+            {selectedCategoryId === 'LOCATION_WORK_MODE' && (
               <LocationSection filters={localFilters} onChange={setLocalFilters} />
             )}
 
-            {selectedCategory === 'Exclusions' && (
+            {selectedCategoryId === 'EXCLUSIONS' && (
               <div className="space-y-4">
                 {/* Mute Keywords Card */}
                 <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">

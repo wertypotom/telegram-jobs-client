@@ -1,6 +1,9 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
+
 interface Category {
+  id: string;
   name: string;
   subtext: string;
 }
@@ -20,22 +23,24 @@ export function CategorySidebar({
   activeFilterCount,
   onClearAll,
 }: CategorySidebarProps) {
+  const { t } = useTranslation('dashboard');
+
   return (
     <div className="w-1/3 bg-gray-50 border-r overflow-y-auto">
       <div className="py-4">
         {categories.map((cat) => (
           <div
-            key={cat.name}
-            onClick={() => onSelectCategory(cat.name)}
+            key={cat.id}
+            onClick={() => onSelectCategory(cat.id)}
             className={`px-6 py-4 cursor-pointer border-l-4 transition-colors ${
-              selectedCategory === cat.name
+              selectedCategory === cat.id
                 ? 'bg-white border-cyan-500'
                 : 'border-transparent hover:bg-gray-100'
             }`}
           >
             <h3
               className={`font-semibold text-sm ${
-                selectedCategory === cat.name ? 'text-black' : 'text-gray-700'
+                selectedCategory === cat.id ? 'text-black' : 'text-gray-700'
               }`}
             >
               {cat.name}
@@ -51,7 +56,7 @@ export function CategorySidebar({
               onClick={onClearAll}
               className="w-full px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg border border-red-200 font-medium text-sm transition-colors"
             >
-              Clear All Filters
+              {t('filters.clearAll')}
             </button>
           </div>
         )}
