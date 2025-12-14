@@ -30,7 +30,7 @@ class ApiClient {
           // Unauthorized - redirect to login (only once)
           if (typeof window !== 'undefined' && !isRedirecting) {
             isRedirecting = true;
-            window.location.href = '/login';
+            window.location.href = '/';
           }
         }
         return Promise.reject(error);

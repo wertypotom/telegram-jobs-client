@@ -27,10 +27,10 @@ export function useAuth() {
 export function useLogout() {
   return {
     mutate: async () => {
-      await nextAuthSignOut({ callbackUrl: '/login' });
+      await nextAuthSignOut({ callbackUrl: '/' });
     },
     mutateAsync: async () => {
-      await nextAuthSignOut({ callbackUrl: '/login' });
+      await nextAuthSignOut({ callbackUrl: '/' });
     },
   };
 }

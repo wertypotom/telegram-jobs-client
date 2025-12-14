@@ -19,11 +19,11 @@ export async function middleware(req: NextRequest) {
 
   // Redirect unauthenticated users to login
   if (isProtectedRoute && !isAuthenticated) {
-    return NextResponse.redirect(new URL('/login', req.url));
+    return NextResponse.redirect(new URL('/', req.url));
   }
 
   // Redirect authenticated users away from login/home
-  if (isAuthenticated && (pathname === '/login' || pathname === '/')) {
+  if (isAuthenticated && pathname === '/') {
     return NextResponse.redirect(new URL('/jobs', req.url));
   }
 

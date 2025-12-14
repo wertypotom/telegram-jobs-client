@@ -4,9 +4,9 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        // Client calls: /api/backend/api/channels/...
+        // Client calls: /api/channels/...
         // Destination: https://api.jobsniper.work/api/channels/...
-        source: '/api/backend/api/:path*',
+        source: '/api/:path*',
         destination: 'https://api.jobsniper.work/api/:path*',
       },
     ];

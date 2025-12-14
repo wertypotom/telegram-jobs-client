@@ -312,7 +312,7 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('auth_token');
-      window.location.href = '/login';
+      window.location.href = '/';
     }
     return Promise.reject(error);
   }
@@ -601,7 +601,7 @@ npm run format:check # Check formatting
 
 ### OAuth Providers (Google & Yandex)
 
-1. User visits `/login`
+1. User visits `/`
 2. User clicks "Sign in with Google" or "Sign in with Yandex"
 3. OAuth provider redirects to authorization page
 4. User authorizes the application
@@ -615,7 +615,7 @@ npm run format:check # Check formatting
 
 ### Email Magic Links
 
-1. User visits `/login`
+1. User visits `/`
 2. User enters email address
 3. NextAuth sends magic link via MailerSend SMTP
 4. User clicks link in email
