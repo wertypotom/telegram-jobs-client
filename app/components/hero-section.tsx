@@ -17,16 +17,16 @@ export function HeroSection() {
   const { t } = useTranslation('landing');
   const { openModal } = useLoginModal();
   return (
-    <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden">
+    <section className="relative pt-24 pb-16 lg:pt-40 lg:pb-32 overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-cyan-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[400px] h-[400px] bg-blue-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-8 items-center">
           {/* Left: Copy */}
-          <div className="max-w-2xl">
-            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
+          <div className="max-w-2xl relative z-20">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
               {t('hero.title')}{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">
                 {t('hero.titleHighlight')}
@@ -66,17 +66,17 @@ export function HeroSection() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <button
                 onClick={openModal}
-                className="bg-cyan-500 text-white px-8 py-4 rounded-lg font-bold hover:bg-cyan-600 transition-all transform hover:scale-105 shadow-xl shadow-cyan-500/25 text-lg flex items-center justify-center gap-2"
+                className="bg-cyan-500 text-white px-8 py-4 rounded-lg font-bold hover:bg-cyan-600 transition-all transform hover:scale-105 shadow-xl shadow-cyan-500/25 text-lg flex items-center justify-center gap-2 whitespace-nowrap"
               >
                 {t('hero.startFinding')}
                 <ArrowRight size={20} />
               </button>
               <a
                 href="#pricing"
-                className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-xl font-semibold text-lg transition-all flex items-center justify-center gap-2"
+                className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-xl font-semibold text-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap"
               >
                 {t('hero.viewPricing')}
               </a>
@@ -84,11 +84,14 @@ export function HeroSection() {
           </div>
 
           {/* Right: Visual (Chaos vs Order) */}
-          <div className="relative">
+          <div className="relative mt-12 lg:mt-0">
             {/* The Container for the Visual */}
             <div className="relative w-full aspect-square max-w-[550px] mx-auto">
-              {/* Back Layer: Chaos (Telegram Chat) */}
-              <div className="absolute top-0 right-0 w-[90%] h-[80%] bg-slate-100 rounded-2xl border border-slate-200 overflow-hidden shadow-inner transform translate-x-4 -translate-y-4 opacity-60 scale-95 origin-bottom-right rotate-2">
+              {/* Back Layer: Chaos (Telegram Chat) - Scaled down on mobile to reduce noise */}
+              <div
+                className="absolute top-0 right-0 w-[90%] h-[80%] bg-slate-100 rounded-2xl border border-slate-200 overflow-hidden shadow-inner transform translate-x-4 -translate-y-4 origin-bottom-right rotate-2 transition-all duration-500 opacity-40 scale-90 md:opacity-60 md:scale-95"
+                aria-hidden="true"
+              >
                 <div className="p-3 bg-slate-200 border-b border-slate-300 flex items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-slate-400"></div>
                   <div className="h-3 w-32 bg-slate-400 rounded"></div>
@@ -119,12 +122,18 @@ export function HeroSection() {
                 </div>
               </div>
 
-              {/* Front Layer: Order (TeleJob Card) */}
-              <div className="absolute bottom-8 left-0 w-[95%] bg-white rounded-2xl border border-slate-200 shadow-2xl p-6 transform transition-transform hover:-translate-y-2 duration-300">
+              {/* Front Layer: Order (TeleJob Card) - Semantic Article */}
+              <article
+                className="absolute bottom-8 left-0 w-[95%] bg-white rounded-2xl border border-slate-200 shadow-xl md:shadow-2xl p-6 transform transition-transform hover:-translate-y-2 duration-300"
+                aria-label="Example Job Posting Card"
+              >
                 {/* Job Card Header */}
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex gap-4">
-                    <div className="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                    <div
+                      className="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl"
+                      aria-hidden="true"
+                    >
                       T
                     </div>
                     <div>
@@ -166,7 +175,7 @@ export function HeroSection() {
                     {t('hero.applyNow')} <ExternalLink size={14} />
                   </button>
                 </div>
-              </div>
+              </article>
 
               {/* Floating Badge */}
               <div className="absolute top-1/2 -right-4 bg-white px-4 py-2 rounded-xl shadow-xl border border-slate-100 flex items-center gap-3 animate-bounce">

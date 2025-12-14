@@ -60,6 +60,7 @@ export function Header() {
           </nav>
 
           {/* Buttons - Right */}
+          {/* Right Actions */}
           <div className="flex items-center gap-4">
             <LanguageSwitcher />
             <button
@@ -68,44 +69,45 @@ export function Header() {
             >
               {t('header.joinNow')}
             </button>
-          </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 text-slate-600"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X /> : <Menu />}
-          </button>
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden p-2 text-slate-600"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+            >
+              {isMobileMenuOpen ? <X /> : <Menu />}
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t border-slate-100 p-4 flex flex-col gap-4">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t border-slate-100 p-4 flex flex-col gap-2">
           <a
             href="#"
-            className="text-base font-medium text-slate-600"
+            className="text-base font-medium text-slate-600 block py-4 px-2 hover:bg-slate-50 rounded-lg transition-colors"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             {t('header.hiddenMarket')}
           </a>
           <a
             href="#why-telegram"
-            className="text-base font-medium text-slate-600"
+            className="text-base font-medium text-slate-600 block py-4 px-2 hover:bg-slate-50 rounded-lg transition-colors"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             {t('header.whyTelegram')}
           </a>
           <a
             href="#pricing"
-            className="text-base font-medium text-slate-600"
+            className="text-base font-medium text-slate-600 block py-4 px-2 hover:bg-slate-50 rounded-lg transition-colors"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             {t('header.pricing')}
           </a>
-          <hr className="border-slate-100" />
-          <div className="flex items-center justify-between">
+          <hr className="border-slate-100 my-2" />
+          <div className="flex items-center justify-between px-2">
             <LanguageSwitcher />
             <button
               onClick={() => {

@@ -11,8 +11,8 @@ import { AggregatorAdvantage } from './components/aggregator-advantage';
 // import { FeaturesSection } from './components/features-section';
 import { PricingTeaser } from './components/pricing-teaser';
 import { Footer } from './components/footer';
-import { Loader2 } from 'lucide-react';
 import { LoginModal } from './components/login-modal';
+import { HeroSkeleton } from './components/hero-skeleton';
 
 export default function HomePage() {
   const router = useRouter();
@@ -25,11 +25,7 @@ export default function HomePage() {
   }, [user, router]);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
+    return <HeroSkeleton />;
   }
 
   if (user) {

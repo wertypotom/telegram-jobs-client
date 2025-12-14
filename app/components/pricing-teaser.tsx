@@ -19,7 +19,7 @@ export function PricingTeaser() {
             <div className="text-left space-y-6">
               <div>
                 <h2 className="text-3xl font-bold text-slate-900 mb-2">{t('pricing.title')}</h2>
-                <p className="text-slate-500 font-medium">{t('pricing.subtitle')}</p>
+                <p className="text-slate-600 font-medium">{t('pricing.subtitle')}</p>
               </div>
 
               <p className="text-slate-600 text-sm leading-relaxed">
@@ -70,16 +70,18 @@ export function PricingTeaser() {
             </div>
 
             <div className="flex flex-col items-center justify-center border-t md:border-t-0 md:border-l border-slate-200 pt-8 md:pt-0 md:pl-12">
-              <div className="flex items-center gap-2 text-slate-400 mb-3 bg-slate-100 px-3 py-1 rounded-full text-xs font-semibold">
+              <div className="flex items-center gap-2 text-slate-500 mb-3 bg-slate-100 px-3 py-1 rounded-full text-xs font-semibold">
                 <Coffee size={14} />
                 <span>{t('pricing.lessThanCoffees')}</span>
               </div>
-              <div className="text-5xl font-extrabold text-slate-900 mb-2">
-                990
-                <span className="text-xl text-slate-500 font-medium">
-                  {t('pricing.pricePerMonth')}
+              <div className="flex items-start justify-center text-slate-900 mb-2">
+                <span className="text-2xl md:text-3xl font-bold mt-2 mr-1">$</span>
+                <span className="text-4xl md:text-6xl font-extrabold tracking-tight">990</span>
+                <span className="self-end text-lg md:text-xl text-slate-500 font-medium mb-2 ml-1">
+                  /{t('pricing.pricePerMonth') || 'mo'}
                 </span>
               </div>
+
               <p className="text-slate-500 text-sm mb-8 text-center max-w-[200px]">
                 {t('pricing.cancelAnytime')}
               </p>

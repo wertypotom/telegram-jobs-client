@@ -40,9 +40,9 @@ export function AggregatorAdvantage() {
             </ul>
           </div>
 
-          <div className="relative h-[400px] flex items-center justify-center">
-            {/* Central Hub Visual */}
-            <div className="relative w-full max-w-md mx-auto aspect-square flex items-center justify-center">
+          <div className="relative h-[320px] md:h-[400px] flex items-center justify-center overflow-hidden">
+            {/* Central Hub Visual - Scaled for mobile safey */}
+            <div className="relative w-full max-w-md mx-auto aspect-square flex items-center justify-center transform scale-[0.65] md:scale-100 transition-transform duration-500">
               {/* Center Node */}
               <div className="w-32 h-32 bg-cyan-500 rounded-full flex flex-col items-center justify-center shadow-[0_0_50px_rgba(6,182,212,0.4)] z-20 relative">
                 <Layers size={40} className="text-white mb-1" />
