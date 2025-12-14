@@ -113,18 +113,37 @@ export function FiltersPanel({ open, onClose, filters, onFiltersChange }: Filter
           </Button>
         </div>
 
-        <div className="flex flex-1 overflow-hidden">
-          {/* Left Sidebar */}
-          <CategorySidebar
-            categories={categories}
-            selectedCategory={selectedCategoryId}
-            onSelectCategory={setSelectedCategoryId}
-            activeFilterCount={activeFilterCount}
-            onClearAll={handleClearAll}
-          />
+        {/* Mobile Category Tabs */}
+        <div className="md:hidden flex overflow-x-auto border-b bg-gray-50/50 scrollbar-hide">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategoryId(cat.id)}
+              className={`flex-none px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+                selectedCategoryId === cat.id
+                  ? 'border-cyan-500 text-cyan-600 bg-cyan-50/50'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex flex-1 overflow-hidden flex-col md:flex-row">
+          {/* Left Sidebar - Desktop Only */}
+          <div className="hidden md:block w-64 border-r bg-white">
+            <CategorySidebar
+              categories={categories}
+              selectedCategory={selectedCategoryId}
+              onSelectCategory={setSelectedCategoryId}
+              activeFilterCount={activeFilterCount}
+              onClearAll={handleClearAll}
+            />
+          </div>
 
           {/* Right Content */}
-          <div className="flex-1 overflow-y-auto bg-gray-50/80 p-8">
+          <div className="flex-1 w-full overflow-y-auto bg-gray-50/80 p-4 md:p-8">
             {selectedCategoryId === 'JOB_CRITERIA' && (
               <JobCriteriaSection filters={localFilters} onChange={setLocalFilters} />
             )}

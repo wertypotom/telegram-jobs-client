@@ -64,9 +64,9 @@ export default function JobDetailPage() {
 
       <Card className="mb-6">
         <CardHeader>
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col md:flex-row items-start justify-between gap-4">
             <div className="space-y-2">
-              <CardTitle className="text-3xl">
+              <CardTitle className="text-2xl md:text-3xl">
                 {job.parsedData?.jobTitle || 'Job Position'}
               </CardTitle>
               <CardDescription className="flex items-center gap-2 text-base">
@@ -75,12 +75,12 @@ export default function JobDetailPage() {
               </CardDescription>
             </div>
             {job.channelUsername && job.telegramMessageId && (
-              <Button variant="outline" size="sm" asChild>
+              <Button variant="outline" size="sm" asChild className="w-full md:w-auto">
                 <a
                   href={`https://t.me/${job.channelUsername.replace('@', '')}/${getMessageId(job.telegramMessageId)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2"
+                  className="flex items-center justify-center gap-2"
                 >
                   <ExternalLink className="h-4 w-4" />
                   {t('jobDetail.viewOriginalPost')}
@@ -89,7 +89,7 @@ export default function JobDetailPage() {
             )}
           </div>
 
-          <div className="flex items-center gap-6 mt-4 text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 md:gap-6 mt-4 text-muted-foreground">
             {job.parsedData?.salary && (
               <div className="flex items-center gap-2">{job.parsedData.salary}</div>
             )}

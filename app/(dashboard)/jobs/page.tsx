@@ -121,8 +121,8 @@ export default function JobsPage() {
       <header className="bg-white border-b sticky top-0 z-10 px-4 md:px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h1 className="text-xl font-bold tracking-tight text-gray-900">{t('page.title')}</h1>
-          <span className="text-gray-300 hidden sm:inline">/</span>
-          <Badge className="bg-black text-white hover:bg-black px-3 py-1 rounded-full text-xs font-bold">
+          <span className="text-gray-300 hidden md:inline">/</span>
+          <Badge className="bg-black text-white hover:bg-black px-3 py-1 rounded-full text-xs font-bold hidden md:inline-flex">
             {t('page.recommended')}
           </Badge>
         </div>
@@ -151,10 +151,11 @@ export default function JobsPage() {
           {/* Explore Channels Button */}
           <button
             onClick={() => setShowExploreModal(true)}
-            className="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center gap-2 transition-colors"
+            className="bg-cyan-600 hover:bg-cyan-500 text-white p-2 md:px-4 md:py-2 rounded-md text-sm font-semibold flex items-center gap-2 transition-colors"
+            title={t('page.exploreChannels')}
           >
             <Sparkles className="h-4 w-4" />
-            {t('page.exploreChannels')}
+            <span className="hidden md:inline">{t('page.exploreChannels')}</span>
           </button>
         </div>
       </header>
