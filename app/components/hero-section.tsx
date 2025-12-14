@@ -152,7 +152,7 @@ export function HeroSection() {
                     <p className="text-xs text-slate-400 uppercase font-semibold mb-1">
                       {t('hero.salary')}
                     </p>
-                    <p className="text-slate-900 font-bold">$120k - $150k</p>
+                    <p className="text-slate-900 font-bold">120k - 150k</p>
                   </div>
                   <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
                     <p className="text-xs text-slate-400 uppercase font-semibold mb-1">

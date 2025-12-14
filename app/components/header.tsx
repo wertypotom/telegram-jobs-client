@@ -107,8 +107,7 @@ export function Header() {
             {t('header.pricing')}
           </a>
           <hr className="border-slate-100 my-2" />
-          <div className="flex items-center justify-between px-2">
-            <LanguageSwitcher />
+          <div className="flex items-center justify-end px-2">
             <button
               onClick={() => {
                 openModal();
