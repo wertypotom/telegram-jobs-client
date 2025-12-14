@@ -9,6 +9,7 @@ interface UseInfiniteJobsResult {
   jobs: Job[];
   totalCount: number;
   isLoading: boolean;
+  isFetching: boolean;
   isFetchingMore: boolean;
   error: Error | null;
   hasMore: boolean;
@@ -26,7 +27,7 @@ export function useInfiniteJobs(
   // Stable filter key for query cache
   const filterKey = useMemo(() => JSON.stringify(filters), [filters]);
 
-  const { data, isLoading, isFetchingNextPage, error, hasNextPage, fetchNextPage } =
+  const { data, isLoading, isFetching, isFetchingNextPage, error, hasNextPage, fetchNextPage } =
     useInfiniteQuery({
       queryKey: ['jobs', filterKey],
       queryFn: ({ pageParam = 0 }) =>
@@ -50,6 +51,7 @@ export function useInfiniteJobs(
     jobs,
     totalCount,
     isLoading,
+    isFetching,
     isFetchingMore: isFetchingNextPage,
     error: error as Error | null,
     hasMore: hasNextPage ?? false,

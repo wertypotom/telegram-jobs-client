@@ -51,10 +51,8 @@ export default function JobsPage() {
   const { data: user, isLoading: loadingUser } = useAuth();
 
   // Use infinite scrolling for jobs
-  const { jobs, totalCount, isLoading, isFetchingMore, error, hasMore, loadMore } = useInfiniteJobs(
-    filters,
-    isFiltersLoaded
-  );
+  const { jobs, totalCount, isLoading, isFetching, isFetchingMore, error, hasMore, loadMore } =
+    useInfiniteJobs(filters, isFiltersLoaded);
 
   // Intersection observer for infinite scroll
   const loadMoreRef = useIntersectionObserver({
@@ -293,7 +291,7 @@ export default function JobsPage() {
             )}
 
             {/* Empty state */}
-            {!isLoading && jobs.length === 0 && (
+            {!isLoading && !isFetching && jobs.length === 0 && (
               <div className="text-center py-12 text-gray-500">{t('page.noJobs')}</div>
             )}
           </div>
