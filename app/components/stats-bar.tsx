@@ -1,34 +1,19 @@
-'use client';
-
-import React, { useEffect, useState } from 'react';
-import { Search, Radio, Users } from 'lucide-react';
-import { statsApi, PlatformStats } from '@/shared/api/stats.api';
 import { useTranslation } from 'react-i18next';
+import { Search, Radio, Users } from 'lucide-react';
+import { usePlatformStats } from '@/shared/hooks/use-platform-stats';
 
 export function StatsBar() {
   const { t } = useTranslation('landing');
-  const [stats, setStats] = useState<PlatformStats>({
+  const { data: stats, isLoading } = usePlatformStats();
+
+  // Default values if data is not available yet or error
+  const defaultStats = {
     activeChannels: 0,
     jobsToday: 0,
     totalJobs: 0,
-  });
-  const [isLoading, setIsLoading] = useState(true);
+  };
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const data = await statsApi.getPlatformStats();
-        setStats(data);
-      } catch (error) {
-        console.error('Failed to load stats:', error);
-        // Keep default values on error
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, []);
+  const currentStats = stats || defaultStats;
 
   const formatNumber = (num: number) => {
     if (num >= 1000) {
@@ -44,7 +29,7 @@ export function StatsBar() {
           <div className="flex flex-col items-center justify-center p-2">
             <div className="flex items-center gap-2 text-cyan-600 font-bold text-2xl mb-1">
               <Search size={24} />
-              <span>{isLoading ? '...' : formatNumber(stats.jobsToday)}</span>
+              <span>{isLoading ? '...' : formatNumber(currentStats.jobsToday)}</span>
             </div>
             <p className="text-sm text-slate-500 font-medium">{t('stats.newJobs')}</p>
           </div>
@@ -52,7 +37,7 @@ export function StatsBar() {
           <div className="flex flex-col items-center justify-center p-2">
             <div className="flex items-center gap-2 text-cyan-600 font-bold text-2xl mb-1">
               <Radio size={24} />
-              <span>{isLoading ? '...' : stats.activeChannels}</span>
+              <span>{isLoading ? '...' : currentStats.activeChannels}</span>
             </div>
             <p className="text-sm text-slate-500 font-medium">{t('stats.activeChannels')}</p>
           </div>
@@ -60,7 +45,7 @@ export function StatsBar() {
           <div className="flex flex-col items-center justify-center p-2">
             <div className="flex items-center gap-2 text-cyan-600 font-bold text-2xl mb-1">
               <Users size={24} />
-              <span>{isLoading ? '...' : formatNumber(stats.totalJobs)}</span>
+              <span>{isLoading ? '...' : formatNumber(currentStats.totalJobs)}</span>
             </div>
             <p className="text-sm text-slate-500 font-medium">{t('stats.totalJobs')}</p>
           </div>

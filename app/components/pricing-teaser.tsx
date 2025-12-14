@@ -4,10 +4,14 @@ import React from 'react';
 import { Coffee, Lock, Clock, Sliders } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLoginModal } from '@/shared/stores/use-login-modal';
+import { usePlatformStats } from '@/shared/hooks/use-platform-stats';
 
 export function PricingTeaser() {
   const { t } = useTranslation('landing');
   const { openModal } = useLoginModal();
+  const { data: stats } = usePlatformStats();
+  const activeChannels = stats?.activeChannels || 120;
+
   return (
     <section id="pricing" className="py-24 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -40,7 +44,7 @@ export function PricingTeaser() {
                       {t('pricing.unlockMarket.title')}
                     </span>
                     <p className="text-xs text-slate-600">
-                      {t('pricing.unlockMarket.description')}
+                      {t('pricing.unlockMarket.description', { count: activeChannels })}
                     </p>
                   </div>
                 </li>
