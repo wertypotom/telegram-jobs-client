@@ -26,7 +26,7 @@ export function CategorySidebar({
   const { t } = useTranslation('dashboard');
 
   return (
-    <div className="w-1/3 bg-gray-50 border-r overflow-y-auto">
+    <div className="w-full h-full bg-gray-50 border-r overflow-y-auto">
       <div className="py-4">
         {categories.map((cat) => (
           <div
