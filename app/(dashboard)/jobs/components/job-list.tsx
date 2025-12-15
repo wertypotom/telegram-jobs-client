@@ -27,7 +27,7 @@ export function JobList({ jobs, total }: JobListProps) {
   return (
     <div className="flex flex-col gap-6">
       <p className="text-sm text-muted-foreground">
-        {t('jobItem.showing')} {jobs.length} {t('jobItem.of')} {total} {t('page.jobs')}
+        {t('page.showingJobs')} {jobs.length} {t('page.ofJobs')} {total} {t('page.jobs')}
       </p>
 
       <div className="grid gap-6">
