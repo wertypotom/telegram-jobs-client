@@ -117,8 +117,8 @@ export default function NotificationSettingsPage() {
 
         {/* Telegram Subscription */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="flex items-start justify-between mb-4">
-            <div>
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <div className="flex-1 min-w-0">
               <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                 {settings.enabled ? (
                   <Bell className="h-5 w-5 text-cyan-600" />
@@ -133,7 +133,7 @@ export default function NotificationSettingsPage() {
               onClick={handleToggleNotifications}
               disabled={saving || !settings.subscribed}
               className={`
-                relative inline-flex h-6 w-11 items-center rounded-full transition-colors
+                relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0
                 ${settings.enabled ? 'bg-cyan-600' : 'bg-gray-200'}
                 ${saving || !settings.subscribed ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               `}
@@ -173,20 +173,24 @@ export default function NotificationSettingsPage() {
               </Button>
             </div>
           ) : (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-green-600" />
-                <span className="text-green-900 font-medium">{t('notifications.subscribed')}</span>
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <Check className="h-5 w-5 text-green-600" />
+                  <span className="text-green-900 font-medium">
+                    {t('notifications.subscribed')}
+                  </span>
+                </div>
+                <Button
+                  onClick={handleTestNotification}
+                  disabled={testSending}
+                  variant="outline"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2"
+                >
+                  <TestTube2 className="h-4 w-4" />
+                  {testSending ? t('notifications.sending') : t('notifications.testNotification')}
+                </Button>
               </div>
-              <Button
-                onClick={handleTestNotification}
-                disabled={testSending}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <TestTube2 className="h-4 w-4" />
-                {testSending ? t('notifications.sending') : t('notifications.testNotification')}
-              </Button>
             </div>
           )}
         </div>
@@ -247,8 +251,8 @@ export default function NotificationSettingsPage() {
 
             {/* Quiet Hours */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <div className="flex-1 min-w-0">
                   <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                     <Moon className="h-5 w-5" />
                     {t('notifications.quietHours')}
@@ -264,7 +268,7 @@ export default function NotificationSettingsPage() {
                   }
                   disabled={saving}
                   className={`
-                    relative inline-flex h-6 w-11 items-center rounded-full transition-colors
+                    relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0
                     ${settings.quietHours.enabled ? 'bg-cyan-600' : 'bg-gray-200'}
                     ${saving ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                   `}
@@ -284,7 +288,7 @@ export default function NotificationSettingsPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       {t('notifications.dontNotifyBetween')}
                     </label>
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-wrap items-center gap-2 md:gap-4">
                       <input
                         type="number"
                         min="0"
@@ -312,7 +316,7 @@ export default function NotificationSettingsPage() {
                         }
                         className="w-20 px-3 py-2 border border-gray-300 rounded-lg"
                       />
-                      <span className="text-gray-500 text-sm">
+                      <span className="text-gray-500 text-sm whitespace-nowrap">
                         ({settings.quietHours.startHour}:00 - {settings.quietHours.endHour}:00)
                       </span>
                     </div>
