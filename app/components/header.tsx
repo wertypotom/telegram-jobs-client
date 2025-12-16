@@ -34,7 +34,7 @@ export function Header() {
             <div className="bg-cyan-500 p-1.5 rounded-lg text-white">
               <Send size={24} fill="currentColor" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900">TeleJob AI</span>
+            <span className="text-xl font-bold tracking-tight text-slate-900">JobSniper</span>
           </Link>
 
           {/* Desktop Nav - Absolute Center */}

@@ -91,7 +91,7 @@
     "description": "We aggregate specialized channels into one powerful dashboard. No spam. No sticker packs. No crypto scams. Just high-quality job postings, verified and standardized.",
     "benefit1": "One clean feed for all your specialized interests",
     "benefit2": "Deduplicated listings across multiple groups",
-    "appName": "TeleJob AI"
+    "appName": "JobSniper"
   },
   "cta": {
     "title": "Ready to find your dream job?",
@@ -122,13 +122,13 @@
     "securePayment": "Secure payment via Stripe/YooKassa"
   },
   "footer": {
-    "appName": "TeleJob AI",
+    "appName": "JobSniper",
     "description": "Unlock the hidden job market. We help you find exclusive tech roles on Telegram before they hit the major boards.",
     "legal": "Legal",
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "cookiePolicy": "Cookie Policy",
-    "copyright": "© 2024 TeleJob AI. All rights reserved.",
+    "copyright": "© 2024 JobSniper. All rights reserved.",
     "systemsOperational": "Systems Operational"
   }
 }

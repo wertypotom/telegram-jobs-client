@@ -1,6 +1,6 @@
 /**
  * Aqua Flow Theme Configuration
- * Soft & Approachable color scheme for TeleJob AI
+ * Soft & Approachable color scheme for JobSniper
  */
 
 export const theme = {

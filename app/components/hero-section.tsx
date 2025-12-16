@@ -122,7 +122,7 @@ export function HeroSection() {
                 </div>
               </div>
 
-              {/* Front Layer: Order (TeleJob Card) - Semantic Article */}
+              {/* Front Layer: Order (JobSniper Card) - Semantic Article */}
               <article
                 className="absolute bottom-8 left-0 w-[95%] bg-white rounded-2xl border border-slate-200 shadow-xl md:shadow-2xl p-6 transform transition-transform hover:-translate-y-2 duration-300"
                 aria-label="Example Job Posting Card"
