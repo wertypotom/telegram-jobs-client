@@ -9,7 +9,6 @@ import { StatsBar } from './components/stats-bar';
 import { WhyTelegram } from './components/why-telegram';
 import { AggregatorAdvantage } from './components/aggregator-advantage';
 // import { FeaturesSection } from './components/features-section';
-import { PricingTeaser } from './components/pricing-teaser';
 import { Footer } from './components/footer';
 import { LoginModal } from './components/login-modal';
 import { HeroSkeleton } from './components/hero-skeleton';
@@ -41,7 +40,6 @@ export default function HomePage() {
         <WhyTelegram />
         <AggregatorAdvantage />
         {/* <FeaturesSection /> */}
-        <PricingTeaser />
       </main>
       <Footer />
       <LoginModal />

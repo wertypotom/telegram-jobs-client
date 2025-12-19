@@ -66,7 +66,7 @@ export function HeroSection() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <div className="flex justify-center lg:justify-start">
               <button
                 onClick={openModal}
                 className="bg-cyan-500 text-white px-8 py-4 rounded-lg font-bold hover:bg-cyan-600 transition-all transform hover:scale-105 shadow-xl shadow-cyan-500/25 text-lg flex items-center justify-center gap-2 whitespace-nowrap"
@@ -74,12 +74,6 @@ export function HeroSection() {
                 {t('hero.startFinding')}
                 <ArrowRight size={20} />
               </button>
-              <a
-                href="#pricing"
-                className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-xl font-semibold text-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap"
-              >
-                {t('hero.viewPricing')}
-              </a>
             </div>
           </div>
 

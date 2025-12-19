@@ -10,8 +10,7 @@
     "exclusiveDesc": "40% наших вакансий можно найти только в различных Telegram-каналах.",
     "directContactTitle": "Прямой контакт",
     "directContactDesc": "Забудьте про ATS. 70% постов содержат личный контакт фаундера или рекрутера.",
-    "startFinding": "Найти вакансии",
-    "viewPricing": "Тарифы",
+    "startFinding": "Попробовать бесплатно",
     "justNow": "Только что",
     "salary": "Зарплата",
     "stack": "Стек",
@@ -99,27 +98,40 @@
     "button": "Начать бесплатно"
   },
   "pricing": {
-    "title": "Бесплатный старт. Быстрый рост.",
-    "subtitle": "Начните бесплатно. Ускорьтесь, когда будете готовы.",
-    "freeDescription": "Платить за поиск работы не обязательно. Тысячи разработчиков используют наш бесплатный план для мониторинга рынка.",
-    "proCallout": "Настроены серьезно? Pro-план по цене пары чашек кофе ускорит процесс:",
-    "unlockMarket": {
-      "title": "Весь рынок как на ладони",
-      "description": "Мониторинг {{count}}+ каналов вместо 5."
+    "plans": {
+      "free": {
+        "name": "Бесплатный план",
+        "current": "Текущий",
+        "price": "0₽",
+        "features": {
+          "channels": "5 каналов",
+          "swaps": "6 смен/месяц",
+          "alerts": "Уведомления в Telegram",
+          "filters": "Продвинутые фильтры",
+          "notifications": "Уведомления в Telegram"
+        }
+      },
+      "pro": {
+        "name": "Pro план",
+        "price": "$10",
+        "perMonth": "/месяц",
+        "features": {
+          "channels": "Неограниченно каналов",
+          "swaps": "Неограниченно смен",
+          "alerts": "Уведомления в Telegram",
+          "filters": "Продвинутые фильтры",
+          "notifications": "Уведомления в Telegram"
+        },
+        "cta": "Улучшить до Pro"
+      }
     },
-    "saveTime": {
-      "title": "Экономия ~20 часов",
-      "description": "Никакого ручного скроллинга. Пусть работает алгоритм."
-    },
-    "zeroNoise": {
-      "title": "Никакого шума",
-      "description": "Продвинутые фильтры покажут только релевантные вакансии."
-    },
-    "lessThanCoffees": "Дешевле 3 чашек кофе",
-    "pricePerMonth": "₽/мес",
-    "cancelAnytime": "Отмена в любой момент. Честная цена.",
-    "joinNow": "Подключить Pro",
-    "securePayment": "Оплата картой РФ (ЮKassa) или через Stripe"
+    "features": {
+      "channelAccess": "Доступ к каналам",
+      "channelSwaps": "Смены каналов",
+      "jobAlerts": "Оповещения о вакансиях",
+      "filteringPower": "Фильтрация",
+      "notifications": "Уведомления"
+    }
   },
   "footer": {
     "appName": "JobSniper",
@@ -129,7 +141,6 @@
     "privacyPolicy": "Политика конфиденциальности",
     "termsOfService": "Условия использования",
     "cookiePolicy": "Cookies",
-    "copyright": "© 2024 JobSniper. Все права защищены.",
-    "systemsOperational": "Все системы работают"
+    "copyright": "© 2024 JobSniper. Все права защищены."
   }
 }

@@ -10,8 +10,7 @@
     "exclusiveDesc": "40% of our listings are only found in Telegram channels.",
     "directContactTitle": "Direct Contact",
     "directContactDesc": "Skip the ATS. 70% of posts include a direct contact for the recruiter.",
-    "startFinding": "Start Finding Jobs",
-    "viewPricing": "View Pricing",
+    "startFinding": "Try for free",
     "justNow": "Now",
     "salary": "Salary",
     "stack": "Stack",
@@ -99,27 +98,44 @@
     "button": "Get Started"
   },
   "pricing": {
-    "title": "Start Free. Go Faster.",
-    "subtitle": "Start for free. Supercharge when you're ready.",
-    "freeDescription": "You don't need to pay to find a job. Thousands of developers use our Free plan to browse curated bundles and land roles.",
-    "proCallout": "Serious about finding a job this month? For less than the price of a weekly coffee, the Pro Plan is your accelerator:",
-    "unlockMarket": {
-      "title": "Unlock the Full Market",
-      "description": "Monitor {{count}}+ channels instead of 5."
+    "header": {
+      "title": "Scale Your Search",
+      "subtitle": "Unlock the full market for less than the price of a weekly coffee."
     },
-    "saveTime": {
-      "title": "Save ~20 Hours",
-      "description": "Stop manual scrolling. Let the feed do the work."
+    "plans": {
+      "free": {
+        "name": "Free Plan",
+        "current": "Current",
+        "price": "$0",
+        "features": {
+          "channels": "5 channels",
+          "swaps": "6 swaps/month",
+          "alerts": "Telegram job alerts",
+          "filters": "Advanced filters",
+          "notifications": "Telegram notifications"
+        }
+      },
+      "pro": {
+        "name": "Pro Plan",
+        "price": "$10",
+        "perMonth": "/month",
+        "features": {
+          "channels": "Unlimited channels",
+          "swaps": "Unlimited swaps",
+          "alerts": "Telegram job alerts",
+          "filters": "Advanced filters",
+          "notifications": "Telegram notifications"
+        },
+        "cta": "Upgrade Now"
+      }
     },
-    "zeroNoise": {
-      "title": "Zero Noise",
-      "description": "Advanced filters mean you only see exactly what you want."
-    },
-    "lessThanCoffees": "Less than 3 coffees",
-    "pricePerMonth": "₽/mo",
-    "cancelAnytime": "Cancel anytime. No hidden fees.",
-    "joinNow": "Join Now",
-    "securePayment": "Secure payment via Stripe/YooKassa"
+    "features": {
+      "channelAccess": "Channel Access",
+      "channelSwaps": "Channel Swaps",
+      "jobAlerts": "Job Alerts",
+      "filteringPower": "Filtering Power",
+      "notifications": "Notifications"
+    }
   },
   "footer": {
     "appName": "JobSniper",
@@ -129,7 +145,6 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "cookiePolicy": "Cookie Policy",
-    "copyright": "© 2024 JobSniper. All rights reserved.",
-    "systemsOperational": "Systems Operational"
+    "copyright": "© 2024 JobSniper. All rights reserved."
   }
 }
