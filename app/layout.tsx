@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import { Analytics } from '@vercel/analytics/react';
-import { Toaster } from '@/shared/ui';
+import { ErrorBoundary } from '@/shared/components/error-boundary';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,8 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
-        <Providers>{children}</Providers>
-        <Toaster />
+        <ErrorBoundary>
+          <Providers>{children}</Providers>
+        </ErrorBoundary>
         <Analytics />
       </body>
     </html>

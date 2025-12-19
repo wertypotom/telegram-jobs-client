@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { channelApi } from '../api/channel.api';
 import { toast } from 'sonner';
+import { getErrorMessage } from '../lib/error-utils';
 
 export function useUserChannels() {
   return useQuery({
@@ -20,6 +21,9 @@ export function useSubscribeChannels() {
       queryClient.invalidateQueries({ queryKey: ['user'] });
       // Invalidate jobs to show new jobs from subscribed channels
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
+    },
+    onError: (error: any) => {
+      toast.error(getErrorMessage(error));
     },
   });
 }
@@ -49,6 +53,12 @@ export function useAddChannels() {
       queryClient.invalidateQueries({ queryKey: ['channels', 'explore'] });
       // Refresh jobs to show new jobs from added channels
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
+    },
+    onError: (error: any) => {
+      // Display error message to user
+      const errorMessage =
+        error?.response?.data?.message || error?.message || 'Failed to add channel';
+      toast.error(errorMessage);
     },
   });
 }
@@ -82,6 +92,12 @@ export function useUnsubscribeChannel() {
       queryClient.invalidateQueries({ queryKey: ['user-channels'] });
       queryClient.invalidateQueries({ queryKey: ['channels', 'explore'] });
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
+    },
+    onError: (error: any) => {
+      // Display error message to user
+      const errorMessage =
+        error?.response?.data?.message || error?.message || 'Failed to unsubscribe';
+      toast.error(errorMessage);
     },
   });
 }

@@ -303,27 +303,223 @@ I build generic, reusable components that accept variants:
 - **Client State** (Zustand): UI state like drawer open/closed, selected filters
 - **Local State** (useState): Component-specific state like input values
 
-### 6. **Error Handling**
+### 6. **Error Handling Architecture**
+
+The application implements production-grade error handling following React and TypeScript best practices:
+
+#### **Layered Error Handling Strategy**
+
+```
+┌──────────────────────────────────────────────────┐
+│          React Error Boundaries                  │ ← Catches render errors
+├──────────────────────────────────────────────────┤
+│          API Client Interceptors                 │ ← Global HTTP error handling
+├──────────────────────────────────────────────────┤
+│          React Query onError Callbacks           │ ← Hook-level error handling
+├──────────────────────────────────────────────────┤
+│          Component Error States                  │ ← UI-level error display
+└──────────────────────────────────────────────────┘
+```
+
+#### **1. React Error Boundaries**
+
+Catch JavaScript errors anywhere in the component tree:
 
 ```typescript
-// API client handles 401 globally
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('auth_token');
-      window.location.href = '/';
-    }
-    return Promise.reject(error);
-  }
-);
+// Root layout wraps entire app
+<ErrorBoundary>
+  <Providers>{children}</Providers>
+</ErrorBoundary>
+```
 
-// React Query handles loading/error states
+**Features:**
+
+- Fallback UI with "Try Again" and "Go Home" actions
+- Error details in development mode
+- Future: Sentry/LogRocket integration hooks
+
+#### **2. API Client Interceptors**
+
+Global error handling for all HTTP requests (`shared/lib/ap-client.ts`):
+
+```typescript
+import { logError, classifyError } from './error-utils';
+import { ErrorType } from '../types/errors';
+
+// Classify and handle errors globally
+const classified = classifyError(error);
+
+switch (classified.type) {
+  case ErrorType.AUTHENTICATION:
+    toast.error('Session expired');
+    redirect('/');
+    break;
+  case ErrorType.RATE_LIMIT:
+    toast.error('Too many requests');
+    break;
+  case ErrorType.SERVER:
+    toast.error('Server error. Try again');
+    break;
+  case ErrorType.NETWORK:
+    toast.error('Connection failed');
+    break;
+}
+```
+
+**Handled Status Codes:**
+
+- `401` - Auto-redirect to login with session expired message
+- `429` - Rate limit toast
+- `500+` - Server error toast
+- `Network errors` - Connection failed toast
+
+#### **3. Error Classification System**
+
+Centralized error utility (`shared/lib/error-utils.ts`) that classifies errors:
+
+```typescript
+export enum ErrorType {
+  NETWORK, // Network connectivity issues
+  API, // API validation errors
+  AUTHENTICATION, // 401 - Not logged in
+  AUTHORIZATION, // 403 - No permission
+  RATE_LIMIT, // 429 - Too many requests
+  SERVER, // 500+ - Server errors
+  UNKNOWN, // Fallback
+}
+
+// Classify any error
+const classified = classifyError(error);
+// {
+//   type: ErrorType.NETWORK,
+//   message: "Connection lost. Check internet.",
+//   retryable: true,
+//   originalError: axiosError
+// }
+```
+
+#### **4. Hook-Level Error Handling**
+
+All React Query mutations have `onError` callbacks:
+
+```typescript
+// All mutation hooks follow this pattern
+export function useAddChannels() {
+  return useMutation({
+    mutationFn: channelApi.addChannels,
+    onSuccess: (data) => {
+      toast.info(`${data.swapsRemaining} swaps remaining`);
+      queryClient.invalidateQueries();
+    },
+    onError: (error) => {
+      toast.error(getErrorMessage(error)); // User-friendly message
+      logError('AddChannels', error); // Console + future monitoring
+    },
+  });
+}
+```
+
+**Hooks with error handling:**
+
+- `useAddChannels` - Channel subscription errors
+- `useUnsubscribeChannel` - Unsubscribe errors -` useSubscribeChannels` - Onboarding errors
+- `useSaveFilters` - Filter persistence errors
+- `useUploadResume` - Resume upload errors
+- `useGenerateTailoredResume` - AI generation errors
+
+#### **5. User-Friendly Error Messages**
+
+Centralized error message catalog (`shared/constants/error-messages.ts`):
+
+```typescript
+export const ERROR_MESSAGES = {
+  // Network
+  NETWORK_ERROR: 'Connection lost. Check your internet.',
+  TIMEOUT: 'Request timed out. Try again.',
+
+  // Limits
+  SWAP_LIMIT: 'Monthly swap limit reached (6/month). Upgrade to Pro.',
+  CHANNEL_LIMIT: 'Hit 5 channel limit. Upgrade for unlimited.',
+
+  // Server
+  SERVER_ERROR: 'Something went wrong. Try again.',
+  RATE_LIMIT: 'Too many requests. Wait a moment.',
+};
+```
+
+**Message Priority:**
+
+1. Server-provided message (e.g., "Swap limit exceeded")
+2. Status code mapping (e.g., 500 → "Server error")
+3. Error type default (e.g., Network → "Connection lost")
+
+#### **6. Error Logging**
+
+All errors are logged with context for debugging:
+
+```typescript
+logError('ChannelSubscription', error, {
+  userId: user.id,
+  channelId: 'xyz',
+  timestamp: Date.now(),
+});
+
+// Console output:
+// [ChannelSubscription] Error occurred: {
+//   type: 'VALIDATION',
+//   message: 'Monthly swap limit reached',
+//   statusCode: 400,
+//   retryable: false,
+//   additionalInfo: { userId, channelId, timestamp }
+// }
+```
+
+**Future:** Integration with Sentry, LogRocket, or similar for production monitoring.
+
+#### **7. Component Error States**
+
+Components handle loading/error states from queries:
+
+```typescript
 const { data, isLoading, error } = useJobs();
 
-if (isLoading) return <Skeleton />;
-if (error) return <ErrorMessage error={error} />;
+if (isLoading) return <JobSkeletonList />;
+if (error) return (
+  <div className="text-center py-12">
+    <p className="text-red-600">{getErrorMessage(error)}</p>
+    <Button onClick={() => refetch()}>Try Again</Button>
+  </div>
+);
 ```
+
+#### **Best Practices**
+
+**✅ Do:**
+
+- Use `getErrorMessage()` for user-facing errors
+- Use `logError()` with context for debugging
+- Provide retry mechanisms for retryable errors
+- Keep error messages concise and actionable
+
+**❌ Don't:**
+
+- Show technical stack traces to users
+- Use generic "An error occurred" without context
+- Ignore network/timeout errors
+- Skip error logging
+
+#### **Error Types Reference**
+
+| Type             | Retryable | User Action             |
+| ---------------- | --------- | ----------------------- |
+| `NETWORK`        | ✅ Yes    | Check internet, retry   |
+| `RATE_LIMIT`     | ✅ Yes    | Wait, then retry        |
+| `SERVER`         | ✅ Yes    | Retry, contact support  |
+| `AUTHENTICATION` | ❌ No     | Log in again            |
+| `AUTHORIZATION`  | ❌ No     | Check permissions       |
+| `VALIDATION`     | ❌ No     | Fix input, check limits |
+| `API`            | ❌ No     | Read error message      |
+| `UNKNOWN`        | ❌ No     | Contact support         |
 
 ### 7. **Performance Optimizations**
 
