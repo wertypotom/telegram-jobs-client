@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { channelApi } from '../api/channel.api';
 import { toast } from 'sonner';
-import { getErrorMessage } from '../lib/error-utils';
+import { getErrorMessage, logError } from '../lib/error-utils';
 
 export function useUserChannels() {
   return useQuery({
@@ -54,11 +54,9 @@ export function useAddChannels() {
       // Refresh jobs to show new jobs from added channels
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
-    onError: (error: any) => {
-      // Display error message to user
-      const errorMessage =
-        error?.response?.data?.message || error?.message || 'Failed to add channel';
-      toast.error(errorMessage);
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+      logError('AddChannels', error);
     },
   });
 }
@@ -93,11 +91,9 @@ export function useUnsubscribeChannel() {
       queryClient.invalidateQueries({ queryKey: ['channels', 'explore'] });
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
-    onError: (error: any) => {
-      // Display error message to user
-      const errorMessage =
-        error?.response?.data?.message || error?.message || 'Failed to unsubscribe';
-      toast.error(errorMessage);
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+      logError('UnsubscribeChannel', error);
     },
   });
 }

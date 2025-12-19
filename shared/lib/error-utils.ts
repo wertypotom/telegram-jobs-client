@@ -1,142 +1,75 @@
-import { ErrorType, ClassifiedError } from '../types/errors';
-import { ERROR_MESSAGES, getMessageForStatusCode } from '../constants/error-messages';
+import { type AxiosError } from 'axios';
 
 /**
- * Classify an error to determine its type and handling strategy
+ * Standardized server error response format
  */
-export function classifyError(error: any): ClassifiedError {
-  // Network errors
-  if (error?.message === 'Network Error' || error?.code === 'ERR_NETWORK') {
-    return {
-      type: ErrorType.NETWORK,
-      message: ERROR_MESSAGES.NETWORK_ERROR,
-      originalError: error,
-      retryable: true,
-    };
-  }
-
-  // Timeout errors
-  if (error?.code === 'ECONNABORTED') {
-    return {
-      type: ErrorType.NETWORK,
-      message: ERROR_MESSAGES.TIMEOUT,
-      originalError: error,
-      retryable: true,
-    };
-  }
-
-  const statusCode = error?.response?.status;
-
-  // HTTP errors
-  if (statusCode) {
-    if (statusCode === 401) {
-      return {
-        type: ErrorType.AUTHENTICATION,
-        message: ERROR_MESSAGES.UNAUTHORIZED,
-        originalError: error,
-        statusCode,
-        retryable: false,
-      };
-    }
-
-    if (statusCode === 403) {
-      return {
-        type: ErrorType.AUTHORIZATION,
-        message: ERROR_MESSAGES.FORBIDDEN,
-        originalError: error,
-        statusCode,
-        retryable: false,
-      };
-    }
-
-    if (statusCode === 429) {
-      return {
-        type: ErrorType.RATE_LIMIT,
-        message: ERROR_MESSAGES.RATE_LIMIT,
-        originalError: error,
-        statusCode,
-        retryable: true,
-      };
-    }
-
-    if (statusCode >= 500) {
-      return {
-        type: ErrorType.SERVER,
-        message: getMessageForStatusCode(statusCode),
-        originalError: error,
-        statusCode,
-        retryable: true,
-      };
-    }
-
-    if (statusCode >= 400 && statusCode < 500) {
-      // Client error - use server message if available
-      const serverMessage = error?.response?.data?.message;
-      return {
-        type: ErrorType.VALIDATION,
-        message: serverMessage || getMessageForStatusCode(statusCode),
-        originalError: error,
-        statusCode,
-        retryable: false,
-      };
-    }
-  }
-
-  // API errors with custom messages
-  const apiMessage = error?.response?.data?.message;
-  if (apiMessage) {
-    return {
-      type: ErrorType.API,
-      message: apiMessage,
-      originalError: error,
-      statusCode,
-      retryable: false,
-    };
-  }
-
-  // Unknown errors
-  return {
-    type: ErrorType.UNKNOWN,
-    message: error?.message || ERROR_MESSAGES.UNKNOWN_ERROR,
-    originalError: error,
-    retryable: false,
+interface ApiErrorResponse {
+  success: false;
+  error: {
+    code: string; // ErrorCode from server
+    message: string; // User-friendly message from server
+    statusCode: number;
+    stack?: string; // Development only
   };
 }
 
 /**
- * Extract user-friendly error message from any error
- * This is a simplified version for quick use - classifyError provides more detail
+ * Extract error message from server response
+ * Server is source of truth - client just displays what server sends
  */
-export function getErrorMessage(error: any): string {
-  const classified = classifyError(error);
-  return classified.message;
+export function getErrorMessage(error: unknown): string {
+  // Axios error with server response
+  if (isAxiosError(error) && error.response?.data) {
+    const apiError = error.response.data as ApiErrorResponse;
+    if (apiError.error?.message) {
+      return apiError.error.message;
+    }
+  }
+
+  // Network errors (no server response)
+  if (isAxiosError(error) && error.message === 'Network Error') {
+    return 'Connection lost. Please check your internet connection.';
+  }
+
+  // Timeout errors
+  if (isAxiosError(error) && error.code === 'ECONNABORTED') {
+    return 'Request timed out. Please try again.';
+  }
+
+  // Fallback for unknown errors
+  return 'An unexpected error occurred. Please try again.';
 }
 
 /**
- * Log error with context (for debugging and future monitoring integration)
+ * Extract error code from server response (for conditional logic if needed)
  */
-export function logError(context: string, error: any, additionalInfo?: Record<string, any>) {
-  const classified = classifyError(error);
-
-  console.error(`[${context}] Error occurred:`, {
-    type: classified.type,
-    message: classified.message,
-    statusCode: classified.statusCode,
-    retryable: classified.retryable,
-    additionalInfo,
-    originalError: classified.originalError,
-  });
-
-  // Future: Send to error monitoring service (Sentry, LogRocket, etc.)
-  // if (process.env.NODE_ENV === 'production') {
-  //   sendToMonitoring({ context, classified, additionalInfo });
-  // }
+export function getErrorCode(error: unknown): string | undefined {
+  if (isAxiosError(error) && error.response?.data) {
+    const apiError = error.response.data as ApiErrorResponse;
+    return apiError.error?.code;
+  }
+  return undefined;
 }
 
 /**
- * Determine if an error is retryable
+ * Type guard for Axios errors
  */
-export function isRetryableError(error: any): boolean {
-  const classified = classifyError(error);
-  return classified.retryable;
+function isAxiosError(error: unknown): error is AxiosError {
+  return typeof error === 'object' && error !== null && 'isAxiosError' in error;
+}
+
+/**
+ * Log error for debugging (future: integrate with monitoring service)
+ */
+export function logError(context: string, error: unknown) {
+  if (process.env.NODE_ENV === 'development') {
+    const code = getErrorCode(error);
+    const message = getErrorMessage(error);
+    console.error(`[${context}]`, {
+      code,
+      message,
+      error,
+    });
+  }
+  // Future: Send to Sentry/LogRocket in production
 }
