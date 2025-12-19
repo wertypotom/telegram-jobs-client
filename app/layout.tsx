@@ -8,8 +8,10 @@ import { ErrorBoundary } from '@/shared/components/error-boundary';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Telegram Job Scraper - AI-Powered Resume Tailoring',
-  description: 'Browse Telegram job postings and generate AI-tailored resumes instantly',
+  // title: 'Telegram Job Scraper - AI-Powered Resume Tailoring',
+  title: 'Telegram Job Scraper',
+  description: 'Browse Telegram job postings',
+  // description: 'Browse Telegram job postings and generate AI-tailored resumes instantly',
   icons: {
     icon: '/favicon.png',
   },
