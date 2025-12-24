@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { channelApi } from '../api/channel.api';
-import { toast } from 'sonner';
-import { getErrorMessage, logError } from '../lib/error-utils';
+import { logError } from '@/shared/lib/error-utils';
 
 export function useUserChannels() {
   return useQuery({
@@ -23,7 +22,7 @@ export function useSubscribeChannels() {
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
     onError: (error: any) => {
-      toast.error(getErrorMessage(error));
+      logError('SubscribeChannels', error);
     },
   });
 }
@@ -41,21 +40,14 @@ export function useAddChannels() {
 
   return useMutation({
     mutationFn: (channels: string[]) => channelApi.addChannels(channels),
-    onSuccess: (data) => {
-      // Show swap remaining notification for free users
-      if (data.swapsRemaining !== undefined && data.swapsRemaining >= 0) {
-        toast.info(`Channel added! ${data.swapsRemaining} swaps remaining this month.`);
-      }
-      // Critical: Invalidate auth to refresh subscribedChannels in session
+    onSuccess: () => {
+      // Invalidate all channel-related queries
+      queryClient.invalidateQueries({ queryKey: ['channels'] });
+      queryClient.invalidateQueries({ queryKey: ['user-channels'] }); // ✅ Added for consistency
       queryClient.invalidateQueries({ queryKey: ['user'] });
-      // Refresh channel lists
-      queryClient.invalidateQueries({ queryKey: ['user-channels'] });
-      queryClient.invalidateQueries({ queryKey: ['channels', 'explore'] });
-      // Refresh jobs to show new jobs from added channels
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
     onError: (error) => {
-      toast.error(getErrorMessage(error));
       logError('AddChannels', error);
     },
   });
@@ -80,19 +72,14 @@ export function useUnsubscribeChannel() {
 
   return useMutation({
     mutationFn: (channelUsername: string) => channelApi.unsubscribeChannel(channelUsername),
-    onSuccess: (data) => {
-      // Show swap remaining notification for free users
-      if (data.swapsRemaining !== undefined && data.swapsRemaining >= 0) {
-        toast.info(`Unsubscribed! ${data.swapsRemaining} swaps remaining this month.`);
-      }
-      // Invalidate queries to refresh UI
+    onSuccess: () => {
+      // Invalidate all channel-related queries
+      queryClient.invalidateQueries({ queryKey: ['channels'] });
+      queryClient.invalidateQueries({ queryKey: ['user-channels'] }); // ✅ Fix: Added for My Channels tab
       queryClient.invalidateQueries({ queryKey: ['user'] });
-      queryClient.invalidateQueries({ queryKey: ['user-channels'] });
-      queryClient.invalidateQueries({ queryKey: ['channels', 'explore'] });
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
     onError: (error) => {
-      toast.error(getErrorMessage(error));
       logError('UnsubscribeChannel', error);
     },
   });

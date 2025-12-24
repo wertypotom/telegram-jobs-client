@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/shared/ui/button';
-import { useSaveFilters } from '@/shared/hooks/use-preferences';
+import { useSaveFilters } from '../hooks/use-preferences';
 import { CategorySidebar } from './category-sidebar';
 import { SimpleTagInput } from './simple-tag-input';
 import { JobCriteriaSection } from './job-criteria-section';

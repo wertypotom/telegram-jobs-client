@@ -6,88 +6,27 @@ import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
 import { Badge } from '@/shared/ui/badge';
 import { Card, CardContent } from '@/shared/ui/card';
-import { Search, Sparkles, Loader2, X, Zap, Users } from 'lucide-react';
+import { Search, Sparkles, Loader2, Zap } from 'lucide-react';
 import {
   useExploreChannels,
   useUserChannels,
   useAddChannels,
   useUnsubscribeChannel,
-} from '@/shared/hooks/use-channels';
-import { useCategories } from '@/shared/hooks/use-categories';
+} from './hooks/use-channels';
+import { useCategories } from './hooks/use-categories';
 import { useAuth } from '@/shared/hooks';
 import { cn } from '@/shared/utils/cn';
 import { useTranslation } from 'react-i18next';
+import { canSubscribeToChannel, getChannelLimitMessage } from '@/shared/domain';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/shared/lib/error-utils';
+import { ChannelCard } from './channel-card';
+import { SubscriptionLimitBanner } from './subscription-limit-banner';
+import { MyChannelsList } from './my-channels-list';
 
 interface ExploreChannelsModalProps {
   open: boolean;
   onClose: () => void;
-}
-
-interface FlipCardProps {
-  channel: any;
-  canSubscribe: boolean;
-  subscribeToChannel: any;
-  handleSubscribe: (username: string) => void;
-  handleUnsubscribe: (username: string) => void;
-  formatMemberCount: (count?: number | string) => string;
-}
-
-function FlipCard({
-  channel,
-  canSubscribe,
-  subscribeToChannel,
-  handleSubscribe,
-  handleUnsubscribe,
-  formatMemberCount,
-}: FlipCardProps) {
-  const { t } = useTranslation('dashboard');
-  const handleSubscribeClick = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (channel.isJoined) {
-      await handleUnsubscribe(channel.username);
-    } else {
-      await handleSubscribe(channel.username);
-    }
-  };
-
-  return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 flex flex-col justify-between h-[180px] shadow-sm hover:shadow-md transition-all duration-200 ease-in-out">
-      {/* Header Section */}
-      <div>
-        <div className="flex justify-between items-start">
-          <h3 className="font-bold text-gray-900 text-lg leading-tight truncate pr-2">
-            {channel.title}
-          </h3>
-        </div>
-        <p className="text-gray-500 text-sm mb-2">{channel.username}</p>
-
-        {/* Description */}
-        <p className="text-gray-600 text-sm leading-snug line-clamp-2">
-          {channel.description || t('exploreChannels.noDescription')}
-        </p>
-      </div>
-
-      {/* Footer / Actions */}
-      <div className="flex items-center justify-between mt-2 pt-2">
-        <div className="flex items-center gap-1.5 text-gray-500">
-          <Users className="w-4 h-4" />
-          <span className="text-sm font-medium">{formatMemberCount(channel.memberCount)}</span>
-        </div>
-
-        <button
-          onClick={handleSubscribeClick}
-          disabled={!channel.isJoined && (!canSubscribe || subscribeToChannel.isPending)}
-          className={`text-sm font-medium px-4 py-1.5 rounded transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 ${
-            channel.isJoined
-              ? 'bg-green-100 text-green-700 hover:bg-green-200 focus:ring-green-200'
-              : 'bg-cyan-600 text-white hover:bg-cyan-500 focus:ring-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed'
-          }`}
-        >
-          {channel.isJoined ? t('exploreChannels.subscribed') : t('exploreChannels.subscribe')}
-        </button>
-      </div>
-    </div>
-  );
 }
 
 export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProps) {
@@ -107,10 +46,10 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
   const subscribeToChannel = useAddChannels();
   const unsubscribeChannel = useUnsubscribeChannel();
 
-  // Use userChannels from API, not session - always up to date
+  // Use domain layer for business logic
   const subscribedCount = userChannels?.length ?? 0;
-  const maxChannels = user?.plan === 'premium' ? 50 : 5;
-  const canSubscribe = subscribedCount < maxChannels;
+  const canSubscribe = canSubscribeToChannel(user, subscribedCount);
+  const limitMessage = getChannelLimitMessage(user, subscribedCount);
 
   const toggleCategory = (category: string) => {
     setSelectedCategories((prev) =>
@@ -119,19 +58,39 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
   };
 
   const handleSubscribe = async (channelUsername: string) => {
-    if (!user || !canSubscribe) return;
-    await subscribeToChannel.mutateAsync([channelUsername]);
+    if (!user) return;
+
+    try {
+      const result = await subscribeToChannel.mutateAsync([channelUsername]);
+
+      // UI feedback with swap remaining info from server
+      if (result.swapsRemaining !== undefined && result.swapsRemaining >= 0) {
+        toast.info(`Channel added! ${result.swapsRemaining} swaps remaining this month.`);
+      } else {
+        toast.success('Channel added successfully!');
+      }
+    } catch (error) {
+      // ✅ Server provides user-friendly error messages
+      // e.g., "Plan limit exceeded. Free plan allows max 5 channels total."
+      toast.error(getErrorMessage(error));
+    }
   };
 
   const handleUnsubscribe = async (channelUsername: string) => {
-    await unsubscribeChannel.mutateAsync(channelUsername);
-  };
+    try {
+      const result = await unsubscribeChannel.mutateAsync(channelUsername);
 
-  const formatMemberCount = (count?: number | string) => {
-    if (!count) return 'N/A';
-    if (typeof count === 'string') return count; // Already formatted in seed ("80K+")
-    if (count >= 1000) return `${(count / 1000).toFixed(1)}K`;
-    return count.toString();
+      // UI feedback with swap remaining info from server
+      if (result.swapsRemaining !== undefined && result.swapsRemaining >= 0) {
+        toast.info(`Unsubscribed! ${result.swapsRemaining} swaps remaining this month.`);
+      } else {
+        toast.success('Unsubscribed successfully!');
+      }
+    } catch (error) {
+      // ✅ Server provides user-friendly error messages
+      // e.g., "You have used all 6 channel swaps this month. Upgrade to Premium for unlimited changes."
+      toast.error(getErrorMessage(error));
+    }
   };
 
   return (
@@ -236,14 +195,12 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
               ) : exploreData && exploreData.channels.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {exploreData.channels.map((channel) => (
-                    <FlipCard
+                    <ChannelCard
                       key={channel.username}
                       channel={channel}
                       canSubscribe={canSubscribe}
-                      subscribeToChannel={subscribeToChannel}
-                      handleSubscribe={handleSubscribe}
-                      handleUnsubscribe={handleUnsubscribe}
-                      formatMemberCount={formatMemberCount}
+                      onSubscribe={handleSubscribe}
+                      onUnsubscribe={handleUnsubscribe}
                     />
                   ))}
                 </div>
@@ -253,70 +210,28 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
                 </div>
               )}
 
-              {/* Free Tier Warning */}
-              {!canSubscribe && user?.plan === 'free' && (
-                <Card className="bg-amber-50 border-amber-200">
-                  <CardContent className="p-4">
-                    <p className="text-sm font-semibold text-amber-900">
-                      {t('exploreChannels.freeLimitReached')} ({subscribedCount}/{maxChannels})
-                    </p>
-                    <p className="text-xs text-amber-700 mt-1">
-                      {t('exploreChannels.unsubscribeToAdd')}
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
+              {/* Limit Warning Banner */}
+              <SubscriptionLimitBanner
+                user={user}
+                limitMessage={limitMessage}
+                canSubscribe={canSubscribe}
+                variant="warning"
+              />
             </div>
           ) : (
-            /* My Channels Tab */
-            <div className="space-y-4 p-4">
-              {/* Limit Counter */}
-              <Card className="bg-gray-50">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-gray-700">
-                      {user?.plan === 'free'
-                        ? t('exploreChannels.freePlan')
-                        : t('exploreChannels.premiumPlan')}
-                    </span>
-                    <Badge variant={canSubscribe ? 'default' : 'destructive'}>
-                      {subscribedCount}/{maxChannels} {t('exploreChannels.used')}
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Subscribed Channels List */}
-              {userChannels && userChannels.length > 0 ? (
-                <div className="space-y-3">
-                  {userChannels.map((channel) => (
-                    <Card key={channel.username}>
-                      <CardContent className="p-4 flex items-center justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-sm text-gray-900">{channel.title}</h3>
-                          <p className="text-xs text-gray-500">{channel.username}</p>
-                        </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleUnsubscribe(channel.username)}
-                          disabled={unsubscribeChannel.isPending}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 cursor-pointer"
-                        >
-                          <X className="h-4 w-4 mr-1" />
-                          {t('exploreChannels.unsubscribe')}
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12 text-gray-500">
-                  <p className="font-semibold">{t('exploreChannels.noChannelsYet')}</p>
-                  <p className="text-sm mt-2">{t('exploreChannels.switchToExplore')}</p>
-                </div>
-              )}
-            </div>
+            <MyChannelsList
+              channels={userChannels || []}
+              onUnsubscribe={handleUnsubscribe}
+              isUnsubscribing={unsubscribeChannel.isPending}
+              limitBanner={
+                <SubscriptionLimitBanner
+                  user={user}
+                  limitMessage={limitMessage}
+                  canSubscribe={canSubscribe}
+                  variant="info"
+                />
+              }
+            />
           )}
         </div>
       </DialogContent>

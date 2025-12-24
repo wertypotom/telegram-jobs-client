@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { preferencesApi } from '../api/preferences.api';
+import { preferencesApi } from '@/shared/api/preferences.api';
 import type { JobFilters } from '../api/jobs.api';
 import { toast } from 'sonner';
-import { getErrorMessage, logError } from '../lib/error-utils';
+import { getErrorMessage, logError } from '@/shared/lib/error-utils';
 
 export function useFilters() {
   return useQuery({

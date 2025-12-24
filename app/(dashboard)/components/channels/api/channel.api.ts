@@ -1,5 +1,5 @@
-import { apiClient } from '../lib/api-client';
-import type { ApiResponse } from '../types/api';
+import { apiClient } from '@/shared/lib/api-client';
+import type { ApiResponse } from '@/shared/types/api';
 
 export interface ChannelInfo {
   username: string;

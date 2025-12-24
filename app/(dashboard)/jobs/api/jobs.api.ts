@@ -1,6 +1,6 @@
-import { apiClient } from '../lib/api-client';
-import type { ApiResponse } from '../types/api';
-import type { Job } from '../types/models';
+import { apiClient } from '@/shared/lib/api-client';
+import type { ApiResponse } from '@/shared/types/api';
+import type { Job } from '@/shared/types/models';
 
 export interface JobFilters {
   jobFunction?: string[];

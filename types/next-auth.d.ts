@@ -23,5 +23,7 @@ declare module 'next-auth/jwt' {
   interface JWT extends DefaultJWT {
     id: string;
     hasCompletedOnboarding?: boolean;
+    subscribedChannels?: string[];
+    plan?: 'free' | 'premium';
   }
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useUserChannels, useAvailableChannels, useAddChannels } from '@/shared/hooks';
+import { useUserChannels, useAvailableChannels, useAddChannels } from './hooks/use-channels';
 import {
   Dialog,
   DialogContent,

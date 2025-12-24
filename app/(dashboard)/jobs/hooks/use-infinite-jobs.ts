@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { jobsApi, JobFilters } from '../api/jobs.api';
-import type { Job } from '../types/models';
+import type { Job } from '@/shared/types/models';
 
 const JOBS_PER_PAGE = 20;
 

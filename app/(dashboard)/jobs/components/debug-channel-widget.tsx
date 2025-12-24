@@ -1,12 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { useUserChannels, useAvailableChannels } from '@/shared/hooks/use-channels';
+import {
+  useUserChannels,
+  useAvailableChannels,
+} from '@/app/(dashboard)/components/channels/hooks/use-channels';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import { X, Plus, Loader2 } from 'lucide-react';
-import type { ChannelInfo } from '@/shared/api/channel.api';
-import { channelApi } from '@/shared/api/channel.api';
+import { channelApi } from '@/app/(dashboard)/components/channels/api/channel.api';
+import type { ChannelInfo } from '@/app/(dashboard)/components/channels/api/channel.api';
 import { useQueryClient } from '@tanstack/react-query';
 
 export function DebugChannelWidget() {

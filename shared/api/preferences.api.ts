@@ -1,6 +1,6 @@
 import { apiClient } from '../lib/api-client';
 import type { ApiResponse } from '../types/api';
-import type { JobFilters } from './jobs.api';
+import type { JobFilters } from '@/app/(dashboard)/jobs/api/jobs.api';
 
 export const preferencesApi = {
   getFilters: async (): Promise<JobFilters> => {
