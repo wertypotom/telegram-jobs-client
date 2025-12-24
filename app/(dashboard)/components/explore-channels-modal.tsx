@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
@@ -26,7 +26,8 @@ interface ExploreChannelsModalProps {
 interface FlipCardProps {
   channel: any;
   canSubscribe: boolean;
-  subscribeToChannel: any;
+  _subscribeToChannel: any; // Prefixed with _ as it's not used directly
+  _unsubscribeChannel: any; // Prefixed with _ as it's not used directly
   handleSubscribe: (username: string) => void;
   handleUnsubscribe: (username: string) => void;
   formatMemberCount: (count?: number | string) => string;
@@ -35,18 +36,26 @@ interface FlipCardProps {
 function FlipCard({
   channel,
   canSubscribe,
-  subscribeToChannel,
+  _subscribeToChannel,
+  _unsubscribeChannel,
   handleSubscribe,
   handleUnsubscribe,
   formatMemberCount,
 }: FlipCardProps) {
   const { t } = useTranslation('dashboard');
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const handleSubscribeClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (channel.isJoined) {
-      await handleUnsubscribe(channel.username);
-    } else {
-      await handleSubscribe(channel.username);
+    setIsLoading(true);
+    try {
+      if (channel.isJoined) {
+        await handleUnsubscribe(channel.username);
+      } else {
+        await handleSubscribe(channel.username);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -76,13 +85,14 @@ function FlipCard({
 
         <button
           onClick={handleSubscribeClick}
-          disabled={!channel.isJoined && (!canSubscribe || subscribeToChannel.isPending)}
-          className={`text-sm font-medium px-4 py-1.5 rounded transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 ${
+          disabled={!channel.isJoined && (!canSubscribe || isLoading)}
+          className={`text-sm font-medium px-4 py-1.5 rounded transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 flex items-center gap-2 ${
             channel.isJoined
               ? 'bg-green-100 text-green-700 hover:bg-green-200 focus:ring-green-200'
               : 'bg-cyan-600 text-white hover:bg-cyan-500 focus:ring-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed'
           }`}
         >
+          {isLoading && <Loader2 className="h-3 w-3 animate-spin" />}
           {channel.isJoined ? t('exploreChannels.subscribed') : t('exploreChannels.subscribe')}
         </button>
       </div>
@@ -109,8 +119,9 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
 
   // Use userChannels from API, not session - always up to date
   const subscribedCount = userChannels?.length ?? 0;
-  const maxChannels = user?.plan === 'premium' ? 50 : 5;
-  const canSubscribe = subscribedCount < maxChannels;
+  // Premium users have unlimited channels
+  const maxChannels = user?.plan === 'premium' ? Infinity : 5;
+  const canSubscribe = user?.plan === 'premium' || subscribedCount < maxChannels;
 
   const toggleCategory = (category: string) => {
     setSelectedCategories((prev) =>
@@ -240,7 +251,8 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
                       key={channel.username}
                       channel={channel}
                       canSubscribe={canSubscribe}
-                      subscribeToChannel={subscribeToChannel}
+                      _subscribeToChannel={subscribeToChannel}
+                      _unsubscribeChannel={unsubscribeChannel}
                       handleSubscribe={handleSubscribe}
                       handleUnsubscribe={handleUnsubscribe}
                       formatMemberCount={formatMemberCount}
@@ -280,7 +292,9 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
                         : t('exploreChannels.premiumPlan')}
                     </span>
                     <Badge variant={canSubscribe ? 'default' : 'destructive'}>
-                      {subscribedCount}/{maxChannels} {t('exploreChannels.used')}
+                      {user?.plan === 'premium'
+                        ? `${subscribedCount} ${t('exploreChannels.channels')}`
+                        : `${subscribedCount}/${maxChannels} ${t('exploreChannels.used')}`}
                     </Badge>
                   </div>
                 </CardContent>
