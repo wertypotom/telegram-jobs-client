@@ -22,6 +22,8 @@ declare module 'next-auth' {
 declare module 'next-auth/jwt' {
   interface JWT extends DefaultJWT {
     id: string;
+    email?: string;
+    providerId?: string; // Google's unique account ID
     hasCompletedOnboarding?: boolean;
     subscribedChannels?: string[];
     plan?: 'free' | 'premium';

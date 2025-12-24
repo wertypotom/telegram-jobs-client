@@ -54,27 +54,43 @@ export const authOptions: NextAuthOptions = {
     error: '/',
   },
   callbacks: {
-    async jwt({ token, user, trigger }) {
-      // Persist user id and data to token on signin
-      if (user) {
+    async jwt({ token, user, account, trigger }) {
+      // On initial sign-in with OAuth provider
+      if (user && account) {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[AUTH] New sign-in:', {
+            userId: user.id,
+            email: user.email,
+            provider: account.provider,
+            providerAccountId: account.providerAccountId,
+          });
+        }
+
         token.id = user.id;
+        token.email = user.email || undefined;
+        token.providerId = account.providerAccountId; // Store Google's unique ID
         token.hasCompletedOnboarding = user.hasCompletedOnboarding;
         token.subscribedChannels = user.subscribedChannels || [];
         token.plan = user.plan || 'free';
+        return token;
       }
+
+      // On subsequent requests, token already exists
+      // This is normal for JWT strategy - token persists across requests
 
       // When update() is called, fetch fresh user data from database
       if (trigger === 'update' && token.id) {
         try {
           const { ObjectId } = await import('mongodb');
-          const clientPromise = (await import('@/lib/mongodb')).default;
+          const clientPromise = (await import('./lib/mongodb')).default; // Corrected path
           const client = await clientPromise;
           const db = client.db();
 
           const freshUser = await db.collection('users').findOne(
-            { _id: new ObjectId(token.id) },
+            { _id: new ObjectId(token.id as string) }, // Cast token.id to string
             {
               projection: {
+                email: 1,
                 hasCompletedOnboarding: 1,
                 subscribedChannels: 1,
                 plan: 1,
@@ -83,6 +99,7 @@ export const authOptions: NextAuthOptions = {
           );
 
           if (freshUser) {
+            token.email = freshUser.email;
             token.hasCompletedOnboarding = freshUser.hasCompletedOnboarding;
             token.subscribedChannels = freshUser.subscribedChannels || [];
             token.plan = freshUser.plan || 'free';
@@ -98,15 +115,64 @@ export const authOptions: NextAuthOptions = {
       // Add userId and user data to session from token
       if (session.user && token) {
         session.user.id = token.id as string;
+        session.user.email = token.email as string;
         session.user.hasCompletedOnboarding = token.hasCompletedOnboarding as boolean;
         session.user.subscribedChannels = token.subscribedChannels as string[];
         session.user.plan = token.plan as 'free' | 'premium';
+
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[AUTH] Session created for:', {
+            userId: session.user.id,
+            email: session.user.email,
+          });
+        }
       }
       return session;
     },
   },
+  events: {
+    async signIn({ user, account, profile, isNewUser }) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[AUTH EVENT] Sign in:', {
+          userId: user.id,
+          userEmail: user.email,
+          provider: account?.provider,
+          providerAccountId: account?.providerAccountId,
+          profileEmail: profile?.email,
+          isNewUser,
+        });
+      }
+    },
+    async signOut({ token }) {
+      // Explicitly log sign-out to track session cleanup
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[AUTH EVENT] Sign out - clearing token:', {
+          userId: token?.id,
+          email: token?.email,
+          providerId: token?.providerId,
+        });
+      }
+      // Token will be cleared by NextAuth cookie deletion
+    },
+  },
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60, // 24 hours
+  },
+  cookies: {
+    sessionToken: {
+      name:
+        process.env.NODE_ENV === 'production'
+          ? '__Secure-next-auth.session-token'
+          : 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
   },
   // Cookie config removed temporarily for debugging - using NextAuth defaults
 };

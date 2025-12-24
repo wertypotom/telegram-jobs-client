@@ -27,10 +27,12 @@ export function useAuth() {
 export function useLogout() {
   return {
     mutate: async () => {
-      await nextAuthSignOut({ callbackUrl: '/' });
+      // Sign out and force redirect to clear all cached state
+      await nextAuthSignOut({ callbackUrl: '/', redirect: true });
     },
     mutateAsync: async () => {
-      await nextAuthSignOut({ callbackUrl: '/' });
+      // Sign out and force redirect to clear all cached state
+      await nextAuthSignOut({ callbackUrl: '/', redirect: true });
     },
   };
 }
