@@ -55,10 +55,12 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user, trigger }) {
-      // Persist user id and onboarding status to token on signin
+      // Persist user id and data to token on signin
       if (user) {
         token.id = user.id;
         token.hasCompletedOnboarding = user.hasCompletedOnboarding;
+        token.subscribedChannels = user.subscribedChannels || [];
+        token.plan = user.plan || 'free';
       }
 
       // When update() is called, fetch fresh user data from database
@@ -69,15 +71,21 @@ export const authOptions: NextAuthOptions = {
           const client = await clientPromise;
           const db = client.db();
 
-          const freshUser = await db
-            .collection('users')
-            .findOne(
-              { _id: new ObjectId(token.id) },
-              { projection: { hasCompletedOnboarding: 1 } }
-            );
+          const freshUser = await db.collection('users').findOne(
+            { _id: new ObjectId(token.id) },
+            {
+              projection: {
+                hasCompletedOnboarding: 1,
+                subscribedChannels: 1,
+                plan: 1,
+              },
+            }
+          );
 
           if (freshUser) {
             token.hasCompletedOnboarding = freshUser.hasCompletedOnboarding;
+            token.subscribedChannels = freshUser.subscribedChannels || [];
+            token.plan = freshUser.plan || 'free';
           }
         } catch (error) {
           console.error('Failed to fetch updated user data:', error);
@@ -87,10 +95,12 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      // Add userId and onboarding status to session from token
+      // Add userId and user data to session from token
       if (session.user && token) {
         session.user.id = token.id as string;
         session.user.hasCompletedOnboarding = token.hasCompletedOnboarding as boolean;
+        session.user.subscribedChannels = token.subscribedChannels as string[];
+        session.user.plan = token.plan as 'free' | 'premium';
       }
       return session;
     },

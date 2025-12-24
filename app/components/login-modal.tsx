@@ -6,7 +6,7 @@ import { Sparkles, X } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLoginModal } from '@/shared/stores/use-login-modal';
+import { useLoginModal } from '@/shared/store/use-login-modal';
 
 export function LoginModal() {
   const [email, setEmail] = useState('');

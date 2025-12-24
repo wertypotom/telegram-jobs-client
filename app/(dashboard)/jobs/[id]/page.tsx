@@ -1,7 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useJob, useMarkJobAsViewed } from '@/shared/hooks';
+import { useJob, useMarkJobAsViewed } from '@/shared/hooks/use-jobs';
 import {
   Card,
   CardHeader,
@@ -13,7 +14,6 @@ import {
 } from '@/shared/ui';
 import { Building2, MapPin, Calendar, MessageSquare, ArrowLeft, ExternalLink } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export default function JobDetailPage() {
