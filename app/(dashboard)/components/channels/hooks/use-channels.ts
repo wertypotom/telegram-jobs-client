@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { channelApi } from '../api/channel.api';
-import { toast } from 'sonner';
-import { getErrorMessage, logError } from '../lib/error-utils';
+import { logError } from '@/shared/lib/error-utils';
 
 export function useUserChannels() {
   return useQuery({
@@ -23,7 +22,7 @@ export function useSubscribeChannels() {
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
     onError: (error: any) => {
-      toast.error(getErrorMessage(error));
+      logError('SubscribeChannels', error);
     },
   });
 }
@@ -41,34 +40,14 @@ export function useAddChannels() {
 
   return useMutation({
     mutationFn: (channels: string[]) => channelApi.addChannels(channels),
-    onSuccess: (data, variables) => {
-      // Update ALL explore channels queries immediately (handles any search/filter params)
-      queryClient.setQueriesData(
-        { queryKey: ['channels', 'explore'], exact: false },
-        (old: any) => {
-          if (!old?.channels) return old;
-          return {
-            ...old,
-            channels: old.channels.map((channel: any) =>
-              variables.includes(channel.username) ? { ...channel, isJoined: true } : channel
-            ),
-          };
-        }
-      );
-
-      // Show swap remaining notification for free users
-      if (data.swapsRemaining !== undefined && data.swapsRemaining >= 0) {
-        toast.info(`Channel added! ${data.swapsRemaining} swaps remaining this month.`);
-      }
-
-      // Then invalidate to ensure consistency (background refetch)
+    onSuccess: () => {
+      // Invalidate all channel-related queries
+      queryClient.invalidateQueries({ queryKey: ['channels'] });
+      queryClient.invalidateQueries({ queryKey: ['user-channels'] }); // ✅ Added for consistency
       queryClient.invalidateQueries({ queryKey: ['user'] });
-      queryClient.invalidateQueries({ queryKey: ['user-channels'] });
-      queryClient.invalidateQueries({ queryKey: ['channels', 'explore'] });
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
     onError: (error) => {
-      toast.error(getErrorMessage(error));
       logError('AddChannels', error);
     },
   });
@@ -93,34 +72,14 @@ export function useUnsubscribeChannel() {
 
   return useMutation({
     mutationFn: (channelUsername: string) => channelApi.unsubscribeChannel(channelUsername),
-    onSuccess: (data, channelUsername) => {
-      // Update ALL explore channels queries immediately (handles any search/filter params)
-      queryClient.setQueriesData(
-        { queryKey: ['channels', 'explore'], exact: false },
-        (old: any) => {
-          if (!old?.channels) return old;
-          return {
-            ...old,
-            channels: old.channels.map((channel: any) =>
-              channel.username === channelUsername ? { ...channel, isJoined: false } : channel
-            ),
-          };
-        }
-      );
-
-      // Show swap remaining notification for free users
-      if (data.swapsRemaining !== undefined && data.swapsRemaining >= 0) {
-        toast.info(`Unsubscribed! ${data.swapsRemaining} swaps remaining this month.`);
-      }
-
-      // Then invalidate to ensure consistency (background refetch)
+    onSuccess: () => {
+      // Invalidate all channel-related queries
+      queryClient.invalidateQueries({ queryKey: ['channels'] });
+      queryClient.invalidateQueries({ queryKey: ['user-channels'] }); // ✅ Fix: Added for My Channels tab
       queryClient.invalidateQueries({ queryKey: ['user'] });
-      queryClient.invalidateQueries({ queryKey: ['user-channels'] });
-      queryClient.invalidateQueries({ queryKey: ['channels', 'explore'] });
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
     onError: (error) => {
-      toast.error(getErrorMessage(error));
       logError('UnsubscribeChannel', error);
     },
   });

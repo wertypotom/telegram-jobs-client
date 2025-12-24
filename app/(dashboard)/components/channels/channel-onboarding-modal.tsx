@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAvailableChannels, useSubscribeChannels, useAuth, useBundles } from '@/shared/hooks';
+import { useAvailableChannels, useSubscribeChannels } from './hooks/use-channels';
+import { useAuth, useBundles } from '@/shared/hooks';
 import {
   Dialog,
   DialogContent,
@@ -16,7 +17,7 @@ import { Badge } from '@/shared/ui/badge';
 import { Input } from '@/shared/ui/input';
 import { Loader2, CheckCircle2, Search, ArrowLeft, HelpCircle } from 'lucide-react';
 import Fuse from 'fuse.js';
-import { BundleSelectionStep } from './bundle-selection-step';
+import { BundleSelectionStep } from '../bundles/bundle-selection-step';
 
 const MAX_FREE_CHANNELS = 5;
 

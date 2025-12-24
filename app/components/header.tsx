@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from './language-switcher';
-import { useLoginModal } from '@/shared/stores/use-login-modal';
+import { useLoginModal } from '@/shared/store/use-login-modal';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);

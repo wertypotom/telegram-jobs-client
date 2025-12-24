@@ -1,12 +1,47 @@
 export interface User {
   id: string;
-  email: string;
+  email?: string | null;
+  name?: string | null;
+  image?: string | null;
   masterResumeText?: string;
   masterResumeFileUrl?: string;
   subscribedChannels: string[];
-  telegramPhone?: string;
-  telegramUserId?: string;
+  plan: 'free' | 'premium';
   hasCompletedOnboarding?: boolean;
+  viewedJobs?: string[];
+
+  // Subscription change tracking (abuse prevention)
+  subscriptionChanges?: {
+    count: number;
+    lastResetDate: Date;
+  };
+
+  // Telegram Notifications
+  telegramChatId?: string;
+  telegramSubscriptionToken?: string;
+  notificationEnabled?: boolean;
+  notificationFilters?: {
+    stack?: string[];
+    level?: string[];
+    jobFunction?: string[];
+    locationType?: string[];
+    experienceYears?: {
+      min?: number;
+      max?: number;
+    };
+  };
+  quietHours?: {
+    enabled: boolean;
+    startHour: number;
+    endHour: number;
+    timezone: string;
+  };
+  lastNotificationSent?: Date;
+  notificationCount?: number;
+
+  // Timestamps
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Job {
@@ -19,7 +54,9 @@ export interface Job {
   rawText: string;
   parsedData?: ParsedJobData;
   status?: 'pending_parse' | 'parsed' | 'failed';
+  telegramMessageDate?: Date;
   createdAt: string;
+  updatedAt?: string;
   isVisited?: boolean;
 }
 
@@ -32,6 +69,7 @@ export interface ContactInfo {
 
 export interface ParsedJobData {
   jobTitle?: string;
+  normalizedJobTitle?: string;
   company?: string;
   techStack?: string[];
   salary?: string;
@@ -46,6 +84,7 @@ export interface ParsedJobData {
   preferredQualifications?: string[];
   benefits?: string[];
   description?: string;
+  experienceYears?: number;
 }
 
 export interface Resume {

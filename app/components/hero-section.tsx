@@ -11,7 +11,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useLoginModal } from '@/shared/stores/use-login-modal';
+import { useLoginModal } from '@/shared/store/use-login-modal';
 
 export function HeroSection() {
   const { t } = useTranslation('landing');

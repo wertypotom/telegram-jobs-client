@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/shared/ui';
-import { useLoginModal } from '@/shared/stores/use-login-modal';
+import { useLoginModal } from '@/shared/store/use-login-modal';
 
 export function CtaSection() {
   const { openModal } = useLoginModal();

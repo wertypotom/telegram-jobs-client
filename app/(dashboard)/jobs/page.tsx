@@ -1,19 +1,22 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useInfiniteJobs, useAuth, useIntersectionObserver } from '@/shared/hooks';
-import { useFilters } from '@/shared/hooks/use-preferences';
-import { useJobsStore } from '@/shared/store/jobs.store';
-import type { JobFilters } from '@/shared/api/jobs.api';
+import { useState, useEffect } from 'react';
+import { useAuth, useIntersectionObserver } from '@/shared/hooks';
+import { useInfiniteJobs } from './hooks/use-infinite-jobs';
+import { useFilters } from './hooks/use-preferences';
+import { useScrollRestoration } from '@/shared/hooks/use-scroll-restoration';
+import { useUIStore } from '@/shared/store/ui-store';
+import type { JobFilters } from './api/jobs.api';
 import { JobList } from './components/job-list';
 import { FiltersPanel } from './components/filters-panel';
+import { FilterChips } from './components/filter-chips';
 import { JobSkeletonList } from './components/job-skeleton';
-import { ChannelOnboardingModal } from '../components/channel-onboarding-modal';
-import { ChannelManager } from '../components/channel-manager';
-import { ExploreChannelsModal } from '../components/explore-channels-modal';
-import { FeedbackModal } from '../components/feedback-modal';
+import { ChannelOnboardingModal } from '../components/channels/channel-onboarding-modal';
+import { ChannelManager } from '../components/channels/channel-manager';
+import { ExploreChannelsModal } from '../components/channels/explore-channels-modal';
+import { FeedbackModal } from './components/feedback-modal';
 import { Card, CardContent, Badge } from '@/shared/ui';
-import { SlidersHorizontal, Sparkles, Bell, MessageSquarePlus, Crown } from 'lucide-react';
+import { Sparkles, Bell, MessageSquarePlus, Crown } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '@/app/components/language-switcher';
@@ -28,11 +31,10 @@ export default function JobsPage() {
     muteKeywords: [],
     locationType: [],
   });
-  const [showChannelManager, setShowChannelManager] = useState(false);
-  const [showFiltersPanel, setShowFiltersPanel] = useState(false);
-  const [showExploreModal, setShowExploreModal] = useState(false);
-  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [isFiltersLoaded, setIsFiltersLoaded] = useState(false);
+
+  // Modal state from Zustand
+  const { modals, openModal, closeModal } = useUIStore();
 
   // Load saved filters from backend on mount
   const { data: savedFilters, isLoading: loadingFilters } = useFilters();
@@ -60,28 +62,8 @@ export default function JobsPage() {
     enabled: hasMore && !isFetchingMore,
   });
 
-  // Scroll position persistence
-  const { scrollPosition, setScrollPosition } = useJobsStore();
-
-  // Save scroll position on scroll
-  const handleScroll = useCallback(() => {
-    setScrollPosition(window.scrollY);
-  }, [setScrollPosition]);
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll]);
-
-  // Restore scroll position after jobs load
-  useEffect(() => {
-    if (jobs.length > 0 && scrollPosition > 0) {
-      // Small delay to ensure DOM is ready
-      requestAnimationFrame(() => {
-        window.scrollTo(0, scrollPosition);
-      });
-    }
-  }, [jobs.length > 0]); // Only run once when jobs first load
+  // Scroll position restoration
+  useScrollRestoration('jobs-page', jobs.length > 0);
 
   // Show onboarding modal if user hasn't completed it
   const showOnboarding = user && !user.hasCompletedOnboarding;
@@ -97,13 +79,19 @@ export default function JobsPage() {
   return (
     <>
       <ChannelOnboardingModal open={showOnboarding || false} />
-      <ChannelManager open={showChannelManager} onClose={() => setShowChannelManager(false)} />
-      <ExploreChannelsModal open={showExploreModal} onClose={() => setShowExploreModal(false)} />
-      <FeedbackModal open={feedbackOpen} onOpenChange={setFeedbackOpen} />
+      <ChannelManager open={modals.channelManager} onClose={() => closeModal('channelManager')} />
+      <ExploreChannelsModal
+        open={modals.exploreChannels}
+        onClose={() => closeModal('exploreChannels')}
+      />
+      <FeedbackModal
+        open={modals.feedback}
+        onOpenChange={(open) => (open ? openModal('feedback') : closeModal('feedback'))}
+      />
 
       <FiltersPanel
-        open={showFiltersPanel}
-        onClose={() => setShowFiltersPanel(false)}
+        open={modals.filtersPanel}
+        onClose={() => closeModal('filtersPanel')}
         filters={{
           jobFunction: filters.jobFunction || [],
           level: filters.level || [],
@@ -127,7 +115,7 @@ export default function JobsPage() {
         <div className="flex items-center gap-2">
           {/* Feedback Icon */}
           <button
-            onClick={() => setFeedbackOpen(true)}
+            onClick={() => openModal('feedback')}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors group"
             title={t('notifications.sendFeedback')}
           >
@@ -160,7 +148,7 @@ export default function JobsPage() {
 
           {/* Explore Channels Button */}
           <button
-            onClick={() => setShowExploreModal(true)}
+            onClick={() => openModal('exploreChannels')}
             className="bg-cyan-600 hover:bg-cyan-500 text-white p-2 md:px-4 md:py-2 rounded-md text-sm font-semibold flex items-center gap-2 transition-colors"
             title={t('page.exploreChannels')}
           >
@@ -171,90 +159,7 @@ export default function JobsPage() {
       </header>
 
       <div className="bg-white px-4 md:px-6 py-4 border-b">
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Active Chips */}
-          {(filters.jobFunction || []).map((func) => (
-            <div
-              key={func}
-              className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
-            >
-              <span>{func}</span>
-            </div>
-          ))}
-
-          {(filters.level || []).map((l) => (
-            <div
-              key={l}
-              className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
-            >
-              <span>Level: {l}</span>
-            </div>
-          ))}
-
-          {(filters.stack || []).map((s) => (
-            <div
-              key={s}
-              className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
-            >
-              <span>
-                {t('filters.chips.tech')}: {s}
-              </span>
-            </div>
-          ))}
-
-          {(filters.locationType || []).map((locType) => (
-            <div
-              key={locType}
-              className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
-            >
-              <span>
-                {t('filters.chips.location')}: {locType}
-              </span>
-            </div>
-          ))}
-
-          {(filters.excludedTitles || []).map((title) => (
-            <div
-              key={title}
-              className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
-            >
-              <span>
-                {t('filters.chips.excluded')}: {title}
-              </span>
-            </div>
-          ))}
-
-          {(filters.muteKeywords || []).map((k) => (
-            <div
-              key={k}
-              className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap"
-            >
-              <span>
-                {t('filters.chips.muted')}: {k}
-              </span>
-            </div>
-          ))}
-
-          {filters.experienceYears &&
-            (filters.experienceYears.min !== 0 || filters.experienceYears.max !== 10) && (
-              <div className="bg-gray-200/80 text-gray-700 px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap">
-                <span>
-                  {filters.experienceYears.min}-
-                  {filters.experienceYears.max >= 10 ? '10+' : filters.experienceYears.max}{' '}
-                  {t('filters.years')}
-                </span>
-              </div>
-            )}
-
-          {/* Edit Filters Button */}
-          <button
-            onClick={() => setShowFiltersPanel(true)}
-            className="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1 rounded-md text-xs font-semibold flex items-center gap-2 ml-2 transition-colors"
-          >
-            <SlidersHorizontal size={16} />
-            {t('page.editFilters')}
-          </button>
-        </div>
+        <FilterChips filters={filters} onEditClick={() => openModal('filtersPanel')} />
       </div>
 
       <div className="bg-gray-50 min-h-screen">

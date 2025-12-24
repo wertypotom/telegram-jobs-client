@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { feedbackApi, type FeedbackData } from '@/shared/api/feedback.api';
+import { feedbackApi, type FeedbackData } from '../api/feedback.api';
 import {
   Dialog,
   DialogContent,
