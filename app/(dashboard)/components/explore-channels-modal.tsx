@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState, MouseEvent } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
@@ -36,24 +36,24 @@ interface FlipCardProps {
 function FlipCard({
   channel,
   canSubscribe,
-  _subscribeToChannel,
-  _unsubscribeChannel,
   handleSubscribe,
   handleUnsubscribe,
   formatMemberCount,
 }: FlipCardProps) {
   const { t } = useTranslation('dashboard');
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubscribeClick = async (e: React.MouseEvent) => {
+  const handleSubscribeClick = async (e: MouseEvent) => {
     e.stopPropagation();
     setIsLoading(true);
+
     try {
       if (channel.isJoined) {
         await handleUnsubscribe(channel.username);
       } else {
         await handleSubscribe(channel.username);
       }
+      // React Query will refetch and update channel.isJoined
     } finally {
       setIsLoading(false);
     }
