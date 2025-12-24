@@ -146,15 +146,17 @@ export default function JobsPage() {
           {/* Language Switcher */}
           <LanguageSwitcher />
 
-          {/* Go Unlimited Button */}
-          <Link
-            href="/pricing"
-            className="bg-amber-500 hover:bg-amber-600 text-white p-2 md:px-4 md:py-2 rounded-md text-sm font-semibold flex items-center gap-2 transition-colors"
-            title={t('page.unlockFullMarket')}
-          >
-            <Crown className="h-4 w-4" />
-            <span className="hidden md:inline">{t('page.unlockFullMarket')}</span>
-          </Link>
+          {/* Go Unlimited Button - Only show for free users */}
+          {user?.plan !== 'premium' && (
+            <Link
+              href="/pricing"
+              className="bg-amber-500 hover:bg-amber-600 text-white p-2 md:px-4 md:py-2 rounded-md text-sm font-semibold flex items-center gap-2 transition-colors"
+              title={t('page.unlockFullMarket')}
+            >
+              <Crown className="h-4 w-4" />
+              <span className="hidden md:inline">{t('page.unlockFullMarket')}</span>
+            </Link>
+          )}
 
           {/* Explore Channels Button */}
           <button

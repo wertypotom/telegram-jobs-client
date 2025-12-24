@@ -41,17 +41,30 @@ export function useAddChannels() {
 
   return useMutation({
     mutationFn: (channels: string[]) => channelApi.addChannels(channels),
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
+      // Update ALL explore channels queries immediately (handles any search/filter params)
+      queryClient.setQueriesData(
+        { queryKey: ['channels', 'explore'], exact: false },
+        (old: any) => {
+          if (!old?.channels) return old;
+          return {
+            ...old,
+            channels: old.channels.map((channel: any) =>
+              variables.includes(channel.username) ? { ...channel, isJoined: true } : channel
+            ),
+          };
+        }
+      );
+
       // Show swap remaining notification for free users
       if (data.swapsRemaining !== undefined && data.swapsRemaining >= 0) {
         toast.info(`Channel added! ${data.swapsRemaining} swaps remaining this month.`);
       }
-      // Critical: Invalidate auth to refresh subscribedChannels in session
+
+      // Then invalidate to ensure consistency (background refetch)
       queryClient.invalidateQueries({ queryKey: ['user'] });
-      // Refresh channel lists
       queryClient.invalidateQueries({ queryKey: ['user-channels'] });
       queryClient.invalidateQueries({ queryKey: ['channels', 'explore'] });
-      // Refresh jobs to show new jobs from added channels
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
     onError: (error) => {
@@ -80,12 +93,27 @@ export function useUnsubscribeChannel() {
 
   return useMutation({
     mutationFn: (channelUsername: string) => channelApi.unsubscribeChannel(channelUsername),
-    onSuccess: (data) => {
+    onSuccess: (data, channelUsername) => {
+      // Update ALL explore channels queries immediately (handles any search/filter params)
+      queryClient.setQueriesData(
+        { queryKey: ['channels', 'explore'], exact: false },
+        (old: any) => {
+          if (!old?.channels) return old;
+          return {
+            ...old,
+            channels: old.channels.map((channel: any) =>
+              channel.username === channelUsername ? { ...channel, isJoined: false } : channel
+            ),
+          };
+        }
+      );
+
       // Show swap remaining notification for free users
       if (data.swapsRemaining !== undefined && data.swapsRemaining >= 0) {
         toast.info(`Unsubscribed! ${data.swapsRemaining} swaps remaining this month.`);
       }
-      // Invalidate queries to refresh UI
+
+      // Then invalidate to ensure consistency (background refetch)
       queryClient.invalidateQueries({ queryKey: ['user'] });
       queryClient.invalidateQueries({ queryKey: ['user-channels'] });
       queryClient.invalidateQueries({ queryKey: ['channels', 'explore'] });
