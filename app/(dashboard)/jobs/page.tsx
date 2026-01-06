@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth, useIntersectionObserver } from '@/shared/hooks';
+import { usePaymentSuccessHandler } from '@/app/pricing/hooks/use-payment-success';
 import { useInfiniteJobs } from './hooks/use-infinite-jobs';
 import { useFilters } from './hooks/use-preferences';
 import { useScrollRestoration } from '@/shared/hooks/use-scroll-restoration';
@@ -52,16 +53,8 @@ export default function JobsPage() {
 
   const { data: user, isLoading: loadingUser, update: updateSession } = useAuth();
 
-  // Handle payment success redirect
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('payment') === 'success') {
-      // Trigger NextAuth session update to refetch user data
-      updateSession();
-      // Clean URL
-      window.history.replaceState({}, '', '/jobs');
-    }
-  }, [updateSession]);
+  // Handle payment success redirect (refetch user premium status)
+  usePaymentSuccessHandler(updateSession);
 
   // Use infinite scrolling for jobs
   const { jobs, totalCount, isLoading, isFetching, isFetchingMore, error, hasMore, loadMore } =

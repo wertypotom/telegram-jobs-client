@@ -4,9 +4,9 @@ import React from 'react';
 import Link from 'next/link';
 import { Check, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useCreateCheckout } from '@/shared/hooks';
+import { useCreateCheckout } from '../hooks/use-checkout';
 
-export function PricingTeaser() {
+export function PricingCard() {
   const { t } = useTranslation('landing');
   const { t: tDashboard } = useTranslation('dashboard');
   const { mutate: createCheckout, isPending } = useCreateCheckout();

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { paymentApi } from '../api/payment.api';
+import { paymentApi } from '@/shared/api/payment.api';
 import { toast } from 'sonner';
 
 /**
