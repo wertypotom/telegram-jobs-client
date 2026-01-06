@@ -22,17 +22,17 @@ export interface CancelSubscriptionResponse {
 
 export const paymentApi = {
   createCheckout: async (variantId: string): Promise<CreateCheckoutResponse> => {
-    const { data } = await apiClient.post('/payment/checkout', { variantId });
+    const { data } = await apiClient.post('/api/payment/checkout', { variantId });
     return data.data;
   },
 
   getSubscription: async (): Promise<SubscriptionStatusResponse> => {
-    const { data } = await apiClient.get('/payment/subscription');
+    const { data } = await apiClient.get('/api/payment/subscription');
     return data.data;
   },
 
   cancelSubscription: async (): Promise<CancelSubscriptionResponse> => {
-    const { data } = await apiClient.post('/payment/cancel');
+    const { data } = await apiClient.post('/api/payment/cancel');
     return data.data;
   },
 };

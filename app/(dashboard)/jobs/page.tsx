@@ -50,7 +50,18 @@ export default function JobsPage() {
     }
   }, [savedFilters, loadingFilters]);
 
-  const { data: user, isLoading: loadingUser } = useAuth();
+  const { data: user, isLoading: loadingUser, update: updateSession } = useAuth();
+
+  // Handle payment success redirect
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+      // Trigger NextAuth session update to refetch user data
+      updateSession();
+      // Clean URL
+      window.history.replaceState({}, '', '/jobs');
+    }
+  }, [updateSession]);
 
   // Use infinite scrolling for jobs
   const { jobs, totalCount, isLoading, isFetching, isFetchingMore, error, hasMore, loadMore } =
