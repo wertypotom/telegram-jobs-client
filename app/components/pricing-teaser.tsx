@@ -2,12 +2,23 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Check } from 'lucide-react';
+import { Check, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useCreateCheckout } from '@/shared/hooks';
 
 export function PricingTeaser() {
   const { t } = useTranslation('landing');
   const { t: tDashboard } = useTranslation('dashboard');
+  const { mutate: createCheckout, isPending } = useCreateCheckout();
+
+  const handleUpgradeClick = () => {
+    const variantId = process.env.NEXT_PUBLIC_LEMONSQUEEZY_VARIANT_ID;
+    if (variantId) {
+      createCheckout(variantId);
+    } else {
+      console.error('NEXT_PUBLIC_LEMONSQUEEZY_VARIANT_ID not set');
+    }
+  };
 
   const features = [
     {
@@ -141,10 +152,18 @@ export function PricingTeaser() {
 
             {/* CTA Button */}
             <button
-              // onClick={openModal}
-              className="w-full bg-white text-cyan-600 font-bold py-3 rounded-lg hover:bg-slate-50 transition-all transform hover:-translate-y-1 shadow-lg relative z-10"
+              onClick={handleUpgradeClick}
+              disabled={isPending}
+              className="w-full bg-white text-cyan-600 font-bold py-3 rounded-lg hover:bg-slate-50 transition-all transform hover:-translate-y-1 shadow-lg relative z-10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {t('pricing.plans.pro.cta')}
+              {isPending ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                t('pricing.plans.pro.cta')
+              )}
             </button>
           </div>
         </div>
