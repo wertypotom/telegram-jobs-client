@@ -54,7 +54,7 @@ export const authOptions: NextAuthOptions = {
     error: '/',
   },
   callbacks: {
-    async jwt({ token, user, account, trigger }) {
+    async jwt({ token, user, account }) {
       // On initial sign-in with OAuth provider
       if (user && account) {
         if (process.env.NODE_ENV === 'development') {
@@ -70,7 +70,6 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email || undefined;
         token.providerId = account.providerAccountId; // Store Google's unique ID
         token.hasCompletedOnboarding = user.hasCompletedOnboarding;
-        token.subscribedChannels = user.subscribedChannels || [];
         token.plan = user.plan || 'free';
         return token;
       }
@@ -78,21 +77,19 @@ export const authOptions: NextAuthOptions = {
       // On subsequent requests, token already exists
       // This is normal for JWT strategy - token persists across requests
 
-      // When update() is called, fetch fresh user data from database
-      if (trigger === 'update' && token.id) {
+      if (token.id) {
         try {
           const { ObjectId } = await import('mongodb');
-          const clientPromise = (await import('./lib/mongodb')).default; // Corrected path
+          const clientPromise = (await import('./lib/mongodb')).default;
           const client = await clientPromise;
           const db = client.db();
 
           const freshUser = await db.collection('users').findOne(
-            { _id: new ObjectId(token.id as string) }, // Cast token.id to string
+            { _id: new ObjectId(token.id as string) },
             {
               projection: {
                 email: 1,
                 hasCompletedOnboarding: 1,
-                subscribedChannels: 1,
                 plan: 1,
               },
             }
@@ -101,7 +98,6 @@ export const authOptions: NextAuthOptions = {
           if (freshUser) {
             token.email = freshUser.email;
             token.hasCompletedOnboarding = freshUser.hasCompletedOnboarding;
-            token.subscribedChannels = freshUser.subscribedChannels || [];
             token.plan = freshUser.plan || 'free';
           }
         } catch (error) {
@@ -117,7 +113,6 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
         session.user.hasCompletedOnboarding = token.hasCompletedOnboarding as boolean;
-        session.user.subscribedChannels = token.subscribedChannels as string[];
         session.user.plan = token.plan as 'free' | 'premium';
 
         if (process.env.NODE_ENV === 'development') {
@@ -158,7 +153,7 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
-    updateAge: 24 * 60 * 60, // 24 hours
+    updateAge: 0, // Always sync with DB on update() - critical for payment status changes
   },
   cookies: {
     sessionToken: {

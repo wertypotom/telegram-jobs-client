@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth, useLogout } from '@/shared/hooks';
+import { usePaymentSuccessHandler } from '@/app/pricing/hooks/use-payment-success';
 import Link from 'next/link';
 import { Sparkles, Briefcase, LogOut } from 'lucide-react';
 import { Button } from '@/shared/ui';
@@ -11,9 +12,12 @@ import { useTranslation } from 'react-i18next';
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { data, isLoading } = useAuth();
+  const { data, isLoading, update: updateSession } = useAuth();
   const logout = useLogout();
   const { t } = useTranslation('dashboard');
+
+  // Handle payment success redirect at layout level
+  usePaymentSuccessHandler(updateSession);
 
   useEffect(() => {
     if (!isLoading && !data?.id) {

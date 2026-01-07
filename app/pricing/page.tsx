@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/shared/hooks';
-import { PricingTeaser } from '../components/pricing-teaser';
+import { PricingCard } from './components/pricing-card';
 import { LoginModal } from '../components/login-modal';
 
 export default function PricingPage() {
@@ -30,7 +30,7 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <PricingTeaser />
+      <PricingCard />
       <LoginModal />
     </div>
   );
