@@ -1,9 +1,8 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
 import { Check, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { useCreateCheckout } from '../hooks/use-checkout';
 
 export function PricingCard() {
@@ -13,11 +12,11 @@ export function PricingCard() {
 
   const handleUpgradeClick = () => {
     const variantId = process.env.NEXT_PUBLIC_LEMONSQUEEZY_VARIANT_ID;
-    if (variantId) {
-      createCheckout(variantId);
-    } else {
-      console.error('NEXT_PUBLIC_LEMONSQUEEZY_VARIANT_ID not set');
+    if (!variantId) {
+      toast.error('Payment system is not configured. Please contact support.');
+      return;
     }
+    createCheckout(variantId);
   };
 
   const features = [

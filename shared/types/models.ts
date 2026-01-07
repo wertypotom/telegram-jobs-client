@@ -5,7 +5,6 @@ export interface User {
   image?: string | null;
   masterResumeText?: string;
   masterResumeFileUrl?: string;
-  subscribedChannels: string[];
   plan: 'free' | 'premium';
   hasCompletedOnboarding?: boolean;
   viewedJobs?: string[];

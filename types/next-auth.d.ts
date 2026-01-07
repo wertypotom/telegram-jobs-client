@@ -6,7 +6,6 @@ declare module 'next-auth' {
     user: {
       id: string;
       hasCompletedOnboarding?: boolean;
-      subscribedChannels?: string[];
       plan?: 'free' | 'premium';
     } & DefaultSession['user'];
   }
@@ -14,7 +13,6 @@ declare module 'next-auth' {
   interface User extends DefaultUser {
     id: string;
     hasCompletedOnboarding?: boolean;
-    subscribedChannels?: string[];
     plan?: 'free' | 'premium';
   }
 }

@@ -20,17 +20,34 @@ export interface CancelSubscriptionResponse {
   message: string;
 }
 
+/**
+ * Payment API client for LemonSqueezy integration
+ */
 export const paymentApi = {
+  /**
+   * Create a checkout session and get checkout URL
+   * @param variantId - LemonSqueezy variant ID for the product
+   * @returns Checkout URL to redirect user to
+   */
   createCheckout: async (variantId: string): Promise<CreateCheckoutResponse> => {
     const { data } = await apiClient.post('/api/payment/checkout', { variantId });
     return data.data;
   },
 
+  /**
+   * Get current user's subscription status
+   * @returns User's subscription details including plan and status
+   */
   getSubscription: async (): Promise<SubscriptionStatusResponse> => {
     const { data } = await apiClient.get('/api/payment/subscription');
     return data.data;
   },
 
+  /**
+   * Cancel user's active subscription
+   * User retains premium access until end of billing period
+   * @returns Success status and confirmation message
+   */
   cancelSubscription: async (): Promise<CancelSubscriptionResponse> => {
     const { data } = await apiClient.post('/api/payment/cancel');
     return data.data;
