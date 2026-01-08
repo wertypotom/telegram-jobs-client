@@ -18,6 +18,7 @@ export interface SubscriptionStatusResponse {
 export interface CancelSubscriptionResponse {
   success: boolean;
   message: string;
+  currentPeriodEnd?: string;
 }
 
 /**
