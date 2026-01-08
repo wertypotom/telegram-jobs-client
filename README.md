@@ -191,6 +191,15 @@ import { Button } from '@/shared/ui/button';
 - Download in multiple formats
 - Auto-generated cover letters
 
+### Payment & Subscriptions
+
+- **LemonSqueezy Integration**: Secure payment processing
+- **Subscription Management**: Premium tier unlock
+- **Pricing Page**: Plan comparison (Free vs Premium)
+- **Checkout Flow**: One-click upgrade to premium
+- **Cancellation**: Self-service cancellation with access retention until period end
+- **Status Tracking**: Real-time subscription status in account settings
+
 ### Authentication
 
 - **Google OAuth**
