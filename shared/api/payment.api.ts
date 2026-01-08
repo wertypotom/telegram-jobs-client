@@ -21,6 +21,12 @@ export interface CancelSubscriptionResponse {
   currentPeriodEnd?: string;
 }
 
+export interface ResumeSubscriptionResponse {
+  success: boolean;
+  message: string;
+  status?: 'active' | 'cancelled' | 'past_due' | 'expired';
+}
+
 /**
  * Payment API client for LemonSqueezy integration
  */
@@ -51,6 +57,16 @@ export const paymentApi = {
    */
   cancelSubscription: async (): Promise<CancelSubscriptionResponse> => {
     const { data } = await apiClient.post('/api/payment/cancel');
+    return data.data;
+  },
+
+  /**
+   * Resume user's cancelled subscription
+   * Reactivates premium access and billing
+   * @returns Success status and confirmation message
+   */
+  resumeSubscription: async (): Promise<ResumeSubscriptionResponse> => {
+    const { data } = await apiClient.post('/api/payment/resume');
     return data.data;
   },
 };
