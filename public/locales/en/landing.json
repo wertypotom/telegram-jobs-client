@@ -119,6 +119,7 @@
         "name": "Pro Plan",
         "price": "$10",
         "perMonth": "/month",
+        "current": "Current",
         "features": {
           "channels": "Unlimited channels",
           "swaps": "Unlimited swaps",
@@ -128,6 +129,15 @@
         },
         "cta": "Upgrade Now"
       }
+    },
+    "downgrade": {
+      "button": "Downgrade",
+      "title": "Cancel Subscription?",
+      "description": "You'll keep premium access until your current billing period ends.",
+      "confirm": "Yes, cancel",
+      "cancel": "Keep Premium",
+      "cancelled": "Subscription cancelled",
+      "until": "Premium until"
     },
     "features": {
       "channelAccess": "Channel Access",

@@ -1,14 +1,37 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { Check, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { useCreateCheckout } from '../hooks/use-checkout';
+import { useAuth } from '@/shared/hooks';
+import { useCreateCheckout, useCancelSubscription, useSubscription } from '../hooks/use-checkout';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/shared/ui/dialog';
 
 export function PricingCard() {
   const { t } = useTranslation('landing');
   const { t: tDashboard } = useTranslation('dashboard');
-  const { mutate: createCheckout, isPending } = useCreateCheckout();
+  const { data: user } = useAuth();
+  const { data: subscription } = useSubscription();
+  const { mutate: createCheckout, isPending: isCheckoutPending } = useCreateCheckout();
+  const { mutate: cancelSubscription, isPending: isCancelPending } = useCancelSubscription();
+  const [isDowngradeDialogOpen, setIsDowngradeDialogOpen] = useState(false);
+
+  const isPremium = user?.plan === 'premium';
+  const isCancelled = subscription?.status === 'cancelled';
+  const periodEnd = subscription?.currentPeriodEnd ? new Date(subscription.currentPeriodEnd) : null;
+
+  // DEBUG: Remove after testing
+  console.log('Subscription data:', subscription);
+  console.log('isCancelled:', isCancelled);
 
   const handleUpgradeClick = () => {
     const variantId = process.env.NEXT_PUBLIC_LEMONSQUEEZY_VARIANT_ID;
@@ -17,6 +40,15 @@ export function PricingCard() {
       return;
     }
     createCheckout(variantId);
+  };
+
+  const handleDowngradeClick = () => {
+    setIsDowngradeDialogOpen(true);
+  };
+
+  const handleConfirmDowngrade = () => {
+    cancelSubscription();
+    setIsDowngradeDialogOpen(false);
   };
 
   const features = [
@@ -53,120 +85,189 @@ export function PricingCard() {
   ];
 
   return (
-    <section id="pricing" className="py-16 bg-white">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Back to Jobs Button */}
-        <Link
-          href="/jobs"
-          className="inline-flex items-center gap-2 text-cyan-600 hover:text-cyan-700 font-medium mb-8 transition-colors"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          {tDashboard('jobDetail.backToJobs')}
-        </Link>
+    <>
+      <section id="pricing" className="py-16 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Back to Jobs Button */}
+          <Link
+            href="/jobs"
+            className="inline-flex items-center gap-2 text-cyan-600 hover:text-cyan-700 font-medium mb-8 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            {tDashboard('jobDetail.backToJobs')}
+          </Link>
 
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3">
-            {t('pricing.header.title')}
-          </h2>
-          <p className="text-base text-slate-600 max-w-2xl mx-auto">
-            {t('pricing.header.subtitle')}
-          </p>
-        </div>
-
-        {/* Pricing Comparison */}
-        <div className="grid md:grid-cols-2 gap-5 max-w-4xl mx-auto">
-          {/* Free Plan */}
-          <div className="bg-white rounded-xl border-2 border-slate-200 p-6 relative">
-            {/* Current Badge */}
-            <div className="absolute top-4 right-4">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
-                {t('pricing.plans.free.current')}
-              </span>
-            </div>
-
-            {/* Plan Name & Price */}
-            <div className="mb-6">
-              <h3 className="text-xl font-bold text-slate-900 mb-1.5">
-                {t('pricing.plans.free.name')}
-              </h3>
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-extrabold text-slate-900">
-                  {t('pricing.plans.free.price')}
-                </span>
-              </div>
-            </div>
-
-            {/* Features */}
-            <div className="space-y-3">
-              {features.map((feature) => (
-                <div key={feature.key} className="flex items-start gap-2.5">
-                  <div className="mt-0.5 text-cyan-500">
-                    <Check size={18} strokeWidth={3} />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-700">{feature.label}</p>
-                    <p className="text-xs text-slate-500">{feature.free}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3">
+              {t('pricing.header.title')}
+            </h2>
+            <p className="text-base text-slate-600 max-w-2xl mx-auto">
+              {t('pricing.header.subtitle')}
+            </p>
           </div>
 
-          {/* Pro Plan */}
-          <div className="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl p-6 text-white relative shadow-xl shadow-cyan-500/25 transform hover:scale-105 transition-transform">
-            {/* Decorative blob */}
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-
-            {/* Plan Name & Price */}
-            <div className="mb-6 relative z-10">
-              <h3 className="text-xl font-bold mb-1.5">{t('pricing.plans.pro.name')}</h3>
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-extrabold">{t('pricing.plans.pro.price')}</span>
-                <span className="text-lg text-white/80">{t('pricing.plans.pro.perMonth')}</span>
-              </div>
-            </div>
-
-            {/* Features */}
-            <div className="space-y-3 mb-6 relative z-10">
-              {features.map((feature) => (
-                <div key={feature.key} className="flex items-start gap-2.5">
-                  <div className="mt-0.5">
-                    <Check size={18} strokeWidth={3} />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">{feature.label}</p>
-                    <p className="text-xs text-white/80">{feature.pro}</p>
-                  </div>
+          {/* Pricing Comparison */}
+          <div className="grid md:grid-cols-2 gap-5 max-w-4xl mx-auto">
+            {/* Free Plan */}
+            <div className="bg-white rounded-xl border-2 border-slate-200 p-6 relative">
+              {/* Current Badge - show for Free users */}
+              {!isPremium && (
+                <div className="absolute top-4 right-4">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
+                    {t('pricing.plans.free.current')}
+                  </span>
                 </div>
-              ))}
-            </div>
-
-            {/* CTA Button */}
-            <button
-              onClick={handleUpgradeClick}
-              disabled={isPending}
-              className="w-full bg-white text-cyan-600 font-bold py-3 rounded-lg hover:bg-slate-50 transition-all transform hover:-translate-y-1 shadow-lg relative z-10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {isPending ? (
-                <>
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  Loading...
-                </>
-              ) : (
-                t('pricing.plans.pro.cta')
               )}
-            </button>
+
+              {/* Plan Name & Price */}
+              <div className="mb-6">
+                <h3 className="text-xl font-bold text-slate-900 mb-1.5">
+                  {t('pricing.plans.free.name')}
+                </h3>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-4xl font-extrabold text-slate-900">
+                    {t('pricing.plans.free.price')}
+                  </span>
+                </div>
+              </div>
+
+              {/* Features */}
+              <div className="space-y-3 mb-6">
+                {features.map((feature) => (
+                  <div key={feature.key} className="flex items-start gap-2.5">
+                    <div className="mt-0.5 text-cyan-500">
+                      <Check size={18} strokeWidth={3} />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-slate-700">{feature.label}</p>
+                      <p className="text-xs text-slate-500">{feature.free}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Downgrade Button or Cancelled Status */}
+              {isPremium &&
+                (isCancelled ? (
+                  <div className="w-full bg-amber-50 border border-amber-200 text-amber-800 font-medium py-3 px-4 rounded-lg text-center">
+                    <p className="text-sm">{t('pricing.downgrade.cancelled')}</p>
+                    {periodEnd && (
+                      <p className="text-xs mt-1">
+                        {t('pricing.downgrade.until')} {periodEnd.toLocaleDateString()}
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleDowngradeClick}
+                    disabled={isCancelPending}
+                    className="w-full bg-slate-100 text-slate-700 font-semibold py-3 rounded-lg hover:bg-slate-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {isCancelPending ? (
+                      <>
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        {t('pricing.downgrade.button')}
+                      </>
+                    ) : (
+                      t('pricing.downgrade.button')
+                    )}
+                  </button>
+                ))}
+            </div>
+
+            {/* Pro Plan */}
+            <div className="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl p-6 text-white relative shadow-xl shadow-cyan-500/25 transform hover:scale-105 transition-transform">
+              {/* Decorative blob */}
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+
+              {/* Current Badge - show for Premium users */}
+              {isPremium && (
+                <div className="absolute top-4 right-4">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white">
+                    {t('pricing.plans.pro.current')}
+                  </span>
+                </div>
+              )}
+
+              {/* Plan Name & Price */}
+              <div className="mb-6 relative z-10">
+                <h3 className="text-xl font-bold mb-1.5">{t('pricing.plans.pro.name')}</h3>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-4xl font-extrabold">{t('pricing.plans.pro.price')}</span>
+                  <span className="text-lg text-white/80">{t('pricing.plans.pro.perMonth')}</span>
+                </div>
+              </div>
+
+              {/* Features */}
+              <div className="space-y-3 mb-6 relative z-10">
+                {features.map((feature) => (
+                  <div key={feature.key} className="flex items-start gap-2.5">
+                    <div className="mt-0.5">
+                      <Check size={18} strokeWidth={3} />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{feature.label}</p>
+                      <p className="text-xs text-white/80">{feature.pro}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA Button - show only for Free users */}
+              {!isPremium && (
+                <button
+                  onClick={handleUpgradeClick}
+                  disabled={isCheckoutPending}
+                  className="w-full bg-white text-cyan-600 font-bold py-3 rounded-lg hover:bg-slate-50 transition-all transform hover:-translate-y-1 shadow-lg relative z-10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isCheckoutPending ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Loading...
+                    </>
+                  ) : (
+                    t('pricing.plans.pro.cta')
+                  )}
+                </button>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Downgrade Confirmation Dialog */}
+      <Dialog open={isDowngradeDialogOpen} onOpenChange={setIsDowngradeDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t('pricing.downgrade.title')}</DialogTitle>
+            <DialogDescription>{t('pricing.downgrade.description')}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex gap-2 sm:gap-0">
+            <button
+              onClick={() => setIsDowngradeDialogOpen(false)}
+              className="flex-1 px-4 py-2 bg-slate-100 text-slate-700 font-medium rounded-lg hover:bg-slate-200 transition-colors"
+            >
+              {t('pricing.downgrade.cancel')}
+            </button>
+            <button
+              onClick={handleConfirmDowngrade}
+              disabled={isCancelPending}
+              className="flex-1 px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {isCancelPending && <Loader2 className="h-4 w-4 animate-spin" />}
+              {t('pricing.downgrade.confirm')}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
