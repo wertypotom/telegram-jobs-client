@@ -16,7 +16,7 @@ import { ChannelManager } from '../components/channels/channel-manager';
 import { ExploreChannelsModal } from '../components/channels/explore-channels-modal';
 import { FeedbackModal } from './components/feedback-modal';
 import { Card, CardContent, Badge } from '@/shared/ui';
-import { Sparkles, Bell, MessageSquarePlus, Crown } from 'lucide-react';
+import { Sparkles, MessageSquarePlus, Crown } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '@/app/components/language-switcher';
@@ -121,15 +121,6 @@ export default function JobsPage() {
           >
             <MessageSquarePlus className="h-5 w-5 text-gray-600 group-hover:text-cyan-600 group-hover:animate-[wiggle_0.5s_ease-in-out]" />
           </button>
-
-          {/* Notification Bell */}
-          <Link
-            href="/settings/notifications"
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors group"
-            title={t('notifications.title')}
-          >
-            <Bell className="h-5 w-5 text-gray-600 group-hover:text-cyan-600 group-hover:animate-[wiggle_0.5s_ease-in-out]" />
-          </Link>
 
           {/* Language Switcher */}
           <LanguageSwitcher />

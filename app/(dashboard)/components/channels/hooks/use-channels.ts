@@ -1,13 +1,27 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { channelApi } from '../api/channel.api';
 import { logError } from '@/shared/lib/error-utils';
+import { useChannelsStore } from '@/shared/store/channels-store';
+import { useEffect } from 'react';
 
 export function useUserChannels() {
-  return useQuery({
+  const { setUserChannels, setLoading } = useChannelsStore();
+
+  const query = useQuery({
     queryKey: ['user-channels'],
     queryFn: () => channelApi.getUserChannels(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
+
+  // Sync with Zustand store
+  useEffect(() => {
+    if (query.data) {
+      setUserChannels(query.data);
+    }
+    setLoading(query.isLoading);
+  }, [query.data, query.isLoading, setUserChannels, setLoading]);
+
+  return query;
 }
 
 export function useSubscribeChannels() {
@@ -41,9 +55,9 @@ export function useAddChannels() {
   return useMutation({
     mutationFn: (channels: string[]) => channelApi.addChannels(channels),
     onSuccess: () => {
-      // Invalidate all channel-related queries
+      // Invalidate all channel-related queries to force refetch
       queryClient.invalidateQueries({ queryKey: ['channels'] });
-      queryClient.invalidateQueries({ queryKey: ['user-channels'] }); // ✅ Added for consistency
+      queryClient.invalidateQueries({ queryKey: ['user-channels'] });
       queryClient.invalidateQueries({ queryKey: ['user'] });
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },
@@ -69,13 +83,17 @@ export function useExploreChannels(params: { searchQuery?: string; categories?: 
  */
 export function useUnsubscribeChannel() {
   const queryClient = useQueryClient();
+  const { removeChannel } = useChannelsStore();
 
   return useMutation({
     mutationFn: (channelUsername: string) => channelApi.unsubscribeChannel(channelUsername),
-    onSuccess: () => {
-      // Invalidate all channel-related queries
+    onSuccess: (data, channelUsername) => {
+      // Immediately update Zustand store for instant UI sync
+      removeChannel(channelUsername);
+
+      // Invalidate all channel-related queries to ensure consistency
       queryClient.invalidateQueries({ queryKey: ['channels'] });
-      queryClient.invalidateQueries({ queryKey: ['user-channels'] }); // ✅ Fix: Added for My Channels tab
+      queryClient.invalidateQueries({ queryKey: ['user-channels'] });
       queryClient.invalidateQueries({ queryKey: ['user'] });
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
     },

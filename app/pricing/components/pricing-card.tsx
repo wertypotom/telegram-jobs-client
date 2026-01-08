@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Check, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -17,8 +17,8 @@ import {
 } from '@/shared/ui/dialog';
 
 export function PricingCard() {
+  const router = useRouter();
   const { t } = useTranslation('landing');
-  const { t: tDashboard } = useTranslation('dashboard');
   const { data: user } = useAuth();
   const { data: subscription } = useSubscription();
   const { mutate: createCheckout, isPending: isCheckoutPending } = useCreateCheckout();
@@ -88,9 +88,9 @@ export function PricingCard() {
     <>
       <section id="pricing" className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Back to Jobs Button */}
-          <Link
-            href="/jobs"
+          {/* Back Button */}
+          <button
+            onClick={() => router.back()}
             className="inline-flex items-center gap-2 text-cyan-600 hover:text-cyan-700 font-medium mb-8 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,8 +101,8 @@ export function PricingCard() {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            {tDashboard('jobDetail.backToJobs')}
-          </Link>
+            Back
+          </button>
 
           {/* Header */}
           <div className="text-center mb-12">
