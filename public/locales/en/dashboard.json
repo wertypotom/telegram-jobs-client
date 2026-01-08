@@ -63,6 +63,7 @@
   "sidebar": {
     "appName": "JobSniper",
     "browseJobs": "Browse Jobs",
+    "myAccount": "My Account",
     "myResume": "My Resume",
     "profile": "Profile",
     "logout": "Logout"
@@ -169,5 +170,52 @@
     "viewOriginalToContact": "View Original Post to Contact",
     "jobNotFound": "Job not found",
     "loading": "Loading..."
+  },
+  "account": {
+    "title": "My Account",
+    "subtitle": "Manage your profile, subscription, and channel preferences",
+    "userInfo": {
+      "title": "User Information",
+      "name": "Name",
+      "email": "Email",
+      "plan": "Current Plan",
+      "free": "Free",
+      "premium": "Premium",
+      "swapsRemaining": "Channel Swaps Remaining",
+      "swapsDescription": "Resets monthly"
+    },
+    "subscription": {
+      "title": "Subscription Details",
+      "currentPlan": "Current Plan",
+      "free": "Free Plan",
+      "premium": "Premium Plan",
+      "status": {
+        "label": "Status",
+        "active": "Active",
+        "cancelled": "Cancelled",
+        "pastDue": "Past Due",
+        "expired": "Expired"
+      },
+      "nextBilling": "Next Billing Date",
+      "activeUntil": "Active Until",
+      "cancelledWarning": "Your subscription is cancelled and will expire at the end of the current billing period.",
+      "manageSubscription": "Manage Subscription",
+      "upgradeToPremium": "Upgrade to Premium"
+    },
+    "channels": {
+      "title": "My Channels",
+      "subscribedCount": "Subscribed Channels",
+      "searchPlaceholder": "Search channels...",
+      "noChannels": "No channels subscribed yet",
+      "exploreChannels": "Visit the Jobs page to explore and subscribe to channels",
+      "noResults": "No channels match your search",
+      "tryDifferentSearch": "Try a different search term",
+      "unsubscribeSuccess": "Successfully unsubscribed from channel",
+      "unsubscribeError": "Failed to unsubscribe from channel"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "configureNotifications": "Configure Notifications"
+    }
   }
 }

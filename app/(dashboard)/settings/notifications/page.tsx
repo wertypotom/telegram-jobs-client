@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/shared/hooks';
 import { notificationApi, NotificationSettings } from '@/shared/api/notification.api';
 import { Button } from '@/shared/ui';
-import { Bell, BellOff, Check, Moon, TestTube2 } from 'lucide-react';
+import { Bell, BellOff, Check, Moon, TestTube2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -110,6 +110,15 @@ export default function NotificationSettingsPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Back Button */}
+        <button
+          onClick={() => router.back()}
+          className="inline-flex items-center gap-2 text-cyan-600 hover:text-cyan-700 font-medium mb-6 transition-colors"
+        >
+          <ArrowLeft className="h-5 w-5" />
+          Back
+        </button>
+
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">{t('notifications.title')}</h1>
           <p className="text-gray-500 mt-2">{t('notifications.subtitle')}</p>

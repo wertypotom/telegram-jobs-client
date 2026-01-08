@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { Input } from '@/shared/ui/input';
@@ -23,6 +21,7 @@ import { getErrorMessage } from '@/shared/lib/error-utils';
 import { ChannelCard } from './channel-card';
 import { SubscriptionLimitBanner } from './subscription-limit-banner';
 import { MyChannelsList } from './my-channels-list';
+import { useChannelsStore } from '@/shared/store/channels-store';
 
 interface ExploreChannelsModalProps {
   open: boolean;
@@ -36,7 +35,13 @@ export function ExploreChannelsModal({ open, onClose }: ExploreChannelsModalProp
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const { data: user } = useAuth();
-  const { data: userChannels } = useUserChannels();
+
+  // Get channels from Zustand store for instant sync
+  const { userChannels } = useChannelsStore();
+
+  // Still call the hook to trigger data fetching
+  useUserChannels();
+
   const { data: categories, isLoading: loadingCategories } = useCategories();
   const { data: exploreData, isLoading } = useExploreChannels({
     searchQuery: searchQuery || undefined,

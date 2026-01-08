@@ -63,6 +63,7 @@
   "sidebar": {
     "appName": "JobSniper",
     "browseJobs": "Лента вакансий",
+    "myAccount": "Мой аккаунт",
     "myResume": "Мой профиль",
     "profile": "Настройки",
     "logout": "Выйти"
@@ -171,5 +172,52 @@
     "viewOriginalToContact": "Перейти к посту",
     "jobNotFound": "Вакансия не найдена",
     "loading": "Загрузка..."
+  },
+  "account": {
+    "title": "Мой аккаунт",
+    "subtitle": "Управляйте профилем, подпиской и каналами",
+    "userInfo": {
+      "title": "Информация о пользователе",
+      "name": "Имя",
+      "email": "Email",
+      "plan": "Текущий план",
+      "free": "Бесплатный",
+      "premium": "Премиум",
+      "swapsRemaining": "Осталось замен каналов",
+      "swapsDescription": "Обновляется ежемесячно"
+    },
+    "subscription": {
+      "title": "Детали подписки",
+      "currentPlan": "Текущий план",
+      "free": "Бесплатный план",
+      "premium": "Премиум план",
+      "status": {
+        "label": "Статус",
+        "active": "Активна",
+        "cancelled": "Отменена",
+        "pastDue": "Просрочена",
+        "expired": "Истекла"
+      },
+      "nextBilling": "Следующее списание",
+      "activeUntil": "Активна до",
+      "cancelledWarning": "Ваша подписка отменена и истечет в конце текущего платежного периода.",
+      "manageSubscription": "Управление подпиской",
+      "upgradeToPremium": "Перейти на Premium"
+    },
+    "channels": {
+      "title": "Мои каналы",
+      "subscribedCount": "Подписано на каналы",
+      "searchPlaceholder": "Поиск каналов...",
+      "noChannels": "Вы еще не подписаны на каналы",
+      "exploreChannels": "Посетите страницу Вакансий, чтобы найти и подписаться на каналы",
+      "noResults": "Каналы не найдены",
+      "tryDifferentSearch": "Попробуйте другой поисковый запрос",
+      "unsubscribeSuccess": "Успешно отписались от канала",
+      "unsubscribeError": "Не удалось отписаться от канала"
+    },
+    "quickActions": {
+      "title": "Быстрые действия",
+      "configureNotifications": "Настроить уведомления"
+    }
   }
 }

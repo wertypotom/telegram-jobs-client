@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useAuth, useLogout } from '@/shared/hooks';
 import { usePaymentSuccessHandler } from '@/app/pricing/hooks/use-payment-success';
 import Link from 'next/link';
-import { Sparkles, Briefcase, LogOut } from 'lucide-react';
+import { Sparkles, Briefcase, LogOut, User } from 'lucide-react';
 import { Button } from '@/shared/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -69,6 +69,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               )}
             </Link>
 
+            <Link
+              href="/account"
+              className={`w-full flex items-center p-3 rounded-xl transition-colors group relative ${
+                isActive('/account') ? 'bg-cyan-50' : 'hover:bg-gray-50'
+              }`}
+            >
+              <User
+                className={`h-5 w-5 flex-shrink-0 ${
+                  isActive('/account') ? 'text-cyan-600' : 'text-gray-500 group-hover:text-gray-900'
+                }`}
+              />
+              <span
+                className={`ml-3 font-medium hidden lg:block ${
+                  isActive('/account') ? 'text-cyan-900' : 'text-gray-600 group-hover:text-gray-900'
+                }`}
+              >
+                {t('sidebar.myAccount')}
+              </span>
+              {isActive('/account') && (
+                <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-cyan-500 lg:hidden"></div>
+              )}
+            </Link>
+
             {/* Temporarily commented out */}
             {/* <Link
               href="/resume"
@@ -87,29 +110,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 My Resume
               </span>
               {isActive('/resume') && (
-                <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-cyan-500 lg:hidden"></div>
-              )}
-            </Link> */}
-
-            {/* <Link
-              href="/profile"
-              className={`w-full flex items-center p-3 rounded-xl transition-colors group relative ${
-                isActive('/profile') ? 'bg-cyan-50' : 'hover:bg-gray-50'
-              }`}
-            >
-              <User
-                className={`h-5 w-5 flex-shrink-0 ${
-                  isActive('/profile') ? 'text-cyan-600' : 'text-gray-500 group-hover:text-gray-900'
-                }`}
-              />
-              <span
-                className={`ml-3 font-medium hidden lg:block ${
-                  isActive('/profile') ? 'text-cyan-900' : 'text-gray-600 group-hover:text-gray-900'
-                }`}
-              >
-                Profile
-              </span>
-              {isActive('/profile') && (
                 <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-cyan-500 lg:hidden"></div>
               )}
             </Link> */}
