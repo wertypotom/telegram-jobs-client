@@ -76,3 +76,18 @@ export function useUnsubscribeChannel() {
     },
   });
 }
+
+/**
+ * Hook to resume a cancelled subscription
+ */
+export function useResumeSubscription() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => paymentApi.resumeSubscription(),
+    onSuccess: () => {
+      // Invalidate subscription query to refetch updated status
+      queryClient.invalidateQueries({ queryKey: ['subscription'] });
+    },
+  });
+}

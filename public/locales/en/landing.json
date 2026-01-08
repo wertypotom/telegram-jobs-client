@@ -139,6 +139,12 @@
       "cancelled": "Subscription cancelled",
       "until": "Premium until"
     },
+    "resume": {
+      "button": "Resume Subscription",
+      "resuming": "Resuming...",
+      "success": "Subscription resumed successfully! Your premium access has been reactivated.",
+      "error": "Failed to resume subscription. Please try again."
+    },
     "features": {
       "channelAccess": "Channel Access",
       "channelSwaps": "Channel Swaps",

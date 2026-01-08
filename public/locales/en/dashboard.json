@@ -199,6 +199,10 @@
       "nextBilling": "Next Billing Date",
       "activeUntil": "Active Until",
       "cancelledWarning": "Your subscription is cancelled and will expire at the end of the current billing period.",
+      "resumeButton": "Resume Subscription",
+      "resuming": "Resuming...",
+      "resumeSuccess": "Subscription resumed successfully! Your premium access has been reactivated.",
+      "resumeError": "Failed to resume subscription. Please try again.",
       "manageSubscription": "Manage Subscription",
       "upgradeToPremium": "Upgrade to Premium"
     },

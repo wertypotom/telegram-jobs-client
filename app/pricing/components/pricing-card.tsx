@@ -2,11 +2,12 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Check, Loader2 } from 'lucide-react';
+import { Check, Loader2, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useAuth } from '@/shared/hooks';
 import { useCreateCheckout, useCancelSubscription, useSubscription } from '../hooks/use-checkout';
+import { useResumeSubscription } from '@/app/(dashboard)/account/hooks/use-account-data';
 import {
   Dialog,
   DialogContent,
@@ -23,6 +24,7 @@ export function PricingCard() {
   const { data: subscription } = useSubscription();
   const { mutate: createCheckout, isPending: isCheckoutPending } = useCreateCheckout();
   const { mutate: cancelSubscription, isPending: isCancelPending } = useCancelSubscription();
+  const resumeMutation = useResumeSubscription();
   const [isDowngradeDialogOpen, setIsDowngradeDialogOpen] = useState(false);
 
   const isPremium = user?.plan === 'premium';
@@ -49,6 +51,15 @@ export function PricingCard() {
   const handleConfirmDowngrade = () => {
     cancelSubscription();
     setIsDowngradeDialogOpen(false);
+  };
+
+  const handleResumeSubscription = async () => {
+    try {
+      await resumeMutation.mutateAsync();
+      toast.success(t('pricing.resume.success'));
+    } catch {
+      toast.error(t('pricing.resume.error'));
+    }
   };
 
   const features = [
@@ -153,38 +164,10 @@ export function PricingCard() {
                   </div>
                 ))}
               </div>
-
-              {/* Downgrade Button or Cancelled Status */}
-              {isPremium &&
-                (isCancelled ? (
-                  <div className="w-full bg-amber-50 border border-amber-200 text-amber-800 font-medium py-3 px-4 rounded-lg text-center">
-                    <p className="text-sm">{t('pricing.downgrade.cancelled')}</p>
-                    {periodEnd && (
-                      <p className="text-xs mt-1">
-                        {t('pricing.downgrade.until')} {periodEnd.toLocaleDateString()}
-                      </p>
-                    )}
-                  </div>
-                ) : (
-                  <button
-                    onClick={handleDowngradeClick}
-                    disabled={isCancelPending}
-                    className="w-full bg-slate-100 text-slate-700 font-semibold py-3 rounded-lg hover:bg-slate-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    {isCancelPending ? (
-                      <>
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                        {t('pricing.downgrade.button')}
-                      </>
-                    ) : (
-                      t('pricing.downgrade.button')
-                    )}
-                  </button>
-                ))}
             </div>
 
             {/* Pro Plan */}
-            <div className="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl p-6 text-white relative shadow-xl shadow-cyan-500/25 transform hover:scale-105 transition-transform">
+            <div className="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl p-6 text-white relative shadow-xl shadow-cyan-500/25">
               {/* Decorative blob */}
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
 
@@ -221,8 +204,8 @@ export function PricingCard() {
                 ))}
               </div>
 
-              {/* CTA Button - show only for Free users */}
-              {!isPremium && (
+              {/* CTA Button / Cancelled Status / Downgrade */}
+              {!isPremium ? (
                 <button
                   onClick={handleUpgradeClick}
                   disabled={isCheckoutPending}
@@ -235,6 +218,51 @@ export function PricingCard() {
                     </>
                   ) : (
                     t('pricing.plans.pro.cta')
+                  )}
+                </button>
+              ) : isCancelled ? (
+                <div className="space-y-3 relative z-10">
+                  <div className="w-full bg-white/20 border border-white/30 text-white font-medium py-3 px-4 rounded-lg text-center">
+                    <p className="text-sm">{t('pricing.downgrade.cancelled')}</p>
+                    {periodEnd && (
+                      <p className="text-xs mt-1 text-white/80">
+                        {t('pricing.downgrade.until')} {periodEnd.toLocaleDateString()}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Resume Subscription Button */}
+                  <button
+                    onClick={handleResumeSubscription}
+                    disabled={resumeMutation.isPending}
+                    className="w-full bg-white text-cyan-600 font-bold py-3 rounded-lg hover:bg-slate-50 transition-all transform hover:-translate-y-1 shadow-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {resumeMutation.isPending ? (
+                      <>
+                        <RefreshCw className="h-5 w-5 animate-spin" />
+                        {t('pricing.resume.resuming')}
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="h-5 w-5" />
+                        {t('pricing.resume.button')}
+                      </>
+                    )}
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={handleDowngradeClick}
+                  disabled={isCancelPending}
+                  className="w-full bg-white/10 border border-white/30 text-white font-semibold py-3 rounded-lg hover:bg-white/20 transition-all transform hover:-translate-y-1 relative z-10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isCancelPending ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      {t('pricing.downgrade.button')}
+                    </>
+                  ) : (
+                    t('pricing.downgrade.button')
                   )}
                 </button>
               )}
