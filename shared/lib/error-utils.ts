@@ -62,14 +62,29 @@ function isAxiosError(error: unknown): error is AxiosError {
  * Log error for debugging (future: integrate with monitoring service)
  */
 export function logError(context: string, error: unknown) {
+  const code = getErrorCode(error);
+  const message = getErrorMessage(error);
+
   if (process.env.NODE_ENV === 'development') {
-    const code = getErrorCode(error);
-    const message = getErrorMessage(error);
     console.error(`[${context}]`, {
       code,
       message,
       error,
     });
   }
-  // Future: Send to Sentry/LogRocket in production
+
+  // Send to Sentry in production
+  if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
+    import('@sentry/nextjs').then((Sentry) => {
+      Sentry.captureException(error, {
+        tags: {
+          context,
+          errorCode: code,
+        },
+        extra: {
+          message,
+        },
+      });
+    });
+  }
 }
