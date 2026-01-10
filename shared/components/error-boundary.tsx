@@ -34,10 +34,18 @@ export class ErrorBoundary extends Component<Props, State> {
     // Call optional onError callback
     this.props.onError?.(error, errorInfo);
 
-    // Future: Send to error monitoring service
-    // if (process.env.NODE_ENV === 'production') {
-    //   sendToSentry(error, errorInfo);
-    // }
+    // Send to Sentry
+    if (typeof window !== 'undefined') {
+      import('@sentry/nextjs').then((Sentry) => {
+        Sentry.captureException(error, {
+          contexts: {
+            react: {
+              componentStack: errorInfo.componentStack,
+            },
+          },
+        });
+      });
+    }
   }
 
   handleReset = () => {
