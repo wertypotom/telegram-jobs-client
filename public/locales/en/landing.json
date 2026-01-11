@@ -21,9 +21,9 @@
     "unread": "Unread"
   },
   "stats": {
-    "newJobs": "New jobs in last 24h",
+    "jobsLast7Days": "New jobs in last 7 days",
     "activeChannels": "Active Channels Monitored",
-    "totalJobs": "Total Jobs Curated"
+    "totalJobs": "Total Jobs (All Time)"
   },
   "features": {
     "title": "Powerful features for the modern job seeker",

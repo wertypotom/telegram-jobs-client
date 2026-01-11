@@ -9,7 +9,7 @@ export function StatsBar() {
   // Default values if data is not available yet or error
   const defaultStats = {
     activeChannels: 0,
-    jobsToday: 0,
+    jobsLast7Days: 0,
     totalJobs: 0,
   };
 
@@ -29,9 +29,9 @@ export function StatsBar() {
           <div className="flex flex-col items-center justify-center p-2">
             <div className="flex items-center gap-2 text-cyan-600 font-bold text-2xl mb-1">
               <Search size={24} />
-              <span>{isLoading ? '...' : formatNumber(currentStats.jobsToday)}</span>
+              <span>{isLoading ? '...' : formatNumber(currentStats.jobsLast7Days)}</span>
             </div>
-            <p className="text-sm text-slate-500 font-medium">{t('stats.newJobs')}</p>
+            <p className="text-sm text-slate-500 font-medium">{t('stats.jobsLast7Days')}</p>
           </div>
 
           <div className="flex flex-col items-center justify-center p-2">
