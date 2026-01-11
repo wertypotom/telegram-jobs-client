@@ -3,7 +3,7 @@ import type { ApiResponse } from '../types/api';
 
 export interface PlatformStats {
   activeChannels: number;
-  jobsToday: number;
+  jobsLast7Days: number;
   totalJobs: number;
 }
 
