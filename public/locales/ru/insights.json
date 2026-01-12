@@ -1,0 +1,19 @@
+{
+  "heading": {
+    "updated": "Обновлено: {{time}}"
+  },
+  "stats": {
+    "totalJobs": "Всего вакансий",
+    "recentJobs": "За последние 7 дней",
+    "avgSalary": "Средняя зарплата"
+  },
+  "charts": {
+    "topSkills": "Топ навыков",
+    "salaryDistribution": "Распределение зарплат",
+    "experienceLevels": "Уровни опыта",
+    "trend": "Тренд публикаций (7 дней)"
+  },
+  "faq": {
+    "title": "Часто задаваемые вопросы"
+  }
+}
