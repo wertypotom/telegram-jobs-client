@@ -1,0 +1,19 @@
+{
+  "heading": {
+    "updated": "Last updated: {{time}}"
+  },
+  "stats": {
+    "totalJobs": "Total Jobs",
+    "recentJobs": "Posted Last 7 Days",
+    "avgSalary": "Average Salary"
+  },
+  "charts": {
+    "topSkills": "Top Skills",
+    "salaryDistribution": "Salary Distribution",
+    "experienceLevels": "Experience Levels",
+    "trend": "7-Day Posting Trend"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions"
+  }
+}
