@@ -1,4 +1,4 @@
-import { apiClient } from '../../../../../shared/lib/api-client';
+import { apiClient } from '@/shared/lib/api-client';
 import { InsightsPageData } from '../types/insights.types';
 
 export const insightsApi = {

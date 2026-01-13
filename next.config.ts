@@ -1,14 +1,15 @@
 import { withSentryConfig } from '@sentry/nextjs';
 import type { NextConfig } from 'next';
+import { BACKEND_API_URL, CLIENT_PROXY_PATH } from './shared/config/api.config';
 
 const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
         // Client calls: /api/backend/api/channels/...
-        // Destination: https://api.jobsniper.work/api/channels/...
-        source: '/api/backend/api/:path*',
-        destination: 'https://api.jobsniper.work/api/:path*',
+        // Destination: BACKEND_API_URL/api/channels/...
+        source: `${CLIENT_PROXY_PATH}/api/:path*`,
+        destination: `${BACKEND_API_URL}/api/:path*`,
       },
     ];
   },
