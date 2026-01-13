@@ -6,6 +6,7 @@ export interface InsightsPageData {
   meta: InsightsPageMeta;
   faq: FaqItem[];
   stats: MarketStats;
+  jobs: any[]; // Recent jobs for display
 }
 
 export type InsightsTemplate =

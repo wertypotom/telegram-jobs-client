@@ -70,7 +70,7 @@ export default async function InsightsPage({ params }: PageProps) {
     notFound();
   }
 
-  return <PageClient meta={data.meta} faq={data.faq} stats={data.stats} />;
+  return <PageClient meta={data.meta} faq={data.faq} stats={data.stats} jobs={data.jobs} />;
 }
 
 // Revalidate every hour (ISR)

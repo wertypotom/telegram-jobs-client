@@ -200,6 +200,15 @@ import { Button } from '@/shared/ui/button';
 - **Cancellation**: Self-service cancellation with access retention until period end
 - **Status Tracking**: Real-time subscription status in account settings
 
+### SEO Market Insights
+
+- **Dynamic SEO Pages**: `/[locale]/insights/[slug]` for job market analysis
+- **Multi-locale Support**: English and Russian translations via i18n
+- **Data Visualization**: Charts for tech stack, salary bands, experience levels, 7-day trends
+- **FAQ Sections**: With JSON-LD schema for Google Rich Results
+- **Sitemap Generation**: Automatic sitemap.xml with all insights pages
+- **ISR Strategy**: Revalidates every hour for fresh data
+
 ### Authentication
 
 - **Google OAuth**
@@ -351,6 +360,14 @@ import { Sparkles, Briefcase, Loader2 } from 'lucide-react';
 5. Session created with JWT
 6. First-time users: channel onboarding
 7. Redirected to `/jobs` dashboard
+
+## 🌐 SEO Strategy
+
+- **Dynamic sitemap.xml**: Auto-generates URLs for all insights pages + static routes
+- **JSON-LD schemas**: FAQPage schema for Google Rich Snippets
+- **Meta tags**: OpenGraph, canonical URLs, alternate language tags
+- **i18n**: Client-side translations for en/ru locales
+- **Static Generation**: ISR with 1-hour revalidation for insights pages
 
 ## 🎯 Performance
 
