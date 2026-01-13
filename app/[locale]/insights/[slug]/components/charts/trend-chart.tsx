@@ -19,10 +19,12 @@ interface TrendChartProps {
 export function TrendChart({ data }: TrendChartProps) {
   const { t } = useTranslation('insights');
 
-  if (data.length === 0) return null;
+  if (!data || data.length === 0) {
+    return null;
+  }
 
   return (
-    <Card className="col-span-full">
+    <Card>
       <CardHeader>
         <CardTitle>{t('charts.trend')}</CardTitle>
       </CardHeader>
@@ -33,7 +35,14 @@ export function TrendChart({ data }: TrendChartProps) {
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip />
-            <Line type="monotone" dataKey="jobs" stroke="hsl(var(--primary))" strokeWidth={2} />
+            <Line
+              type="monotone"
+              dataKey="jobs"
+              stroke="#3b82f6"
+              strokeWidth={3}
+              dot={{ fill: '#3b82f6', r: 4 }}
+              activeDot={{ r: 6 }}
+            />
           </LineChart>
         </ResponsiveContainer>
       </CardContent>

@@ -39,22 +39,37 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 
     const meta = data.meta;
+    const stats = data.stats;
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://jobsniper.work';
+
+    // Inject live stats into title
+    const dynamicTitle =
+      stats.jobsLast7Days > 0
+        ? `${meta.title} - ${stats.jobsLast7Days} Active Jobs (Updated ${stats.updatedAt})`
+        : meta.title;
+
+    // Inject live stats into description
+    let dynamicDescription = meta.description;
+    if (stats.avgSalary && stats.totalJobs > 0) {
+      dynamicDescription = `Avg salary ${stats.avgSalary}. ${stats.totalJobs} jobs analyzed. ${meta.description}`;
+    }
 
     return {
-      title: meta.title,
-      description: meta.description,
+      title: dynamicTitle,
+      description: dynamicDescription,
       alternates: {
-        canonical: `/${locale}/insights/${slug}`,
+        canonical: `${siteUrl}/${locale}/insights/${slug}`,
         languages: {
-          en: `/en/insights/${slug}`,
-          ru: `/ru/insights/${slug}`,
+          en: `${siteUrl}/en/insights/${slug}`,
+          ru: `${siteUrl}/ru/insights/${slug}`,
         },
       },
       openGraph: {
-        title: meta.title,
-        description: meta.description,
+        title: dynamicTitle,
+        description: dynamicDescription,
         type: 'website',
         locale: locale,
+        url: `${siteUrl}/${locale}/insights/${slug}`,
       },
     };
   } catch {
@@ -70,7 +85,16 @@ export default async function InsightsPage({ params }: PageProps) {
     notFound();
   }
 
-  return <PageClient meta={data.meta} faq={data.faq} stats={data.stats} jobs={data.jobs} />;
+  return (
+    <PageClient
+      locale={locale}
+      config={data.config}
+      meta={data.meta}
+      faq={data.faq}
+      stats={data.stats}
+      jobs={data.jobs}
+    />
+  );
 }
 
 // Revalidate every hour (ISR)

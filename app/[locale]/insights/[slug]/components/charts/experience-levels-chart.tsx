@@ -9,10 +9,10 @@ interface ExperienceLevelsChartProps {
 }
 
 const COLORS = [
-  'hsl(var(--chart-1))',
-  'hsl(var(--chart-2))',
-  'hsl(var(--chart-3))',
-  'hsl(var(--chart-4))',
+  '#0ea5e9', // Sky 500
+  '#22c55e', // Green 500
+  '#eab308', // Yellow 500
+  '#f97316', // Orange 500
 ];
 
 export function ExperienceLevelsChart({ data }: ExperienceLevelsChartProps) {
