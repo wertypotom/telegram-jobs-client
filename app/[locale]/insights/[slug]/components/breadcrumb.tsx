@@ -34,7 +34,7 @@ export function Breadcrumb({ locale, slug: _slug, template, category, region }: 
 
   // Build breadcrumb path based on template
   const items: Array<{ label: string; href?: string }> = [
-    { label: trans.home, href: `/${locale}` },
+    { label: trans.home, href: `/` },
     { label: trans.insights, href: `/${locale}/insights` },
   ];
 
