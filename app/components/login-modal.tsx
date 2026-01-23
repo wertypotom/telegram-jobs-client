@@ -7,6 +7,7 @@ import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoginModal } from '@/shared/store/use-login-modal';
+import Link from 'next/link';
 
 export function LoginModal() {
   const [email, setEmail] = useState('');
@@ -134,13 +135,13 @@ export function LoginModal() {
             <div className="text-center text-xs text-slate-500">
               <p>
                 {t('login.termsAgree')}{' '}
-                <a href="#" className="underline hover:text-slate-900">
+                <Link href="/legal/public-offer" className="underline hover:text-slate-900">
                   {t('login.termsOfService')}
-                </a>{' '}
+                </Link>{' '}
                 {t('login.and')}{' '}
-                <a href="#" className="underline hover:text-slate-900">
+                <Link href="/legal/privacy-policy" className="underline hover:text-slate-900">
                   {t('login.privacyPolicy')}
-                </a>
+                </Link>
               </p>
             </div>
           </div>
