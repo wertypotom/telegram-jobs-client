@@ -1,3 +1,8 @@
+---
+trigger: model_decision
+description: A rule is active when model works on task related to interacting with code in the following codebase
+---
+
 # Frontend Architecture Standards
 
 **Constraints and requirements** for frontend development. For implementation, see workflows and skills.
