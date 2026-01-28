@@ -62,6 +62,7 @@ export default [
       'build/**',
       '*.config.js',
       '*.config.mjs',
+      '.agent/**', // Agent utilities - plain JS
     ],
   },
 ];
